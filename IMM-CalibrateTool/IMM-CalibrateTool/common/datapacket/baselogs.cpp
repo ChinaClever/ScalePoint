@@ -61,7 +61,7 @@ bool BaseLogs::writeLog()
     sLogItem it;
 
     it.dev = mDt->dev_type.split("_").first();
-    //it.op = user_land_name(); ////////////============
+    it.op = user_land_name();
     it.user = mItem->user;
     it.sn = mDt->sn;
 

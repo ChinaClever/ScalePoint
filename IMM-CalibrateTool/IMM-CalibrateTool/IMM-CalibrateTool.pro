@@ -18,7 +18,7 @@ include(YC/YC.pri)
 include(logs/logs.pri)
 include(common/common.pri)
 include(sernum/sernum.pri)
-
+include(setups/setups.pri)
 
 
 SOURCES += \
