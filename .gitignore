@@ -42,4 +42,5 @@ target_wrapper.*
 # QtCreator CMake
 CMakeLists.txt.user*
 *.docx
+*参考文档*
 *.pptx
