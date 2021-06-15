@@ -17,6 +17,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include(YC/YC.pri)
 include(logs/logs.pri)
 include(common/common.pri)
+include(sernum/sernum.pri)
+
+
 
 SOURCES += \
     main.cpp \
