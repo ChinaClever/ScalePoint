@@ -12,8 +12,6 @@
 
 SerialPort::SerialPort(QObject *parent) : QThread(parent)
 {
-    mTs = 7;
-    mCount = 0;
     isOpen = false;
     mSerial = NULL;
 
@@ -123,12 +121,6 @@ void SerialPort::timeoutDone()
     } else {
         recvSlot();
     }
-
-//    if(mCount++ % mTs) {
-//        recvSlot();
-//    } else {
-//        writeSlot();
-//    }
 }
 
 
@@ -210,7 +202,6 @@ void SerialPort::recvSlot()
         }
 
         mSerialData += dataTemp;
-        if(dataTemp.size()) mCount=6;
     }
 }
 
