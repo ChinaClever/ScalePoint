@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>表头调试工具</string>
+   <string>IMM 自动校准工具</string>
   </property>
   <property name="windowIcon">
    <iconset resource="images/image.qrc">

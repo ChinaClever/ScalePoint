@@ -42,12 +42,13 @@ struct sCfgItem
     ushort vol;
     ushort volErr, curErr, powErr; // 电流误差
 
+    ////////===========
     uint cntMac;
     QString mac;
-    QString user;
     QString startMac;
     QString endMac;
 
+    QString user;
     sCount cnt;
     int logCount;
     uchar aiMode;

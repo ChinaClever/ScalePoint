@@ -162,7 +162,7 @@
     <rect>
      <x>0</x>
      <y>10</y>
-     <width>551</width>
+     <width>561</width>
      <height>71</height>
     </rect>
    </property>
@@ -178,7 +178,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>表头调试平台</string>
+    <string>IMM 自动校准平台</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

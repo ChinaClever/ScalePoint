@@ -5,7 +5,6 @@
  */
 #include "home_workwid.h"
 #include "ui_home_workwid.h"
-#include "macaddr.h"
 #include "yc_obj.h"
 
 Home_WorkWid::Home_WorkWid(QWidget *parent) :
@@ -34,9 +33,7 @@ void Home_WorkWid::initLayout()
 }
 
 void Home_WorkWid::initFunSlot()
-{
-    int cnt = MacAddr::bulid()->macCnt(mItem->startMac, mItem->mac);
-    ui->macCntLab->setNum(cnt);
+{   
     ui->cntLab->setNum(mItem->cnt.cnt);
     ui->userLab->setText(mItem->user);
     mPro->step = Test_End;
@@ -79,7 +76,7 @@ void Home_WorkWid::updateCnt()
     ui->okLcd->display(cnt->ok);
     ui->allLcd->display(cnt->all);
     ui->errLcd->display(cnt->err);
-    ui->macLab->setText(mItem->mac);
+    ui->verLab->setText("--- ---");
 
     QString str = "0";
     if(cnt->all) {
@@ -87,7 +84,7 @@ void Home_WorkWid::updateCnt()
         str = QString::number(value,'f',0) +"%";
     }
     ui->passLcd->display(str);
-    ui->typeComboBox->setCurrentIndex(mItem->modeId);
+    //ui->typeComboBox->setCurrentIndex(mItem->modeId); ////////==========
 }
 
 QString Home_WorkWid::getTime()
@@ -135,8 +132,6 @@ void Home_WorkWid::updateResult()
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
     ui->cntLab->setNum(mItem->cnt.cnt);
-    int cnt = MacAddr::bulid()->macCnt(mItem->startMac, mItem->mac);
-    ui->macCntLab->setNum(cnt);
     if(mItem->cnt.cnt < 1) {
         mItem->user.clear();
         ui->userLab->setText(mItem->user);
@@ -154,7 +149,12 @@ void Home_WorkWid::updateWid()
     str = mDt->dev_type;
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
-    ui->userLab->setText(mItem->user);
+
+    str = mItem->user;
+    if(str.isEmpty()) str = "--- ---";
+    ui->userLab->setText(str);
+
+    ui->hzLab->setNum(0);
     ui->cntLab->setNum(mItem->cnt.cnt);
     if(mPro->step < Test_Over) {
         updateTime();
@@ -188,17 +188,6 @@ bool Home_WorkWid::initWid()
         }
         if(mItem->cnt.cnt < 1) {
             MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;
-        }
-        if(mItem->modeId) {
-            uint res =  MacAddr::bulid()->macCnt(mItem->mac, mItem->endMac);
-            if((res <= mItem->cntMac) && mItem->modeId) {
-                if(res < 1) {
-                    MsgBox::critical(this, tr("MAC地址已用完，无法继续使用")); return false;
-                } else {
-                    QString str = tr("剩余MAC地址，仅有%1个，请向领导反馈").arg(res);
-                    MsgBox::critical(this, str);
-                }
-            }
         }
 
         mId = 1;

@@ -25,14 +25,14 @@ Td_MainWid::~Td_MainWid()
 void Td_MainWid::initWid()
 {
     mTableWid = new Td_DataTabWid(ui->tabWidget);
-    ui->tabWidget->addTab(mTableWid, tr("校准数据列表"));
+    ui->tabWidget->addTab(mTableWid, tr("校准读数列表"));
 
     mLineTabWid = new Td_LineTabWid(ui->tabWidget);
-    ui->tabWidget->addTab(mLineTabWid, tr("相数据列表"));
+    ui->tabWidget->addTab(mLineTabWid, tr("功率读数列表"));
 
     mThTabWid = new Td_ThresholdTabWid(ui->tabWidget);
-    ui->tabWidget->addTab(mThTabWid, tr("报警阈值信息"));
+    ui->tabWidget->addTab(mThTabWid, tr("电能读数列表"));
 
     mEnvTabWid = new Td_EnvTabWid(ui->tabWidget);
-    ui->tabWidget->addTab(mEnvTabWid, tr("传感器状态"));
+    ui->tabWidget->addTab(mEnvTabWid, tr("相位角状态"));
 }

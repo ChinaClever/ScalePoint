@@ -14,7 +14,7 @@ void Td_DataTabWid::initWid()
 {
     QStringList header;
     QString title = tr("状态列表");
-    header<<tr("开关") << tr("电流") << tr("电压") << tr("功率") << tr("电能") << tr("最终电流") << tr("最终功率")<< tr("结果");
+    header<<tr("RMS电压") << tr("RMS电流") << tr("峰值电流") << tr("有功功率") << tr("有功电能") << tr("最终电流") << tr("最终功率")<< tr("结果");
     initTableWid(header, 3, title);
     sDevData *dev = sDataPacket::bulid()->getDev();
     mData = &(dev->data);

@@ -88,7 +88,7 @@
          </size>
         </property>
         <property name="text">
-         <string>设备序号：</string>
+         <string>校准序号：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -187,7 +187,7 @@
          </size>
         </property>
         <property name="text">
-         <string>MAC地址:</string>
+         <string>固件版本:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -195,7 +195,7 @@
        </widget>
       </item>
       <item row="3" column="1" rowspan="2" colspan="2">
-       <widget class="QLabel" name="macLab">
+       <widget class="QLabel" name="verLab">
         <property name="text">
          <string>----</string>
         </property>
@@ -216,7 +216,7 @@
          </size>
         </property>
         <property name="text">
-         <string>已被使用：</string>
+         <string>线路频率：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -224,7 +224,7 @@
        </widget>
       </item>
       <item row="4" column="3">
-       <widget class="QLabel" name="macCntLab">
+       <widget class="QLabel" name="hzLab">
         <property name="maximumSize">
          <size>
           <width>100</width>
@@ -262,6 +262,12 @@
        <width>260</width>
        <height>300</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="title">
       <string>计时区</string>
@@ -335,6 +341,12 @@
        <width>250</width>
        <height>150</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="title">
       <string>计数区</string>
@@ -494,6 +506,12 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
      <property name="title">
       <string>操作区</string>
      </property>
@@ -560,9 +578,24 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::WheelFocus</enum>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+      </property>
       <item>
        <property name="text">
-        <string>SI/BM</string>
+        <string>IMM</string>
        </property>
       </item>
       <item>
@@ -626,9 +659,12 @@
         <pointsize>11</pointsize>
        </font>
       </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::NoContextMenu</enum>
+      </property>
       <item>
        <property name="text">
-        <string>全流程</string>
+        <string>标准流程</string>
        </property>
       </item>
       <item>
@@ -705,7 +741,7 @@
         <x>80</x>
         <y>40</y>
         <width>120</width>
-        <height>35</height>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">
@@ -722,9 +758,9 @@
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>100</y>
+        <y>90</y>
         <width>120</width>
-        <height>35</height>
+        <height>40</height>
        </rect>
       </property>
       <property name="font">

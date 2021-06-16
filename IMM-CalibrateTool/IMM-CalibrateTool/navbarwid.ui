@@ -115,7 +115,7 @@
       <string notr="true">color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>表头调试工具</string>
+      <string>IMM 自动校准</string>
      </property>
     </widget>
    </item>
