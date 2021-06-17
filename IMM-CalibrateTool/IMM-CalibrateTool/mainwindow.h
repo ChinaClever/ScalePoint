@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "navbarwid.h"
-//#include "set_mainwid.h"
 #include "logmainwid.h"
 #include "setup_mainwid.h"
 #include "home_mainwid.h"
@@ -31,7 +30,6 @@ private:
     Ui::MainWindow *ui;
 
     LogMainWid *mLog;
-    //Set_MainWid *mSet;
     NavBarWid *mNavBarWid;
     Home_MainWid *mHomeWid;
     Setup_MainWid *mSetupWid;

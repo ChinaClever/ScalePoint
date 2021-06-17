@@ -26,9 +26,6 @@ void MainWindow::initWid()
     mHomeWid = new Home_MainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mHomeWid);
 
-    //mSet = new Set_MainWid(ui->stackedWid);
-    //ui->stackedWid->addWidget(mSet);
-
     mSetupWid = new Setup_MainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mSetupWid);
 

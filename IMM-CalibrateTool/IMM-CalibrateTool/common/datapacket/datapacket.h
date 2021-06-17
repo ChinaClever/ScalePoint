@@ -8,13 +8,61 @@
 #define OpSize  6
 
 // 倍率定义
-#define COM_RATE_VOL	1.0    // 电压
-#define COM_RATE_CUR	10.0    // 电流
-#define COM_RATE_POW	1000.0  // 功率
-#define COM_RATE_ELE	10.0    // 电能
-#define COM_RATE_PF     100.0   // 功率因数
+#define COM_RATE_VOL	100.0    // 电压
+#define COM_RATE_CUR	1000.0    // 电流
+#define COM_RATE_POW	1000*1000.0  // 功率
+#define COM_RATE_ELE	1000*1000.0    // 电能
+#define COM_RATE_PF     10.0   // 功率因数
 #define COM_RATE_TEM	1.0    // 温度
 #define COM_RATE_HUM	1.0    // 湿度
+
+struct sItData
+{
+    uint active; // 有功
+    uint reactive; // 无功
+    uint apparen; // 视在
+};
+
+struct sLineData
+{
+    ushort vol_ed;
+    ushort vol_rms;
+    uchar vol_state;
+
+    uint cur_ed;
+    uint cur_rms;
+    uint cur_peak;
+    uchar cur_state;
+
+    sItData pow;
+    sItData ele;
+    ushort angle; //电流与电压的线角
+};
+
+
+struct sBranchIt
+{
+    uint cur_rms;
+    uint cur_peak;
+};
+
+struct sDevObj
+{
+    sDevObj() {size=0;}
+
+    ushort size;
+    ushort version;
+    ushort status;
+
+    ushort hz;
+    ushort angles[LINE_NUM];
+    sLineData lines[LINE_NUM];
+    sBranchIt branchs[OpSize];
+    sBranchIt neutral;
+};
+
+
+
 /**
  * 数据单元：包括当前值，阈值，临界值，告警状态等
  */

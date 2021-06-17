@@ -25,6 +25,8 @@ void Home_WorkWid::initLayout()
     QPalette pl = ui->textEdit->palette();
     pl.setBrush(QPalette::Base,QBrush(QColor(255,0,0,0)));
     ui->textEdit->setPalette(pl);
+    ui->typeComboBox->setPalette(pl);
+    //ui->userEdit->setPalette(pl); //ui->cntSpin->setPalette(pl);
     //ui->textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     //ui->textEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
@@ -33,10 +35,10 @@ void Home_WorkWid::initLayout()
 }
 
 void Home_WorkWid::initFunSlot()
-{   
-    ui->cntLab->setNum(mItem->cnt.cnt);
-    ui->userLab->setText(mItem->user);
+{
     mPro->step = Test_End;
+    ui->userEdit->setText(mItem->user);
+    ui->cntSpin->setValue(mItem->cnt.cnt);
 
     initLayout();
     timer = new QTimer(this);
@@ -131,11 +133,9 @@ void Home_WorkWid::updateResult()
     ui->groupBox_4->setEnabled(true);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
-    ui->cntLab->setNum(mItem->cnt.cnt);
-    if(mItem->cnt.cnt < 1) {
-        mItem->user.clear();
-        ui->userLab->setText(mItem->user);
-    }
+    ui->cntSpin->setValue(mItem->cnt.cnt);
+    if(mItem->cnt.cnt < 1)mItem->user.clear();
+    ui->userEdit->setText(mItem->user);
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
 }
@@ -150,12 +150,11 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
 
-    str = mItem->user;
-    if(str.isEmpty()) str = "--- ---";
-    ui->userLab->setText(str);
 
-    ui->hzLab->setNum(0);
-    ui->cntLab->setNum(mItem->cnt.cnt);
+    str = QString::number(0);
+    str = "--- ---";
+    ui->hzLab->setText(str);
+//    ui->cntLab->setNum(mItem->cnt.cnt);
     if(mPro->step < Test_Over) {
         updateTime();
     } else if(mPro->step < Test_End){

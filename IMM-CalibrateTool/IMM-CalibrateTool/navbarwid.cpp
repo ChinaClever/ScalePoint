@@ -32,19 +32,14 @@ void NavBarWid::on_homeBtn_clicked()
     emit navBarSig(0);
 }
 
-void NavBarWid::on_dataBtn_clicked()
+void NavBarWid::on_setBtn_clicked()
 {
     emit navBarSig(1);
 }
 
-void NavBarWid::on_setBtn_clicked()
-{
-    emit navBarSig(2);
-}
-
 void NavBarWid::on_logBtn_clicked()
 {
-    emit navBarSig(3);
+    emit navBarSig(2);
 }
 
 void NavBarWid::on_loginBtn_clicked()
