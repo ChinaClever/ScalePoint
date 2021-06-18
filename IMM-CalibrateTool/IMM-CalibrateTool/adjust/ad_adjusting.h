@@ -3,7 +3,6 @@
 
 #include "yc_obj.h"
 
-
 class Ad_Adjusting : public BaseThread
 {
     Q_OBJECT
@@ -16,9 +15,6 @@ protected:
     bool sentCmd();
     bool writeCmd(uchar fn, uchar line);
     bool transmit(uchar *buf, int len);
-
-    bool writePhase();
-    bool writeOffset();
 
     bool readData();
     bool waitDcRecv();

@@ -20,7 +20,7 @@ include(home/home.pri)
 include(common/common.pri)
 include(sernum/sernum.pri)
 include(setups/setups.pri)
-#include(adjust/adjust.pri)
+include(adjust/adjust.pri)
 include(devices/devices.pri)
 include(statedata/statedata.pri)
 

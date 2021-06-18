@@ -61,43 +61,6 @@ bool Ad_Adjusting::waitDcRecv()
     return ret;
 }
 
-bool Ad_Adjusting::writeOffset()
-{
-    bool ret = true;
-    if(DC == mDt->ac) {
-        updatePro(tr("发送直流偏移命令！"));
-        ret = writeCmd(0xA1, 0);
-        if(mDt->devType == IP_PDU) ret = waitDcRecv();
-        else ret = delay(20);
-        if(!ret) return ret;
-
-        updatePro(tr("设置标准源电流6A"));
-        ret = YC_Dc107::bulid()->setCur(60);
-        if(ret) ret = delay(10);
-        if(!ret) return ret;
-    } else {
-        ret = delay(1);//15
-    }
-
-    return ret;
-}
-
-bool Ad_Adjusting::writePhase()
-{
-    bool ret = delay(10);
-    if(!ret) return ret;
-
-    if(AC == mDt->ac) {
-        if(mDt->devType == IP_PDU || mDt->devType == BM_PDU|| mDt->devType == SI_PDU){
-            updatePro(tr("发送电流电压相位校准命令！"));
-            ret = writeCmd(0xA3, 60);
-            if(ret) ret = delay(10);
-            if(!ret) return ret;
-        }
-    }
-
-    return ret;
-}
 
 bool Ad_Adjusting::sentCmd()
 {
@@ -108,12 +71,8 @@ bool Ad_Adjusting::sentCmd()
         if(!ret) return ret;
     }
 
-    if(ret) ret = writeOffset();
-    if(!ret) return ret;
-
-    updatePro(tr("发送启动校准命令！"),ret, 1);
+    updatePro(tr("发送启动校准命令！"),ret, 2);
     ret = writeCmd(0xA2, 0);
-    //ret = writePhase();
 
     return ret;
 }
