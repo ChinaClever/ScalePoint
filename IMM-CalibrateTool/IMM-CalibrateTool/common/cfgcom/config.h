@@ -4,13 +4,7 @@
 #include "serialstatuswid.h"
 
 enum eDevTypes {
-    BM_PDU=0,
-    SI_PDU=0,
-    IP_PDU,
-    MPDU,
-    ZPDU,
-    RPDU,
-    ATS,
+    IMM=0,
 
     AC = 1, // 交流
     DC,     // 直流
@@ -40,13 +34,7 @@ struct sCfgItem
     uchar addr;
 
     ushort vol;
-    ushort volErr, curErr, powErr; // 电流误差
-
-    ////////===========
-    uint cntMac;
-    QString mac;
-    QString startMac;
-    QString endMac;
+    ushort volErr, curErr, powErr; // 电流误差   
 
     QString user;
     sCount cnt;
@@ -85,8 +73,6 @@ public:
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
 
 protected:
-    void initMac();
-    void wirteMac();
     void initCnt();
     bool getDate();
     void setDate();

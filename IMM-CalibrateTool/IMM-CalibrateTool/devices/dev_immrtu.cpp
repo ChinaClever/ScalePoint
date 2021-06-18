@@ -47,7 +47,7 @@ bool Dev_ImmRtu::recvPacket(uchar *buf, int len)
     int line = recvLine(len);
 
     ///////////===========
-    //if(line) getDevData(buf, line);
+    //if(line) getDevData(buf, line, mData);
     //else ret = false;
 
     return ret;

@@ -1,7 +1,7 @@
 #ifndef TD_MAINWID_H
 #define TD_MAINWID_H
 
-#include "td_envtabwid.h"
+#include "td_angletabwid.h"
 
 namespace Ui {
 class Td_MainWid;
@@ -21,9 +21,10 @@ protected:
 private:
     Ui::Td_MainWid *ui;
     Td_DataTabWid *mTableWid;
-    Td_EnvTabWid *mEnvTabWid;
-    Td_LineTabWid *mLineTabWid;
-    Td_ThresholdTabWid *mThTabWid;
+    Td_AngleTabWid *mAngleWid;
+    Td_EleTabWid *mEleTabWid;
+    Td_PowTabWid *mPowTabWid;
+    Td_BranchTabWid *mBranchWid;
 };
 
 #endif // TD_MAINWID_H

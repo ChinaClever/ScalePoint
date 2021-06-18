@@ -150,11 +150,8 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
 
-
-    str = QString::number(0);
-    str = "--- ---";
-    ui->hzLab->setText(str);
-//    ui->cntLab->setNum(mItem->cnt.cnt);
+    if(mData->hz) str = QString::number(mData->hz);
+    else str = "--- ---"; ui->hzLab->setText(str);
     if(mPro->step < Test_Over) {
         updateTime();
     } else if(mPro->step < Test_End){
@@ -178,10 +175,26 @@ bool Home_WorkWid::initSerial()
     return ret;
 }
 
+void Home_WorkWid::initUser()
+{
+    if(mItem->user != ui->userEdit->text()) {
+        mItem->user = ui->userEdit->text();
+        sCount *cnt = &(mItem->cnt);
+        cnt->all = cnt->ok = cnt->err = 0;
+        Cfg::bulid()->writeCnt();
+    }
+
+    if(mItem->cnt.cnt != ui->cntSpin->value()) {
+        mItem->cnt.cnt = ui->cntSpin->value();
+        Cfg::bulid()->writeCnt();
+    }
+}
+
 bool Home_WorkWid::initWid()
 {
     bool ret = initSerial();
     if(ret) {
+        initUser();
         if(mItem->user.isEmpty()) {
             MsgBox::critical(this, tr("请先填写客户名称！")); return false;
         }

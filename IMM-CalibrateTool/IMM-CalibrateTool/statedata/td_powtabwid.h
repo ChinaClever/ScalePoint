@@ -3,23 +3,24 @@
 
 #include "td_datatabwid.h"
 
-class Td_LineTabWid : public ComTableWid
+class Td_PowTabWid : public ComTableWid
 {
     Q_OBJECT
 public:
-    explicit Td_LineTabWid(QWidget *parent = nullptr);
+    explicit Td_PowTabWid(QWidget *parent = nullptr);
 
 signals:
 
 protected:
     void initWid();
-    void appendItem(sObjData *dev);
+    QStringList getItem(sLineData &line);
+    void appendItem(sDevObj *dev);
 
 protected slots:
     void timeoutDone();
 
 private:
-    sObjData *mData;
+    sDevObj *mData;
 };
 
 #endif // HOME_LINETABWID_H

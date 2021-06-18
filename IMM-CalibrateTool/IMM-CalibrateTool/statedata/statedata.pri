@@ -2,19 +2,21 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/td_angletabwid.h \
+    $$PWD/td_branchtabwid.h \
     $$PWD/td_datatabwid.h \
-    $$PWD/td_envtabwid.h \
-    $$PWD/td_linetabwid.h \
+    $$PWD/td_eletabwid.h \
     $$PWD/td_mainwid.h \
-    $$PWD/td_thresholdtabwid.h
+    $$PWD/td_powtabwid.h
 
 	
 SOURCES += \
+    $$PWD/td_angletabwid.cpp \
+    $$PWD/td_branchtabwid.cpp \
     $$PWD/td_datatabwid.cpp \
-    $$PWD/td_envtabwid.cpp \
-    $$PWD/td_linetabwid.cpp \
+    $$PWD/td_eletabwid.cpp \
     $$PWD/td_mainwid.cpp \
-    $$PWD/td_thresholdtabwid.cpp
+    $$PWD/td_powtabwid.cpp
 
 
 FORMS += \

@@ -9,7 +9,6 @@ BaseObject::BaseObject()
     mPro = mPacket->getPro();
     mDev = mPacket->getDev();
     mData = &(mDev->data);
-    mCfg = &(mDev->cfg);
     mDt = &(mDev->dt);
 }
 

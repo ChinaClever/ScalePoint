@@ -54,33 +54,7 @@ QString Sn_DevType::getDevStr(uint id)
 int Sn_DevType::getDevType(const QString &str)
 {
     int ret = 0;
-    if(str.contains("ZPDU")) ret = ZPDU;
-    if(str.contains("MPDU")) ret = MPDU;
-    if(str.contains("RPDU")) ret = RPDU;
-
-    if(str.contains("BM-PDU")) ret = BM_PDU;
-    if(str.contains("SI-PDU")) ret = SI_PDU;
-    if(str.contains("IP-PDU")) {
-        ret = IP_PDU;
-        if(str.contains("SNMPV3")) mDt->version = 3; else mDt->version = 1;
-    }
-
-    return ret;
-}
-
-int Sn_DevType::getAcType(const QString &str)
-{
-    int ret = AC;
-    if(str.contains("直流")) ret = DC;
-
-    return ret;
-}
-
-int Sn_DevType::getColMode(const QString &str)
-{
-    int ret = Transformer;
-    if(str.contains("锰铜")) ret = Mn;
-    if(mDt->devType > RPDU) ret = Transformer;
+    if(str.contains("IMM")) ret = IMM;
 
     return ret;
 }
@@ -90,6 +64,16 @@ int Sn_DevType::getLineNum(const QString &str)
     int ret = 1;
     if(str.contains("三相")) ret = 3;
     if(str.contains("两路")) ret = 2;
+
+    return ret;
+}
+
+
+int Sn_DevType::getColMode(const QString &str)
+{
+    int ret = Transformer;
+    if(str.contains("锰铜")) ret = Mn;
+    //if(mDt->devType > RPDU) ret = Transformer;
 
     return ret;
 }
@@ -113,9 +97,6 @@ bool Sn_DevType::analysDevType(uint id)
         mDt->devId = id;
         mDt->dev_type = str;
         mDt->devType = getDevType(str);
-        mDt->ac = getAcType(str);
-        //mDt->specs = getColMode(str);
-        //mDt->series = getSerie(str);
         mDt->lines = getLineNum(str);
     } else {
         ret = false;

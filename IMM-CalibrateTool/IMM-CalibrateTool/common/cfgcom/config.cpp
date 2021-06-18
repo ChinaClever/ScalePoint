@@ -14,7 +14,6 @@ Cfg::Cfg()
     item->source = nullptr;
     item->vol = 200;
 
-    initMac();
     initCnt();
     initCfgDev();
     initErrData();
@@ -73,10 +72,9 @@ void Cfg::initCurrentNum()
 void Cfg::initCfgDev()
 {
     item->addr = read("addr", 1,"Sys").toInt();
-    item->modeId = read("modeId", 1,"Sys").toInt();
+    item->modeId = read("modeId", 0,"Sys").toInt();
     item->user = read("user", "", "User").toString();
-    item->aiMode = read("ai_mode", 1, "Sys").toInt();
-    if(item->modeId) item->modeId = 1;
+    item->aiMode = read("ai_mode", 0, "Sys").toInt();
 }
 
 void Cfg::writeCfgDev()
@@ -103,26 +101,7 @@ void Cfg::writeCnt()
     write("ok", item->cnt.ok, "Count");
     write("err", item->cnt.err, "Count");
     write("user", item->user, "User");
-    wirteMac();
 }
-
-void Cfg::wirteMac()
-{
-    write("mac", item->mac, "Mac");
-    write("cnt", item->cntMac, "Mac");
-    write("start", item->startMac, "Mac");
-    write("end", item->endMac, "Mac");
-}
-
-void Cfg::initMac()
-{
-    QString str = "2C:26:5F:38:00:00";
-    item->mac = read("mac", str, "Mac").toString();
-    item->cntMac = read("cnt", 5*1000, "Mac").toInt();
-    item->startMac = read("start", str, "Mac").toString();
-    item->endMac = read("end", str, "Mac").toString();
-}
-
 
 void Cfg::initErrData()
 {

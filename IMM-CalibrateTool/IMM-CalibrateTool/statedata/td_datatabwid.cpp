@@ -16,41 +16,39 @@ void Td_DataTabWid::initWid()
     QString title = tr("状态列表");
     header<<tr("RMS电压") << tr("RMS电流") << tr("峰值电流") << tr("有功功率") << tr("有功电能") << tr("最终电流") << tr("最终功率")<< tr("结果");
     initTableWid(header, 3, title);
+
     sDevData *dev = sDataPacket::bulid()->getDev();
     mData = &(dev->data);
 }
 
-
-void Td_DataTabWid::appendItem(sObjData *unit)
+QStringList Td_DataTabWid::getItem(sLineData &line)
 {
-    for(int i=0; i<unit->size; ++i) {
-        QStringList listStr;
+    QStringList listStr;
 
-        if(1 == unit->sw[i]) listStr << tr("开"); else listStr << tr("关");
-        listStr << QString::number(unit->cur.value[i]/COM_RATE_CUR,'f',1)+"A";
-        listStr << QString::number(unit->vol.value[i]/COM_RATE_VOL,'f',1)+"V";
-        listStr << QString::number(unit->pow[i]/COM_RATE_POW,'f',3)+"kW";
-        listStr << QString::number(unit->ele[i]/COM_RATE_ELE,'f',1)+"kWh";
-        if(unit->cured[i]) {
-            listStr << QString::number(unit->cured[i]/COM_RATE_CUR,'f',1)+"A";
-        } else {
-            listStr << "---";
-        }
+    if(line.vol_rms) listStr << QString::number(line.vol_rms/COM_RATE_VOL)+"V"; else listStr << "---";
+    if(line.cur_rms) listStr << QString::number(line.cur_rms/COM_RATE_CUR)+"A"; else listStr << "---";
+    if(line.cur_peak) listStr << QString::number(line.cur_peak/COM_RATE_CUR)+"A"; else listStr << "---";
+    if(line.pow.active) listStr << QString::number(line.pow.active/COM_RATE_POW)+"W"; else listStr << "---";
+    if(line.ele.active) listStr << QString::number(line.ele.active/COM_RATE_ELE)+"Wh"; else listStr << "---";
+    if(line.cur_ed) listStr << QString::number(line.cur_ed/COM_RATE_CUR)+"A"; else listStr << "---";
+    if(line.powed) listStr << QString::number(line.powed/COM_RATE_POW)+"W"; else listStr << "---";
 
-        if(unit->powed[i]) {
-            listStr << QString::number(unit->powed[i]/COM_RATE_POW,'f',3)+"kW";
-        } else {
-            listStr << "---";
-        }
+    switch (line.status) {
+    case Test_Fail: listStr << "×"; break;
+    case Test_Pass: listStr << "√"; break;
+    default: listStr << " "; break;
+    }
 
-        switch (unit->status[i]) {
-        case Test_Fail: listStr << "×"; break;
-        case Test_Pass: listStr << "√"; break;
-        default: listStr << " "; break;
-        }
+    return listStr;
+}
 
+void Td_DataTabWid::appendItem(sDevObj *obj)
+{
+    for(int i=0; i<LINE_NUM; ++i) {
+        QStringList listStr = getItem(obj->lines[i]);
         setTableRow(i, listStr);
-        if(unit->status[i] == Test_Fail) {
+
+        if(obj->lines[i].status == Test_Fail) {
             setAlarmBackgroundColor(i);
         } else {
             setNormalBackgroundColor(i);
@@ -60,9 +58,5 @@ void Td_DataTabWid::appendItem(sObjData *unit)
 
 void Td_DataTabWid::timeoutDone()
 {
-    if(mData->size) {
-        appendItem(mData);
-    } else {
-        clearTable();
-    }
+    appendItem(mData);
 }

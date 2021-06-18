@@ -30,6 +30,7 @@ protected:
 
     bool initSerial();
     bool initWid();
+    void initUser();
 
 private slots:
     void timeoutDone();

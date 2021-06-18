@@ -12,7 +12,8 @@ public:
 
 protected:
     void initWid();
-    void appendItem(sObjData *unit);
+    QStringList getItem(sLineData &line);
+    void appendItem(sDevObj *obj);
 
 signals:
 
@@ -20,7 +21,7 @@ protected slots:
     void timeoutDone();
 
 private:
-    sObjData *mData;
+    sDevObj *mData;
 };
 
 #endif // DATATABLEWID_H

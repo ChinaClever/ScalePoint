@@ -12,12 +12,11 @@ public:
 
 protected:
     sDevType *mDt;
-    sTypeCfg *mCfg;
     sDevData *mDev;
     RtuRw *mModbus;
     sCfgItem *mItem;
     sProgress *mPro;
-    sObjData *mData;
+    sDevObj *mData;
     sDataPacket *mPacket;
 };
 

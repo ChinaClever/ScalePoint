@@ -18,7 +18,7 @@ ComTableWid::ComTableWid(QWidget *parent) :
     // initScrollArea(); // 开启滑动功能
 
     timer = new QTimer(this);
-    timer->start(200);
+    timer->start(350 + rand()%100);
     connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
 
     // QGridLayout *gridLayout = new QGridLayout(parent);
