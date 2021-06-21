@@ -14,20 +14,6 @@ BaseLogs *BaseLogs::bulid(QObject *parent)
     return sington;
 }
 
-
-bool BaseLogs::writeMac()
-{
-    sMacItem it;
-
-    it.dev = mDt->dev_type.split("_").first();
-    it.user = mItem->user;
-    it.sn = mDt->sn;
-    it.mac = mMac;
-    mMac.clear();
-
-    return DbMacs::bulid()->insertItem(it);
-}
-
 bool BaseLogs::appendLogItem(const QString &str, bool pass)
 {
     sStateItem it;
@@ -48,7 +34,6 @@ void BaseLogs::saveLogs()
     bool ret = writeLog();
     if(ret) {
         writeLogs();
-        if(mMac.size()) writeMac();
     } else {
         // updatePro(tr("因未创建序列号，日志无法保存！"), false);
     }

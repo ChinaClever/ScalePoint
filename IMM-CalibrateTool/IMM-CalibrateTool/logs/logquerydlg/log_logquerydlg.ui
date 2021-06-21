@@ -186,7 +186,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>设备SN码：</string>
+    <string>校准序号：</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

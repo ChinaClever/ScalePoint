@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "td_mainwid.h"
-//#include "test_corethread.h"
+#include "test_corethread.h"
 
 namespace Ui {
 class Home_WorkWid;
@@ -26,7 +26,6 @@ protected:
     void updateWid();
     void updateTime();
     void updateResult();
-    void updateCnt();
 
     bool initSerial();
     bool initWid();
@@ -35,6 +34,7 @@ protected:
 private slots:
     void timeoutDone();
     void initFunSlot();
+    void updateCntSlot();
     void on_startBtn_clicked();
     void on_upBtn_clicked();
     void on_downBtn_clicked();
@@ -45,7 +45,7 @@ private:
     int mId;
     bool isCheck;
     QTimer *timer;
-    //Test_CoreThread *mCoreThread; /////////=============
+    Test_CoreThread *mCoreThread;
 };
 
 #endif // HOME_WORKWID_H

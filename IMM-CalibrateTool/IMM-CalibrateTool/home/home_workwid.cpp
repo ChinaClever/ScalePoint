@@ -36,15 +36,13 @@ void Home_WorkWid::initLayout()
 
 void Home_WorkWid::initFunSlot()
 {
-    mPro->step = Test_End;
-    ui->userEdit->setText(mItem->user);
-    ui->cntSpin->setValue(mItem->cnt.cnt);
-
     initLayout();
+    mPro->step = Test_End;
     timer = new QTimer(this);
     timer->start(500);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
-    //mCoreThread = new Test_CoreThread(this); /////////=============
+    QTimer::singleShot(450,this,SLOT(updateCntSlot()));
+    mCoreThread = new Test_CoreThread(this);
 }
 
 void Home_WorkWid::setTextColor()
@@ -72,13 +70,17 @@ void Home_WorkWid::insertText()
     }
 }
 
-void Home_WorkWid::updateCnt()
+void Home_WorkWid::updateCntSlot()
 {
     sCount *cnt = &(mItem->cnt);
     ui->okLcd->display(cnt->ok);
     ui->allLcd->display(cnt->all);
     ui->errLcd->display(cnt->err);
     ui->verLab->setText("--- ---");
+
+    ui->cntSpin->setValue(mItem->cnt.cnt);
+    if(mItem->cnt.cnt < 1)mItem->user.clear();
+    ui->userEdit->setText(mItem->user);
 
     QString str = "0";
     if(cnt->all) {
@@ -133,9 +135,7 @@ void Home_WorkWid::updateResult()
     ui->groupBox_4->setEnabled(true);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
-    ui->cntSpin->setValue(mItem->cnt.cnt);
-    if(mItem->cnt.cnt < 1)mItem->user.clear();
-    ui->userEdit->setText(mItem->user);
+    QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
 }
@@ -163,7 +163,6 @@ void Home_WorkWid::timeoutDone()
 {
     insertText();
     updateWid();
-    updateCnt();
 }
 
 bool Home_WorkWid::initSerial()
@@ -220,7 +219,7 @@ bool Home_WorkWid::initWid()
 void Home_WorkWid::on_startBtn_clicked()
 {
     if(mPro->step == Test_End) {
-        //if(initWid()) mCoreThread->start();   /////////=============
+        if(initWid()) mCoreThread->start();
     } else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {

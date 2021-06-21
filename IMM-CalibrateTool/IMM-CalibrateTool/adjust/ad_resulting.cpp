@@ -8,7 +8,6 @@
 
 Ad_Resulting::Ad_Resulting(QObject *parent) : BaseThread(parent)
 {
-    initRtuThread();
 }
 
 Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
