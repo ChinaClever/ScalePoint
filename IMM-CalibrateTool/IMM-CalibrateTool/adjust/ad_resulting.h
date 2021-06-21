@@ -2,7 +2,7 @@
 #define AD_RESULTING_H
 
 #include "ad_adjusting.h"
-#include "dev_ipcfg.h"
+#include "dev_immrtu.h"
 
 class Ad_Resulting : public BaseThread
 {
@@ -34,7 +34,7 @@ protected:
 
 private:
     YC_StandSource *mSource;
-    //Dev_Object *mCollect;
+    Dev_Object *mCollect;
 };
 
 #endif // AD_RESULTING_H

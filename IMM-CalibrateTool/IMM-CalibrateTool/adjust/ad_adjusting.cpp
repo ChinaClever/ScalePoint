@@ -193,7 +193,11 @@ bool Ad_Adjusting::startAdjust()
     mPro->step = Test_Ading;
     bool ret = sentCmd();
     if(ret && (mPro->step == Test_Ading)){
-        ret = readData();
+        ret = readData();        
+        if(mPro->step == Test_vert) {
+            updatePro(tr("等待设备重启"), ret, 3);
+            Yc_Obj::bulid()->get()->setVol(0, 0);
+        }
     }
 
     return ret;

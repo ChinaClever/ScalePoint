@@ -18,7 +18,6 @@ protected:
 private:
     Ad_Adjusting *mAdjust;
     Ad_Resulting *mResult;
-    Ad_LedSi *mLedSi;
 };
 
 #endif // AD_CORETHREAD_H

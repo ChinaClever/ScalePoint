@@ -4,12 +4,9 @@
  *      Author: Lzy
  */
 #include "ad_corethread.h"
-#include "dblogs.h"
-extern QString user_land_name();
 
 Ad_CoreThread::Ad_CoreThread(QObject *parent) : BaseThread(parent)
 {
-    mLedSi = Ad_LedSi::bulid(this);
     mAdjust = Ad_Adjusting::bulid(this);
     mResult = Ad_Resulting::bulid(this);
 }
@@ -22,16 +19,9 @@ Ad_CoreThread *Ad_CoreThread::bulid(QObject *parent)
     return sington;
 }
 
-
 bool Ad_CoreThread::workDown()
 {
-    bool ret = true;
-    if(!mDt->devType && mCfg->si_led) {
-        ret = mLedSi->startAdjust();
-    } else {
-        ret = mAdjust->startAdjust();
-    }
-
+    bool ret = mAdjust->startAdjust();
     if(mPro->step == Test_vert) {
         ret = mResult->resEnter();
     } else if(mPro->step == Test_Over) {
