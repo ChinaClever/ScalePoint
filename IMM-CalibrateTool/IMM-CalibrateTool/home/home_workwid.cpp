@@ -106,7 +106,6 @@ void Home_WorkWid::updateTime()
 
     ui->timeLab->setText(str);
     ui->timeLab->setStyleSheet(style);
-    ui->startBtn->setText(tr("终 止"));
 }
 
 void Home_WorkWid::updateResult()
@@ -200,6 +199,7 @@ bool Home_WorkWid::initWid()
         ui->textEdit->clear();
         ui->modeBox->setEnabled(false);
         ui->groupBox_4->setEnabled(false);
+        ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start;
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
         QString str = mPro->startTime.toString("hh:mm:ss");
