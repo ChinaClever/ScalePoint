@@ -29,6 +29,8 @@ ui_*.h
 Makefile*
 *build-*
 *pdu-json-rpc-sdk*
+*raritan*
+*.idea*
 
 # Qt unit tests
 target_wrapper.*
