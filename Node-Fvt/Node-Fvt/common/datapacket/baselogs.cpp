@@ -45,8 +45,8 @@ bool BaseLogs::writeLog()
     Db_Tran db;
     sLogItem it;
 
-    it.dev = mDt->dev_type.split("_").first();
-    it.op = user_land_name();
+    // it.dev = mDt->dev_type.split("_").first();
+    // it.op = user_land_name();   /////////////============
     it.user = mItem->user;
     it.sn = mDt->sn;
 
@@ -75,7 +75,7 @@ bool BaseLogs::writeLog()
 
 bool BaseLogs::initItem(sStateItem &it)
 {
-    it.dev = mDt->dev_type.split("_").first();
+    // it.dev = mDt->dev_type.split("_").first();
     it.user = mItem->user;
     it.sn = mDt->sn;
 

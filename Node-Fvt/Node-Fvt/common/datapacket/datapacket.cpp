@@ -10,7 +10,6 @@ sDataPacket::sDataPacket()
 {
     dev = new sDevData;
     pro = new sProgress();
-    memset(&(dev->data),0,sizeof(sDevObj));
 }
 
 
@@ -29,9 +28,7 @@ void sDataPacket::init()
     pro->pass.clear();
     pro->status.clear();
     dev->dt.sn.clear();
-    dev->dt.dev_type.clear();
 
     pro->result = Test_Info;
     pro->startTime = QTime::currentTime();
-    memset(&(dev->data),0,sizeof(sDevObj));
 }

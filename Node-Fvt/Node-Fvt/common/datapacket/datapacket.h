@@ -3,64 +3,6 @@
 #include <QtCore>
 #include <QColor>
 
-#define LINE_NUM  3
-#define PACK_ARRAY_SIZE LINE_NUM
-#define OpSize  6
-
-// 倍率定义
-#define COM_RATE_VOL	100.0    // 电压
-#define COM_RATE_CUR	1000.0    // 电流
-#define COM_RATE_POW	1000.0  // 功率
-#define COM_RATE_ELE	1000.0    // 电能
-#define COM_RATE_PF     10.0   // 功率因数
-#define COM_RATE_TEM	1.0    // 温度
-#define COM_RATE_HUM	1.0    // 湿度
-
-struct sItData
-{
-    uint active; // 有功
-    uint reactive; // 无功
-    uint apparen; // 视在
-};
-
-struct sLineData
-{
-    ushort vol_ed;
-    ushort vol_rms;
-
-    uint cur_ed;
-    uint cur_rms;
-    uint cur_peak;    
-    uchar status;
-
-    uint powed;
-    sItData pow;
-    sItData ele;
-    ushort angle; //电流与电压的线角
-};
-
-
-struct sBranchIt
-{
-    uint cur_rms;
-    uint cur_peak;
-};
-
-struct sDevObj
-{
-    sDevObj() {size=0;}
-
-    ushort size;
-    ushort version;
-    ushort status;
-
-    ushort hz;
-    ushort angles[LINE_NUM];
-    sLineData lines[LINE_NUM];
-    sBranchIt branchs[OpSize];
-    sBranchIt neutral;
-};
-
 
 struct sDevType
 {
@@ -69,8 +11,14 @@ struct sDevType
     uchar devId;
     uchar devType; // 0 SI-PDU  1 IP-PDU
     uchar lines;
-    QString dev_type;
+
+    QString manufacturer;
+    QString model;
     QString sn;
+    QString hwRevision;
+    QString fwRevision;
+    QString ctrlBoardSerial;
+    QString macAddress;
 };
 
 
@@ -81,7 +29,6 @@ struct sDevType
 struct sDevData
 {
     sDevType dt; //设备类型
-    sDevObj data;
 };
 
 

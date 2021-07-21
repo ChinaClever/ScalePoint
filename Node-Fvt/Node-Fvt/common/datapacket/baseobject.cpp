@@ -8,7 +8,7 @@ BaseObject::BaseObject()
     mItem = Cfg::bulid()->item;
     mPro = mPacket->getPro();
     mDev = mPacket->getDev();
-    mData = &(mDev->data);
+    // mData = &(mDev->data);
     mDt = &(mDev->dt);
 }
 

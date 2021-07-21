@@ -16,7 +16,7 @@ protected:
     RtuRw *mModbus;
     sCfgItem *mItem;
     sProgress *mPro;
-    sDevObj *mData;
+    // sDevObj *mData;
     sDataPacket *mPacket;
 };
 
