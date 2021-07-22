@@ -12,6 +12,7 @@ public:
     static BaseLogs *bulid(QObject *parent = nullptr);
 
     void saveLogs();
+    void writeMac(const QString &mac){mMac=mac;}
     bool appendLogItem(const QString &str, bool pass);
 
 protected:
@@ -19,6 +20,7 @@ protected:
     bool initItem(sStateItem &item);
     bool writeLog();
     void writeLogs();
+    bool writeMac();
 
 private:
     QString mMac;

@@ -7,6 +7,7 @@
 #include "ui_setup_mainwid.h"
 #include "versiondlg.h"
 #include "macaddr.h"
+#include "dblogs.h"
 
 Setup_MainWid::Setup_MainWid(QWidget *parent) :
     QWidget(parent),
@@ -27,11 +28,17 @@ Setup_MainWid::~Setup_MainWid()
 void Setup_MainWid::initFunSlot()
 {
     initPcNum();
-    initErrData();
     initLogCount();
     mUserWid = new UserMainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mUserWid);
     QTimer::singleShot(2*1000,this,SLOT(checkPcNumSlot()));
+
+    initMac();
+    timer = new QTimer(this);
+    timer->start(3*1000);
+    connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
+    DbLogs *db = DbLogs::bulid();
+    connect(db, SIGNAL(itemChanged(int, int)),this, SLOT(updateSlot(int,int)));
 
     QDate buildDate = QLocale(QLocale::English ).toDate( QString(__DATE__).replace("  ", " 0"), "MMM dd yyyy");
     ui->label_date->setText(buildDate.toString("yyyy-MM-dd"));
@@ -54,9 +61,6 @@ void Setup_MainWid::initSerial()
 {
     mComWid = new SerialStatusWid(ui->comWid);
     mItem->com = mComWid->initSerialPort(tr("PDU"));
-
-    mSourceWid = new SerialStatusWid(ui->sourceWid);
-    mItem->source = mSourceWid->initSerialPort(tr("标准源"));
 }
 
 void Setup_MainWid::initLogCount()
@@ -127,44 +131,29 @@ void Setup_MainWid::on_verBtn_clicked()
 }
 
 
-void Setup_MainWid::updateErrData()
+void Setup_MainWid::updateMac()
 {
-    sCfgItem *item = mItem;
-    item->volErr = ui->volErrBox->value();
-    item->curErr = ui->curErrBox->value() * 10;
-    item->powErr = ui->powErrBox->value() * 10;
-    Cfg::bulid()->writeErrData();
-}
-
-void Setup_MainWid::initErrData()
-{
-    sCfgItem *item = mItem;
-    ui->volErrBox->setValue(item->volErr);
-    ui->curErrBox->setValue(item->curErr / 10.0);
-    ui->powErrBox->setValue(item->powErr / 10.0);
+    sMac *it = &(mItem->macs);
+    int ret =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
+    ui->cntMacLab->setNum(ret);
 }
 
 
-void Setup_MainWid::on_saveBtn_clicked()
+void Setup_MainWid::initMac()
 {
-    static int flg = 0;
-    QString str = tr("修改");
+    updateMac();
+    sMac *it = &(mItem->macs);
+    //ui->spinBox->setValue(it->cntMac);
+    ui->startMacLab->setText(it->startMac);
+    ui->endMacLab->setText(it->endMac);
+}
 
-    bool ret = usr_land_jur();
-    if(!ret) {
-        MsgBox::critical(this, tr("你无权进行此操作"));
-        return;
-    }
+void Setup_MainWid::updateSlot(int,int)
+{
+    initMac();
+}
 
-    if(flg++ %2) {
-        ret = false;
-        updateErrData();
-    } else {
-        str = tr("保存");
-    }
-
-    ui->saveBtn->setText(str);
-    ui->volErrBox->setEnabled(ret);
-    ui->curErrBox->setEnabled(ret);
-    ui->powErrBox->setEnabled(ret);
+void Setup_MainWid::timeoutDone()
+{
+    updateMac();
 }

@@ -5,6 +5,7 @@
 
 enum eDevTypes {
     IMM=0,
+    Node=0,
 
     AC = 1, // 交流
     DC,     // 直流
@@ -28,14 +29,20 @@ struct sCount
     int err;
 };
 
+struct sMac
+{
+    sMac() {cntMac=0;}
+    uint cntMac;
+    QString mac;
+    QString user;
+    QString startMac;
+    QString endMac;
+};
+
 struct sCfgItem
-{    
-    uchar modeId;
+{
     uchar addr;
-
-    ushort vol;
-    ushort volErr, curErr, powErr; // 电流误差   
-
+    sMac macs;
     QString user;
     sCount cnt;
     int logCount;
@@ -44,7 +51,6 @@ struct sCfgItem
     ushort currentNum;
 
     SerialPort *com;
-    SerialPort *source;
 };
 
 
@@ -64,20 +70,20 @@ public:
     QString getLoginName();
     void setLoginName(const QString &name);
 
+    void wirteMac();
     void writeCnt();
     void writeCfgDev();
 
-    void writeErrData();
     void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="cfg");
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
 
 protected:
+    void initMac();
     void initCnt();
     bool getDate();
     void setDate();
     void initCfgDev();
-    void initErrData();
     void initCurrentNum();
 
 private:

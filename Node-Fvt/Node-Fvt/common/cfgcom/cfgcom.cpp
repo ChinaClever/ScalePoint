@@ -10,7 +10,7 @@ CfgCom::CfgCom(QObject *parent)
     mCfgIni = nullptr;
     QCoreApplication::setOrganizationName("CLEVER");
     QCoreApplication::setOrganizationDomain("clever.com");
-    QCoreApplication::setApplicationName("IMM-CalibrateTool");
+    QCoreApplication::setApplicationName("Node-Fvt");
 
     cfgOpen(parent);
 }

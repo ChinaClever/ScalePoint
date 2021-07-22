@@ -24,7 +24,6 @@ void Home_WorkWid::initLayout()
     QPalette pl = ui->textEdit->palette();
     pl.setBrush(QPalette::Base,QBrush(QColor(255,0,0,0)));
     ui->textEdit->setPalette(pl);
-    ui->typeComboBox->setPalette(pl);
     //ui->userEdit->setPalette(pl); //ui->cntSpin->setPalette(pl);
     //ui->textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     //ui->textEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -75,7 +74,6 @@ void Home_WorkWid::updateCntSlot()
     ui->okLcd->display(cnt->ok);
     ui->allLcd->display(cnt->all);
     ui->errLcd->display(cnt->err);
-    ui->verLab->setText("--- ---");
 
     ui->cntSpin->setValue(mItem->cnt.cnt);
     if(mItem->cnt.cnt < 1)mItem->user.clear();
@@ -87,7 +85,6 @@ void Home_WorkWid::updateCntSlot()
         str = QString::number(value,'f',0) +"%";
     }
     ui->passLcd->display(str);
-    //ui->typeComboBox->setCurrentIndex(mItem->modeId); ////////==========
 }
 
 QString Home_WorkWid::getTime()
@@ -123,8 +120,7 @@ void Home_WorkWid::updateResult()
 
     mPro->step = Test_End;
     ui->timeLab->setText(str);
-    ui->modeBox->setEnabled(true);
-    ui->groupBox_4->setEnabled(true);
+    ui->groupBox_2->setEnabled(true);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
@@ -134,23 +130,40 @@ void Home_WorkWid::updateResult()
 
 void Home_WorkWid::updateWid()
 {
-    /*
     QString str = mDt->sn;
     if(str.isEmpty()) str = "--- ---";
     ui->snLab->setText(str);
 
-    str = mDt->dev_type;
+    str = mDt->manufacturer;
     if(str.isEmpty()) str = "--- ---";
-    ui->devLab->setText(str);
+    ui->mfLab->setText(str);
 
-    if(mData->hz) str = QString::number(mData->hz);
-    else str = "--- ---"; ui->hzLab->setText(str);
+    str = mDt->model;
+    if(str.isEmpty()) str = "--- ---";
+    ui->modelLab->setText(str);
+
+    str = mDt->hwRevision;
+    if(str.isEmpty()) str = "--- ---";
+    ui->hwLab->setText(str);
+
+    str = mDt->fwRevision;
+    if(str.isEmpty()) str = "--- ---";
+    ui->fwLab->setText(str);
+
+    str = mDt->ctrlBoardSerial;
+    if(str.isEmpty()) str = "--- ---";
+    ui->ctrlSnLab->setText(str);
+
+    str = mDt->macAddress;
+    if(str.isEmpty()) str = "--- ---";
+    ui->macLab->setText(str);
+
     if(mPro->step < Test_Over) {
         updateTime();
     } else if(mPro->step < Test_End){
         updateResult();
     }
-    */
+
 }
 
 void Home_WorkWid::timeoutDone()
@@ -163,8 +176,6 @@ bool Home_WorkWid::initSerial()
 {
     bool ret = mItem->com->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
-    ret = mItem->source->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
     return ret;
 }
 
@@ -198,10 +209,9 @@ bool Home_WorkWid::initWid()
         mId = 1;
         mPacket->init();
         ui->textEdit->clear();
-        ui->modeBox->setEnabled(false);
-        ui->groupBox_4->setEnabled(false);
+        ui->groupBox_2->setEnabled(false);
         ui->startBtn->setText(tr("终 止"));
-        mPro->step = ui->modeBox->currentIndex()+Test_Start;
+        mPro->step = Test_Start;
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
         QString str = mPro->startTime.toString("hh:mm:ss");
         ui->startLab->setText(str);
