@@ -4,7 +4,6 @@
  *      Author: Lzy
  */
 #include "test_corethread.h"
-#include "baselogs.h"
 
 Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 {
@@ -14,24 +13,7 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
-    //Dev_ImmRtu::bulid(this);
-
-
-}
-
-bool Test_CoreThread::readDev()
-{
-    /*
-    QString str = tr("Modbus RTU通讯 ");
-    Dev_Object *dev = Dev_ImmRtu::bulid();
-
-    bool ret = dev->readPduData();
-    if(ret) str += tr("正常"); else str += tr("错误");
-    updatePro(str, ret);
-
-    return ret;
-    */
-    return true;
+    mNetWork = Test_NetWork::bulid(this);
 }
 
 void Test_CoreThread::workResult()
@@ -53,7 +35,6 @@ void Test_CoreThread::workResult()
 bool Test_CoreThread::initFun()
 {    
     bool ret = updatePro(tr("即将开始"));
-    if(ret) ret = readDev();
     return ret;
 }
 

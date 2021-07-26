@@ -1,6 +1,6 @@
 #ifndef TEST_CORETHREAD_H
 #define TEST_CORETHREAD_H
-#include "baselogs.h"
+#include "test_network.h"
 
 class Test_CoreThread : public BaseThread
 {
@@ -11,8 +11,6 @@ public:
 protected:
     void run();
     bool initFun();
-    bool readDev();
-
     void workDown();
     void workResult();
 
@@ -20,8 +18,7 @@ protected slots:
     void initFunSlot();
 
 private:
-
-
+    Test_NetWork *mNetWork;
 };
 
 #endif // TEST_CORETHREAD_H

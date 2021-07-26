@@ -163,7 +163,6 @@ void Home_WorkWid::updateWid()
     } else if(mPro->step < Test_End){
         updateResult();
     }
-
 }
 
 void Home_WorkWid::timeoutDone()
