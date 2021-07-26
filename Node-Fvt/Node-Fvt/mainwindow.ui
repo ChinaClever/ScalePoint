@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Node测试工具</string>
+   <string>Node测试软件</string>
   </property>
   <property name="windowIcon">
    <iconset resource="images/image.qrc">

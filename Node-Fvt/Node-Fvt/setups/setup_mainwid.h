@@ -39,6 +39,7 @@ private:
     QTimer *timer;
     sCfgItem *mItem;
     UserMainWid *mUserWid;
+    SerialStatusWid *mDeWid;
     SerialStatusWid *mComWid;
 };
 

@@ -51,6 +51,7 @@ struct sCfgItem
     ushort currentNum;
 
     SerialPort *com;
+    SerialPort *deSerial;
 };
 
 

@@ -17,6 +17,9 @@ public:
     explicit Home_WorkWid(QWidget *parent = nullptr);
     ~Home_WorkWid();
 
+signals:
+    void startSig();
+
 protected:
     void initLayout();
     void insertText();

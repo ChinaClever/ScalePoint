@@ -211,7 +211,7 @@ bool Home_WorkWid::initWid()
         ui->textEdit->clear();
         ui->groupBox_2->setEnabled(false);
         ui->startBtn->setText(tr("终 止"));
-        mPro->step = Test_Start;
+        mPro->step = Test_Start; emit startSig();
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
         QString str = mPro->startTime.toString("hh:mm:ss");
         ui->startLab->setText(str);

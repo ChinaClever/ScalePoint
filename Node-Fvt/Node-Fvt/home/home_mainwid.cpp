@@ -25,4 +25,5 @@ void Home_MainWid::initWid()
 {
     mTabWid = new Td_MainWid(ui->tabWid);
     mWorkWid = new Home_WorkWid(ui->workWid);
+    connect(mWorkWid, SIGNAL(startSig()), mTabWid, SLOT(startSlot()));
 }
