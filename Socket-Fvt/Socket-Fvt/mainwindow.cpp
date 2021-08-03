@@ -21,8 +21,10 @@ MainWindow::~MainWindow()
 void MainWindow::msleep(int msec)
 {
     QTime dieTime = QTime::currentTime().addMSecs(msec);
-    while( QTime::currentTime() < dieTime )
+    while(QTime::currentTime() < dieTime) {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+        if(isRun) continue; else break;
+    }
 }
 
 bool MainWindow::sentCmd(const QString &cmd)
@@ -59,19 +61,26 @@ void MainWindow::on_closeBtn_clicked()
 
 void MainWindow::workDown()
 {
-    on_addrBtn_clicked(); msleep(500);
+    int t = ui->spinBox->value()*1000;
+    QString str = ui->addrEdit->text();
+    isRun = sentCmd(str);
+    if(isRun) msleep(500); else return;
 
-    on_openBtn_clicked();
-    msleep(ui->spinBox->value()*1000);
+    str = ui->openEdit->text();
+    isRun = sentCmd(str);
+    if(isRun) msleep(t); else return;
 
-    on_closeBtn_clicked();
-    msleep(ui->spinBox->value()*1000);
+    str = ui->closeEdit->text();
+    isRun = sentCmd(str);
+    if(isRun) msleep(t); else return;
 
     on_openBtn_clicked(); msleep(100);
+    isRun = false;
 }
 
 void MainWindow::on_startBtn_clicked()
 {
+    if(isRun) {isRun = false; return;}
     bool ret = mCom->isOpened();
     if(ret) {
         ui->startBtn->setText(tr("终 止"));
