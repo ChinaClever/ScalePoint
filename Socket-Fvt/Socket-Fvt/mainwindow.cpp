@@ -74,7 +74,7 @@ void MainWindow::workDown()
     isRun = sentCmd(str);
     if(isRun) msleep(t); else return;
 
-    on_openBtn_clicked(); msleep(100);
+    on_openBtn_clicked();
     isRun = false;
 }
 
