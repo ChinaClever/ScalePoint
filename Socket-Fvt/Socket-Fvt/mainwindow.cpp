@@ -18,6 +18,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 void MainWindow::msleep(int msec)
 {
     QTime dieTime = QTime::currentTime().addMSecs(msec);
