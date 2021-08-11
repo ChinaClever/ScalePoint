@@ -12,6 +12,9 @@ SqlBtnBar::SqlBtnBar(QWidget *parent) :
     ui(new Ui::SqlBtnBar)
 {
     ui->setupUi(this);
+#if defined(Q_OS_LINUX)
+    ui->exportBtn->setHidden(true);
+#endif
 }
 
 SqlBtnBar::~SqlBtnBar()
