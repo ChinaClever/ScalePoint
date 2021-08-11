@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys, time, csv
+import sys, time, csv, socket
 from raritan import rpc
 from raritan import zeroconf
 #from raritan.rpc.pdumodel import *
@@ -31,6 +31,26 @@ def login():
         print ("login ok PDU: %s" % (ip))
 
     return agent
+
+
+
+gSocket = None
+dest_ip = '127.0.0.1'
+
+def initNetWork():
+    hostname = socket.gethostname()  # 获取计算机名称
+    dest_ip = socket.gethostbyname(hostname)  # 获取本机IP
+    gSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    if "192.168.1." in dest_ip:
+        return True
+    else:
+        dest_ip = '127.0.0.1'
+        # self.sendtoMainapp("Mac地址错误：" + mac, 0)
+
+def sendtoMainApp(parameter, res):
+    message = parameter + ";" + str(res)
+    gSocket.sendto(message.encode('utf-8-sig'), (dest_ip, 12306))
+
 
 
 
