@@ -22,7 +22,10 @@ def initNetWork():
 
 def sendtoMainApp(parameter, res=1, fn = 0):
     global gSocket; print(parameter)
-    if(res == 0): parameter = parameter + ' 异常'
+    if(res):
+        res = 1
+    else:
+        parameter = parameter + ' 异常'
     message = str(fn) + ";" + parameter + ";" + str(res)
     gSocket.sendto(message.encode('utf-8-sig'), (dest_ip, 12306))
 
