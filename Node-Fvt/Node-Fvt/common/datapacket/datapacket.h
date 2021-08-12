@@ -6,11 +6,10 @@
 
 struct sDevType
 {
-    sDevType() {devId=devType=lines=0;}
-
-    uchar devId;
-    uchar devType; // 0 SI-PDU  1 IP-PDU
-    uchar lines;
+    QString user;
+    QString pwd;
+    QString ip;
+    bool aiFind;
 
     QString manufacturer;
     QString model;

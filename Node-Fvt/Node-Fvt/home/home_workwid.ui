@@ -487,7 +487,7 @@
       <item row="4" column="1">
        <widget class="QLineEdit" name="ipEdit">
         <property name="text">
-         <string>192.168.1.163</string>
+         <string>192.168.1.162</string>
         </property>
        </widget>
       </item>

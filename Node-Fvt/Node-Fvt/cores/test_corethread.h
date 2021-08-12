@@ -19,6 +19,7 @@ protected slots:
 
 private:
     Test_NetWork *mNetWork;
+    Test_SerialNumber *mSn;
 };
 
 #endif // TEST_CORETHREAD_H
