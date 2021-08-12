@@ -21,7 +21,7 @@ def initNetWork():
         dest_ip = '127.0.0.1'
 
 def sendtoMainApp(parameter, res=1, fn = 0):
-    global gSocket; print(parameter)
+    global gSocket; #print(parameter)
     if(res):
         res = 1
     else:
@@ -174,7 +174,7 @@ def USB_A_Test(agent):
         sendtoMainApp(text , suc3)
 
         print('checking total device count ...')
-        sendtoMainApp( '检查设备USB口的总数 ...' , 1)
+        sendtoMainApp( '检查设备USB口的总数 ...')
 
         suc4 =check_count(cnt_devices, len(usbdescs))
         #suc = suc1 and suc2 and suc3 and suc4
