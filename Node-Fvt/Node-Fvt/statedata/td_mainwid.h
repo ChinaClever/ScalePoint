@@ -22,6 +22,7 @@ public slots:
     void startSlot();
     void initFunSlot();
     void timeoutDone();
+    void insertSlot(QString str);
 
 private:
     Ui::Td_MainWid *ui;

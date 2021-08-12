@@ -21,8 +21,8 @@ Test_NetWork *Test_NetWork::bulid(QObject *parent)
 void Test_NetWork::initFunSlot()
 {    
     mProcess = new QProcess(this);
-    mProcess->setProcessChannelMode(QProcess::SeparateChannels);
-    mProcess->setReadChannel(QProcess::StandardOutput);
+    //mProcess->setProcessChannelMode(QProcess::SeparateChannels);
+    //mProcess->setReadChannel(QProcess::StandardOutput);
 
     mUdp = new UdpRecvSocket(this);
     mUdp->initSocket(12306);
@@ -33,18 +33,20 @@ bool Test_NetWork::checkNet()
 {    
     bool ret = true;
     QString ip = mDt->ip;
-    for(int i=0; i<3; ++i) {
+    updatePro(tr("检测设备网络通讯 "));
+    for(int i=0; i<2; ++i) {
         ret = cm_pingNet(ip);
-        if(ret) break; else delay(6);
+        if(ret) break; else delay(3);
     }
 
-    QString str = tr("检测设备网络通讯 ") +ip;
+    QString str = tr("Ping ") +ip;
     if(ret) str += tr(" 正常"); else str += tr(" 错误");
     return updatePro(str, ret);
 }
 
 QStringList Test_NetWork::getCmd()
 {
+    mProcess->close();
     QStringList arguments;
     arguments << mDt->user << mDt->pwd;
     if(!mDt->aiFind) arguments << mDt->ip;
@@ -57,17 +59,15 @@ bool Test_NetWork::startProcess()
     bool ret = mDt->aiFind;
     if(!ret) ret = checkNet();
     if(ret) {
+        updatePro(tr("正在启动测试脚本"));
         QString fn = "py_fvt_node.exe";
         QStringList cmd = getCmd();
-        mProcess->startDetached(fn, cmd); // , QIODevice::ReadWrite
+        mProcess->start(fn, cmd); // , QIODevice::ReadWrite  startDetached
+        ret = mProcess->waitForFinished();
 
-        mProcess->waitForStarted();
-        updatePro(tr("正在启动测试程序"));
-        mProcess->waitForFinished();
-
-
-
-        mProcess->close();
+        QByteArray bs = mProcess->readAllStandardOutput();
+        QString str = QString::fromLocal8Bit(bs); emit msgSig(str);
+       // msleep(225); updatePro(tr("测试脚本执行完成"));
     }
 
     return ret;
@@ -87,15 +87,16 @@ QString Test_NetWork::updateMacAddr(int step)
     return it->mac;
 }
 
-void Test_NetWork::readOutput()
+void Test_NetWork::pduInfo(int fn, QString &msg)
 {
-    bool ret = mProcess->isReadable();
-    if(ret) {
-        QString str = mProcess->readAllStandardOutput();
-        str += mProcess->readAllStandardError();
-        qDebug() << "readOutput" << str;
-
-        //QString strResult = QString::fromLocal8Bit(mProcess->readAllStandardOutput());
+    switch (fn) {
+    case 1: mDt->ctrlBoardSerial = msg; break;
+    case 2: mDt->macAddress = msg; break;
+    case 3: mDt->hwRevision = msg; break;
+    case 4: mDt->fwRevision = msg; break;
+    case 5: mDt->sn = msg; break;
+    case 6: mDt->manufacturer = msg; break;
+    case 7: mDt->model = msg; break;
     }
 }
 
@@ -105,11 +106,11 @@ void Test_NetWork::workDown()
     if(res) {
         QStringList list = QString(res->datagram).split(";");
         if(list.size() == 3) {
-            QString str = list.first();
-            bool pass = list.at(1).toInt();
-            int fn = list.last().toInt();
+            int fn = list.first().toInt();
+            QString str = list.at(1);
+            bool pass = list.last().toInt();
             if(fn) {
-
+                pduInfo(fn, str);
             } else {
                 updatePro(str, pass, 0);
             }
@@ -128,6 +129,5 @@ void Test_NetWork::run()
     isRun = true;
     while (isRun) {
         workDown();
-        readOutput();
     }
 }
