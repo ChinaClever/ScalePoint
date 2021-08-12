@@ -193,21 +193,26 @@ void Home_WorkWid::initUser()
     }
 }
 
+void Home_WorkWid::initData()
+{
+    mId = 1;
+    mPacket->init();
+    ui->textEdit->clear();
+    mDt->aiFind = ui->adCheckBox->isChecked();
+    mDt->user = ui->userEdit_2->text();
+    mDt->pwd = ui->pwdEdit->text();
+    mDt->ip = ui->ipEdit->text();
+}
+
 bool Home_WorkWid::initWid()
 {
     bool ret = initSerial();
     if(ret) {
         initUser();
-        if(mItem->user.isEmpty()) {
-            MsgBox::critical(this, tr("请先填写客户名称！")); return false;
-        }
-        if(mItem->cnt.cnt < 1) {
-            MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;
-        }
+        if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}
+        if(mItem->cnt.cnt < 1){MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;}
 
-        mId = 1;
-        mPacket->init();
-        ui->textEdit->clear();
+        initData();
         ui->groupBox_2->setEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = Test_Start; emit startSig();
@@ -223,7 +228,7 @@ bool Home_WorkWid::initWid()
 void Home_WorkWid::on_startBtn_clicked()
 {
     if(mPro->step == Test_End) {
-       if(initWid()) mCoreThread->start();
+        if(initWid()) mCoreThread->start();
     } else {
         bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
         if(ret) {
@@ -233,3 +238,8 @@ void Home_WorkWid::on_startBtn_clicked()
     }
 }
 
+
+void Home_WorkWid::on_adCheckBox_clicked(bool checked)
+{
+    ui->ipEdit->setEnabled(!checked);
+}

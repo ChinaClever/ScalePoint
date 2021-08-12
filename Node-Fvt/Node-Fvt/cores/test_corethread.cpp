@@ -13,6 +13,7 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
+    mSn = Test_SerialNumber::bulid(this);
     mNetWork = Test_NetWork::bulid(this);
 }
 

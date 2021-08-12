@@ -1,6 +1,6 @@
 #ifndef TEST_NETWORK_H
 #define TEST_NETWORK_H
-#include "baselogs.h"
+#include "test_serialnumber.h"
 #include "udprecvsocket.h"
 
 class Test_NetWork : public BaseThread
@@ -10,13 +10,15 @@ class Test_NetWork : public BaseThread
 public:
     static Test_NetWork *bulid(QObject *parent = nullptr);
 
-    bool startProcess();
     bool checkNet();
+    bool startProcess();
+    QString updateMacAddr(int step=1);
 
 protected:
     void run();
     void workDown();
-    void updateMacAddr(int step);
+    void readOutput();
+    QStringList getCmd();
 
 protected slots:
     void initFunSlot();
