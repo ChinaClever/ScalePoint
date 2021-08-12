@@ -110,7 +110,7 @@ def LCD_Button_Test(agent):
             testdisplay.enterTestMode()
             print('Please follow instruction on LCD panel to do test ...')
             sendtoMainApp('第%d次请按照步骤进行下面测试'% (5 - retry + 1), 1)
-            time.sleep(6)
+            time.sleep(0.6)
             while True:
                 result =  testdisplay.getTestStatus()
                 if result == test.Display.TestStatus.TEST_PASSED:
@@ -121,11 +121,14 @@ def LCD_Button_Test(agent):
                 elif result == test.Display.TestStatus.TEST_FAILED:
                     print('failed')
                     retry = retry - 1
-                    sendtoMainApp('第%d次检测按键失败' %(5 - retry ), 0)
-                    time.sleep(1)
+                    if(retry):
+                        sendtoMainApp('第%d次检测按键失败' %(5 - retry ))
+                    else:
+                        sendtoMainApp('第%d次检测按键失败' %(5 - retry ), 0)
+                    time.sleep(0.1)
                     break
                 else:
-                    time.sleep(1)
+                    time.sleep(0.1)
     except rpc.HttpException as e:
         print(str(e))
         sendtoMainApp(str(e), 0)
