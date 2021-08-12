@@ -227,10 +227,17 @@ def J1_Connection_Test(agent):
         print(str(e))
     return suc
 
-
+def discover():
+    response = zeroconf.discover()
+    ip = '192.168.1.100'
+    for x in response:
+        ip = x['ip']
+        break
+    return ip
 
 if __name__=='__main__':
     try:
+        IpAddress = discover()
         initNetWork()
         agent = createAgent(IpAddress, User, Password);
         show_PDU_Info(agent)
@@ -242,7 +249,7 @@ if __name__=='__main__':
         #print(J1_Connection_Test(agent))
     except Exception as e:
         print (str(e))
-        sendtoMainApp(str(e) , 0 )
+        sendtoMainApp( str(e) , 0 )
         sendtoMainApp('登录失败' , 0 )
     sys.exit()
 
