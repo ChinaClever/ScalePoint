@@ -21,17 +21,13 @@ def initNetWork():
         dest_ip = '127.0.0.1'
 
 def sendtoMainApp(parameter, res=1, fn = 0):
-    global gSocket; print(parameter)
-    if(res == 0): parameter = parameter + ' 异常'
+    global gSocket; #print(parameter)
+    if(res):
+        res = 1
+    else:
+        parameter = parameter + ' 异常'
     message = str(fn) + ";" + parameter + ";" + str(res)
     gSocket.sendto(message.encode('utf-8-sig'), (dest_ip, 12306))
-
-def checkAndSend(text , ret):
-    if(ret):
-        sendtoMainApp(text+'成功', 1)
-    else:
-        sendtoMainApp(text+'失败', 0)
-
 
 def discoverIpAddr():
     ip = '192.168.1.163'
@@ -156,7 +152,7 @@ def USB_A_Test(agent):
     try:
         testusb = usb.Usb("/test/Usb", agent)
         print('getting all usb descriptors ...')
-        sendtoMainApp( '进入USB检测步骤 ...' , 1)
+        sendtoMainApp( '进入USB检测步骤 ...' )
         usbdescs = testusb.getDevices()
         '''
         You can use this code to print out pid and vid of your test configuration.
@@ -171,20 +167,20 @@ def USB_A_Test(agent):
         #suc1 = check_device(usbdescs, USB1_VID, USB1_PID, cnt_usb1, 'checking #count of VID = 0x%04X PDI = 0x%04X'%(USB1_VID,USB1_PID))
         suc2 = check_device(usbdescs, USB2_VID, USB2_PID, cnt_usb2, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID)
-        checkAndSend(text , suc2)
+        sendtoMainApp(text , suc2)
 
         suc3 = check_device(usbdescs, USB3_VID, USB3_PID, cnt_usb3, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB3_VID,USB3_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB3_VID,USB3_PID)
-        checkAndSend(text , suc3)
+        sendtoMainApp(text , suc3)
 
         print('checking total device count ...')
-        sendtoMainApp( '检查设备USB口的总数 ...' , 1)
+        sendtoMainApp( '检查设备USB口的总数 ...')
 
         suc4 =check_count(cnt_devices, len(usbdescs))
         #suc = suc1 and suc2 and suc3 and suc4
         suc = suc2 and suc3 and suc4
         text = '检查设备USB口的总数'
-        checkAndSend(text , suc)
+        sendtoMainApp(text , suc)
 
     except rpc.HttpException as e:
         print (str(e))
@@ -193,18 +189,18 @@ def USB_A_Test(agent):
 
 def check_device(descs, vid, pid, expectcnt, text):
     print(text + " ...")
-    sendtoMainApp(text + " ..." , 1)
+    sendtoMainApp(text + " ...")
     cnt = count_descs(descs, vid, pid)
     return check_count(expectcnt, cnt)
 
 def check_count(expectcnt, cnt):
     if cnt == expectcnt:
         print('OK (%d)' % cnt)
-        sendtoMainApp('检测USB口OK (%d)' % cnt , 1)
+        sendtoMainApp('检测USB口OK (%d)' % cnt)
         suc = True
     else:
         print('failed (%d, expected %d)' % (cnt, expectcnt))
-        sendtoMainApp('检测USB口失败的数量 (%d, 检测USB口的数量 %d)' % (cnt, expectcnt) , 1)
+        sendtoMainApp('检测USB口失败的数量 (%d, 检测USB口的数量 %d)' % (cnt, expectcnt))
         suc = False
     return suc
 
@@ -253,9 +249,7 @@ if __name__=='__main__':
     try:
         show_PDU_Info(agent)
         ret = LCD_Button_Test(agent)
-        print(ret)
         ret = USB_A_Test(agent)
-        print(ret)
         #print(J1_Connection_Test(agent))
     except Exception as e:
         print (str(e))
