@@ -31,6 +31,10 @@ Makefile*
 *pdu-json-rpc-sdk*
 *raritan*
 *.idea*
+*build*
+*dist*
+*__pycache__*
+*.spec*
 
 # Qt unit tests
 target_wrapper.*

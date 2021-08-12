@@ -31,15 +31,15 @@ def login():
         print ("login ok PDU: %s" % (ip))
 
     return agent
-    
-    
+
+
 gSocket =  None
 dest_ip = '127.0.0.1'
 
 def initNetWork():
     hostname = socket.gethostname()  # 获取计算机名称
     dest_ip = socket.gethostbyname(hostname)  # 获取本机IP
-    global gSocket 
+    global gSocket
     gSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     if "192.168.1." in dest_ip:
         return True
@@ -72,13 +72,13 @@ def show_PDU_Info(agent):
     fwRevision = metadata.fwRevision
     print ('BOARD_SERIAL=%s'%ctrlBoardSerial)
     sendtoMainApp(ctrlBoardSerial , 1 , 1)
-    
+
     print ('MAC=%s'%macAddress)
     sendtoMainApp(macAddress , 1 , 2)
-    
+
     print ('HW=%s'%hwRevision)
     sendtoMainApp(hwRevision , 1 , 3)
-    
+
     print ('FW=%s'%fwRevision)
     sendtoMainApp(fwRevision , 1 , 4)
 
@@ -163,20 +163,20 @@ def USB_A_Test(agent):
         suc2 = check_device(usbdescs, USB2_VID, USB2_PID, cnt_usb2, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID)
         checkAndSend(text , suc2)
-        
+
         suc3 = check_device(usbdescs, USB3_VID, USB3_PID, cnt_usb3, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB3_VID,USB3_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB3_VID,USB3_PID)
         checkAndSend(text , suc3)
-        
+
         print('checking total device count ...')
         sendtoMainApp( '检查设备USB口的总数 ...' , 1)
-        
+
         suc4 =check_count(cnt_devices, len(usbdescs))
         #suc = suc1 and suc2 and suc3 and suc4
         suc = suc2 and suc3 and suc4
         text = '检查设备USB口的总数'
         checkAndSend(text , suc)
-        
+
     except rpc.HttpException as e:
         print (str(e))
         sendtoMainApp( str(e) , 0)
@@ -227,10 +227,17 @@ def J1_Connection_Test(agent):
         print(str(e))
     return suc
 
-
+def discover():
+    response = zeroconf.discover()
+    ip = '192.168.1.100'
+    for x in response:
+        ip = x['ip']
+        break
+    return ip
 
 if __name__=='__main__':
     try:
+        IpAddress = discover()
         initNetWork()
         agent = createAgent(IpAddress, User, Password);
         show_PDU_Info(agent)
@@ -242,7 +249,7 @@ if __name__=='__main__':
         #print(J1_Connection_Test(agent))
     except Exception as e:
         print (str(e))
-        sendtoMainApp(str(e) , 0 )
+        sendtoMainApp( str(e) , 0 )
         sendtoMainApp('登录失败' , 0 )
     sys.exit()
 

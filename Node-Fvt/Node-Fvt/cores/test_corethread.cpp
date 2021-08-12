@@ -41,6 +41,7 @@ bool Test_CoreThread::initFun()
 
 void Test_CoreThread::workDown()
 {
+    mNetWork->startProcess();
 
 }
 

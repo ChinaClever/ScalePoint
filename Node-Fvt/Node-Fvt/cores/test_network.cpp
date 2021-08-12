@@ -33,14 +33,14 @@ bool Test_NetWork::checkNet()
 {    
     bool ret = true;
     QString ip = mDt->ip;
-    QString str = tr("检测设备网络通讯");
     for(int i=0; i<3; ++i) {
         ret = cm_pingNet(ip);
         if(ret) break; else delay(6);
     }
 
-    if(ret) str += tr("正常"); else str += tr("错误");
-    return updatePro(str+ip, ret);
+    QString str = tr("检测设备网络通讯 ") +ip;
+    if(ret) str += tr(" 正常"); else str += tr(" 错误");
+    return updatePro(str, ret);
 }
 
 QStringList Test_NetWork::getCmd()
@@ -104,10 +104,15 @@ void Test_NetWork::workDown()
     UdpBaseData *res = mUdp->getData();
     if(res) {
         QStringList list = QString(res->datagram).split(";");
-        if(list.size() == 2) {
+        if(list.size() == 3) {
             QString str = list.first();
-            bool pass = list.last().toInt();
-            updatePro(str, pass, 0);
+            bool pass = list.at(1).toInt();
+            int fn = list.last().toInt();
+            if(fn) {
+
+            } else {
+                updatePro(str, pass, 0);
+            }
         } else {
             if(QString(res->datagram).contains("MAC-1")) mac = false; else
                 qDebug() <<"Test_NetWork workDown err" << list.size();
