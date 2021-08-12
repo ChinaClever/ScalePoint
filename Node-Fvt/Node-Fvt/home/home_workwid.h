@@ -33,12 +33,15 @@ protected:
     bool initSerial();
     bool initWid();
     void initUser();
+    void initData();
 
 private slots:
     void timeoutDone();
     void initFunSlot();
     void updateCntSlot();
     void on_startBtn_clicked();
+
+    void on_adCheckBox_clicked(bool checked);
 
 private:
     Ui::Home_WorkWid *ui;

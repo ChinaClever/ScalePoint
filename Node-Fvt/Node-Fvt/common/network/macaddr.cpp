@@ -135,7 +135,7 @@ QString MacAddr::macAdd(const QString &in, int step)
 {
     QString ret = in;
     quint64 mac = macToInt(ret.replace(":","-")) + step;
-    if(mac > 0) ret = intToMac(mac);
+    if(mac > 0) ret = intToMac(mac).toUpper();
 
     return ret.replace("-",":");
 }
