@@ -18,8 +18,9 @@ protected slots:
     void initFunSlot();
 
 private:
-    Test_NetWork *mNetWork;
+    Test_NetWork *mNetWork;    
     Test_SerialNumber *mSn;
+    test_FabPartition *mFab;
 };
 
 #endif // TEST_CORETHREAD_H
