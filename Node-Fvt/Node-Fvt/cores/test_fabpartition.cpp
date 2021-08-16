@@ -24,7 +24,6 @@ bool test_FabPartition::isFileExist(const QString &fn)
     return false;
 }
 
-//execute shell command
 int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
 {
 #if defined(Q_OS_LINUX)
@@ -54,7 +53,7 @@ int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
     }
 
     int rv = pclose(pp);
-    qDebug("ifexited: %d\n", WIFEXITED(rv));
+    // qDebug("ifexited: %d\n", WIFEXITED(rv));
     if (WIFEXITED(rv)) {
         qDebug("subprocess exited, exit code: %d\n", WEXITSTATUS(rv));
     }
@@ -64,15 +63,13 @@ int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
 
 QString test_FabPartition::processOn(const QString &cmd)
 {
-    static char res[100][512];
+    static char res[10][512];
 
     QString str;
     emit fabSig("shexec, cmd: \n" + cmd);
     char *ptr = cmd.toLatin1().data();
-    int cnt = shexec(ptr, res, 100);
+    int cnt = shexec(ptr, res, 10);
     for(int i=0; i<cnt; ++i) str.append(res[i]);
-    qDebug() <<"AAAAAAAAAA" << str;
-
     emit fabSig("return results: \n" +str);
     return str;
 }
@@ -104,19 +101,38 @@ bool test_FabPartition::at91recovery()
     return ret;
 }
 
+bool test_FabPartition::changePermissions()
+{
+    QString str = tr("改变IMG文件的权限");
+    updatePro(tr("准备")+str);
+
+    QString cmd = "echo \"123456\" | sudo -S chmod 777 %1.img \n"
+                  "sudo chmod 777 at91recovery \n"
+                  "sudo chmod 777 /dev/ttyACM0" ;
+    processOn(cmd.arg(mDt->sn));
+
+    return updatePro(tr("已")+str);
+}
+
 bool test_FabPartition::programFab()
 {
-    QString cmd = "echo \"123456\" | sudo -S ";
-    cmd += "./at91recovery –y /dev/ttyACM0 %1.img fab";
+    QString str = tr("写入S/N Mac ");
+    updatePro(tr("准备")+str);
 
-    bool ret = true;
-    QString str = "S/N Mac ";
-    QString res = processOn(cmd.arg(mDt->sn));
+    QStringList ls;
+    QProcess pro(this);
+    ls << "-y" << "/dev/ttyACM0" << mDt->sn+".img" << "fab";
+    pro.start("at91recovery", ls);
+    bool ret = pro.waitForFinished();
+
+    QByteArray bs = pro.readAllStandardOutput();
+    bs +=  pro.readAllStandardError();
+    QString res = QString::fromLocal8Bit(bs);
     if(res.contains("ERR")) {
         ret = false;
-        str += tr("写入 失败");
+        str += tr(" 失败");
     } else {
-        str += tr("写入 成功");
+        str += tr(" 成功");
     }
 
     emit fabSig(res);
@@ -130,8 +146,7 @@ bool test_FabPartition::createFab()
                   "echo \"MAC=%1\" > system.cfg \n"
                   "echo \"BOARD_SERIAL=%2\" >> system.cfg \n"
                   "cd ../ \n"
-                  "mkfs.cramfs -b 4096 ScalePoint/ %2.img \n"
-                  "echo \"123456\" | sudo -S chmod 777 %2.img";
+                  "mkfs.cramfs -b 4096 ScalePoint/ %2.img \n";
 
     QString str = "create FAB partition ";
     bool ret = isFileExist("ScalePoint/eto-desc.xml");
@@ -149,6 +164,7 @@ bool test_FabPartition::workDown()
 {
     bool ret = at91recovery();
     if(ret) ret = createFab();
+    if(ret) ret = changePermissions();
     if(ret) ret = programFab();
 
     return ret;

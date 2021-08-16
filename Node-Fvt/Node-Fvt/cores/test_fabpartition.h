@@ -22,6 +22,7 @@ protected:
 
     bool createFab();
     bool programFab();
+    bool changePermissions();
     int shexec(const char *cmd, char res[][512], int count);
     QString processOn(const QString &cmd);
     bool isFileExist(const QString &fn);

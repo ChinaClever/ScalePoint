@@ -15,14 +15,18 @@
 bool cm_pingNet(const QString& ip)
 {
     QProcess pingProcess;
+#if defined(Q_OS_WIN32)
     QString strArg = "ping " + ip + " -n 1 -i 2";  //strPingIP 为设备IP地址
     pingProcess.start(strArg,QIODevice::ReadOnly);
-    pingProcess.waitForFinished(-1);
+#else
+    pingProcess.start("ping", QStringList() << "-c 2" << ip);
+#endif
 
+    pingProcess.waitForFinished();
     QString p_stdout = QString::fromLocal8Bit(pingProcess.readAllStandardOutput());
     bool bPingSuccess = false;
 
-    if(p_stdout.contains("TTL=")) { //我采用这个字符来判断 对不对？
+    if(p_stdout.contains("TTL=") || p_stdout.contains("time=")) { //我采用这个字符来判断 对不对？
         bPingSuccess = true;
     }else {
         bPingSuccess = false;

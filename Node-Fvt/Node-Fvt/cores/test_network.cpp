@@ -75,8 +75,7 @@ QString Test_NetWork::getExeFile()
 bool Test_NetWork::startProcess()
 {
     bool ret = mDt->aiFind;
-    //if(!ret) ret = checkNet();
-    ret = true; ///////==========
+    if(!ret) ret = checkNet();
     if(ret) {
         QString fn = getExeFile();
         if(!fn.size()) return false;
