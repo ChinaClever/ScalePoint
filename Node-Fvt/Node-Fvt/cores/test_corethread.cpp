@@ -22,7 +22,7 @@ void Test_CoreThread::initFunSlot()
 void Test_CoreThread::workResult()
 {
     bool res = true;
-    //BaseLogs::bulid()->start();
+    BaseLogs::bulid()->start();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         str += tr("通过");
@@ -38,6 +38,9 @@ void Test_CoreThread::workResult()
 bool Test_CoreThread::initFun()
 {    
     bool ret = updatePro(tr("即将开始"));
+#if defined(Q_OS_WIN32)
+    mPro->step = Test_Collect;
+#endif
     return ret;
 }
 

@@ -26,18 +26,15 @@ bool test_FabPartition::isFileExist(const QString &fn)
 
 int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
 {
+    int i = 0;
 #if defined(Q_OS_LINUX)
     FILE* pp = popen(cmd, "r");
-#elif
-    FILE* fp = nullptr;
-#endif
-
     if(!pp) {
         qDebug("error, cannot popen cmd: %s\n", cmd);
         return -1;
     }
 
-    int i = 0;
+
     res[0][0] = 0;
     char tmp[512] ={0};
     while(fgets(tmp, sizeof(tmp), pp) != NULL) {
@@ -57,6 +54,7 @@ int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
     if (WIFEXITED(rv)) {
         qDebug("subprocess exited, exit code: %d\n", WEXITSTATUS(rv));
     }
+#endif
 
     return i;
 }
@@ -66,11 +64,15 @@ QString test_FabPartition::processOn(const QString &cmd)
     static char res[10][512];
 
     QString str;
+#if defined(Q_OS_LINUX)
     emit fabSig("shexec, cmd: －－－－\n" + cmd);
     char *ptr = cmd.toLatin1().data();
     int cnt = shexec(ptr, res, 10);
     for(int i=0; i<cnt; ++i) str.append(res[i]);
     emit fabSig("return results: －－－－\n" +str);
+#else
+    updatePro(tr("不支持Window系统"), false);
+#endif
     return str;
 }
 
