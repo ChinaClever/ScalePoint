@@ -7,80 +7,86 @@ from raritan import zeroconf
 from raritan.rpc import Agent, pdumodel, firmware, test, usb
 from raritan.rpc import servermon, event, usermgmt, um, devsettings, pdumodel, cert, sensors
 
-def devIpAddr():
-    ips = zeroconf.discover();
-    if(len(ips) > 0): return ips[0]
-    else: print('use default IP: 192.168.1.100')
-    return '192.168.1.162'
-
-def login():
-    try:
-        ip = sys.argv[1]
-        user = sys.argv[2]
-        pw = sys.argv[3]
-    except:
-        user = "admin"
-        pw = "Admin123"
-        ip = devIpAddr()
-
-    try:
-        agent = Agent("https", ip, user, pw, disable_certificate_verification=True, timeout = 5)
-    except:
-        print("login err PDU: %s" % (ip))
-    else:
-        print ("login ok PDU: %s" % (ip))
-
-    return agent
-
-
 gSocket =  None
 dest_ip = '127.0.0.1'
 
 def initNetWork():
+    global gSocket, dest_ip
     hostname = socket.gethostname()  # 获取计算机名称
     dest_ip = socket.gethostbyname(hostname)  # 获取本机IP
-    global gSocket
     gSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     if "192.168.1." in dest_ip:
         return True
     else:
         dest_ip = '127.0.0.1'
-        # self.sendtoMainapp("Mac地址错误：" + mac, 0)
 
-def sendtoMainApp(parameter, res , fn = 0):
+def sendtoMainApp(parameter, res=1, fn = 0):
+    global gSocket; #print(parameter)
+    if(res):
+        res = 1
+    else:
+        parameter = parameter + ' 异常'
     message = str(fn) + ";" + parameter + ";" + str(res)
-    global gSocket
     gSocket.sendto(message.encode('utf-8-sig'), (dest_ip, 12306))
 
+def discoverIpAddr():
+    ip = '192.168.1.163'
+    ips = zeroconf.discover()
+    if(len(ips) > 0):
+        for x in ips:
+            ip = x['ip']
+            break
+        sendtoMainApp('自动发现IP地址：'+ip)
+    else:
+        sendtoMainApp('自动发现IP地址',0)
+        print('use default IP: 192.168.1.163')
+    return ip
 
-
-
-IpAddress = '192.168.1.162'
+Logined = 0
 User = 'admin'
 Password = 'Admin123'
+IpAddress = '192.168.1.162'
 
-def createAgent(ip, user, pw):
-    return Agent("https", ip, user, pw, disable_certificate_verification=True)
+def getOptArgvs():
+    num = len(sys.argv)
+    if(num > 2):
+        User = sys.argv[1]
+        Password = sys.argv[2]
+    if(num == 3) :
+        IpAddress = discoverIpAddr()
+    elif(num == 4) :
+        IpAddress = sys.argv[3]
+
+def createAgent():
+    try:
+        str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress
+        agent = Agent("https", IpAddress, User, Password, disable_certificate_verification=True)
+    except Exception as e:
+        print (str(e))
+        sendtoMainApp('登录失败：' + str , 0)
+    else:
+        global Logined; Logined = 1
+        sendtoMainApp('登录成功：'+str)
+    return agent
+
+def devLogin():
+    initNetWork()
+    getOptArgvs()
+    return createAgent()
 
 def show_PDU_Info(agent):
     pdu = pdumodel.Pdu("/model/pdu/0", agent)
-    metadata = pdu.getMetaData()
-    print (metadata)
-    ctrlBoardSerial = metadata.ctrlBoardSerial
-    macAddress = metadata.macAddress
-    hwRevision = metadata.hwRevision
-    fwRevision = metadata.fwRevision
-    print ('BOARD_SERIAL=%s'%ctrlBoardSerial)
-    sendtoMainApp(ctrlBoardSerial , 1 , 1)
+    metadata = pdu.getMetaData(); print (metadata)
+    nameplate = pdu.getNameplate();
 
-    print ('MAC=%s'%macAddress)
-    sendtoMainApp(macAddress , 1 , 2)
+    sendtoMainApp(metadata.ctrlBoardSerial , 1 , 1)
+    sendtoMainApp(metadata.macAddress , 1 , 2)
+    sendtoMainApp(metadata.hwRevision , 1 , 3)
+    sendtoMainApp(metadata.fwRevision , 1 , 4)
 
-    print ('HW=%s'%hwRevision)
-    sendtoMainApp(hwRevision , 1 , 3)
-
-    print ('FW=%s'%fwRevision)
-    sendtoMainApp(fwRevision , 1 , 4)
+    sendtoMainApp(nameplate.serialNumber , 1 , 5)
+    sendtoMainApp(nameplate.manufacturer , 1 , 6)
+    sendtoMainApp(nameplate.model , 1 , 7)
 
 def LCD_Button_Test(agent):
     '''
@@ -100,7 +106,7 @@ def LCD_Button_Test(agent):
             testdisplay.enterTestMode()
             print('Please follow instruction on LCD panel to do test ...')
             sendtoMainApp('第%d次请按照步骤进行下面测试'% (5 - retry + 1), 1)
-            time.sleep(6)
+            time.sleep(0.6)
             while True:
                 result =  testdisplay.getTestStatus()
                 if result == test.Display.TestStatus.TEST_PASSED:
@@ -111,21 +117,20 @@ def LCD_Button_Test(agent):
                 elif result == test.Display.TestStatus.TEST_FAILED:
                     print('failed')
                     retry = retry - 1
-                    sendtoMainApp('第%d次检测按键失败' %(5 - retry ), 0)
-                    time.sleep(1)
+                    if(retry):
+                        sendtoMainApp('第%d次检测按键失败' %(5 - retry ))
+                    else:
+                        sendtoMainApp('第%d次检测按键失败' %(5 - retry ), 0)
+                    time.sleep(0.1)
                     break
                 else:
-                    time.sleep(1)
+                    time.sleep(0.1)
     except rpc.HttpException as e:
         print(str(e))
         sendtoMainApp(str(e), 0)
     return suc
 
-def checkAndSend(text , ret):
-    if(ret):
-        sendtoMainApp(text+'成功', 1)
-    else:
-        sendtoMainApp(text+'失败', 0)
+
 
 def USB_A_Test(agent):
     '''
@@ -147,7 +152,7 @@ def USB_A_Test(agent):
     try:
         testusb = usb.Usb("/test/Usb", agent)
         print('getting all usb descriptors ...')
-        sendtoMainApp( '进入USB检测步骤 ...' , 1)
+        sendtoMainApp( '进入USB检测步骤 ...' )
         usbdescs = testusb.getDevices()
         '''
         You can use this code to print out pid and vid of your test configuration.
@@ -162,20 +167,20 @@ def USB_A_Test(agent):
         #suc1 = check_device(usbdescs, USB1_VID, USB1_PID, cnt_usb1, 'checking #count of VID = 0x%04X PDI = 0x%04X'%(USB1_VID,USB1_PID))
         suc2 = check_device(usbdescs, USB2_VID, USB2_PID, cnt_usb2, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID)
-        checkAndSend(text , suc2)
+        sendtoMainApp(text , suc2)
 
         suc3 = check_device(usbdescs, USB3_VID, USB3_PID, cnt_usb3, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB3_VID,USB3_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB3_VID,USB3_PID)
-        checkAndSend(text , suc3)
+        sendtoMainApp(text , suc3)
 
         print('checking total device count ...')
-        sendtoMainApp( '检查设备USB口的总数 ...' , 1)
+        sendtoMainApp( '检查设备USB口的总数 ...')
 
         suc4 =check_count(cnt_devices, len(usbdescs))
         #suc = suc1 and suc2 and suc3 and suc4
         suc = suc2 and suc3 and suc4
         text = '检查设备USB口的总数'
-        checkAndSend(text , suc)
+        sendtoMainApp(text , suc)
 
     except rpc.HttpException as e:
         print (str(e))
@@ -184,18 +189,18 @@ def USB_A_Test(agent):
 
 def check_device(descs, vid, pid, expectcnt, text):
     print(text + " ...")
-    sendtoMainApp(text + " ..." , 1)
+    sendtoMainApp(text + " ...")
     cnt = count_descs(descs, vid, pid)
     return check_count(expectcnt, cnt)
 
 def check_count(expectcnt, cnt):
     if cnt == expectcnt:
         print('OK (%d)' % cnt)
-        sendtoMainApp('检测USB口OK (%d)' % cnt , 1)
+        sendtoMainApp('检测USB口OK (%d)' % cnt)
         suc = True
     else:
         print('failed (%d, expected %d)' % (cnt, expectcnt))
-        sendtoMainApp('检测USB口失败的数量 (%d, 检测USB口的数量 %d)' % (cnt, expectcnt) , 1)
+        sendtoMainApp('检测USB口失败的数量 (%d, 检测USB口的数量 %d)' % (cnt, expectcnt))
         suc = False
     return suc
 
@@ -227,30 +232,29 @@ def J1_Connection_Test(agent):
         print(str(e))
     return suc
 
-def discover():
-    response = zeroconf.discover()
-    ip = '192.168.1.100'
-    for x in response:
-        ip = x['ip']
-        break
-    return ip
+def close():
+    try:
+        time.sleep(0.1)
+        gSocket.close()
+    except:
+        sendtoMainApp('测试脚本执行完成')
+    finally:
+        time.sleep(0.3)
+
 
 if __name__=='__main__':
+    agent = devLogin()
+    if(0 == Logined): sys.exit()
+
     try:
-        IpAddress = discover()
-        initNetWork()
-        agent = createAgent(IpAddress, User, Password);
         show_PDU_Info(agent)
-        sendtoMainApp('登录成功' , 1)
         ret = LCD_Button_Test(agent)
-        print(ret)
         ret = USB_A_Test(agent)
-        print(ret)
         #print(J1_Connection_Test(agent))
     except Exception as e:
         print (str(e))
-        sendtoMainApp( str(e) , 0 )
-        sendtoMainApp('登录失败' , 0 )
+    finally:
+        close()
     sys.exit()
 
 

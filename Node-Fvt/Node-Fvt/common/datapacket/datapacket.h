@@ -11,13 +11,14 @@ struct sDevType
     QString ip;
     bool aiFind;
 
-    QString manufacturer;
-    QString model;
     QString sn;
+    QString model;
+    QString manufacturer;
     QString hwRevision;
     QString fwRevision;
     QString ctrlBoardSerial;
     QString macAddress;
+    QString serialNumber;
 };
 
 
