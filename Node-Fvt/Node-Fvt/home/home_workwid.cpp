@@ -108,7 +108,7 @@ void Home_WorkWid::updateResult()
 {
     QString style;
     QString str = tr("---");
-    if(isCheck){ if(mId < 14) mPro->result = Test_Fail; }
+    if(isCheck){ if(mId < 20) mPro->result = Test_Fail; }
     if(Test_Fail == mPro->result) {
         str = tr("失败");
         style = "background-color:red; color:rgb(255, 255, 255);";
@@ -215,7 +215,7 @@ bool Home_WorkWid::initWid()
         initData();
         ui->groupBox_2->setEnabled(false);
         ui->startBtn->setText(tr("终 止"));
-        mPro->step = Test_Start; emit startSig();
+        mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
         QString str = mPro->startTime.toString("hh:mm:ss");
         ui->startLab->setText(str);

@@ -41,7 +41,8 @@ bool Test_CoreThread::initFun()
     return ret;
 }
 
-void Test_CoreThread::workDown()
+
+bool Test_CoreThread::programFab()
 {
     bool ret = mFab->check();
     if(ret) {
@@ -49,8 +50,35 @@ void Test_CoreThread::workDown()
         ret = mFab->workDown();
     }
 
+    return ret;
+}
+
+void Test_CoreThread::macSnCheck()
+{
+    bool ret = false;
+    QString str = "serial Number" + tr("检查");
+    if(mDt->serialNumber != mDt->sn) {
+        str += tr("错误：%1 %2").arg(mDt->serialNumber).arg(mDt->sn);
+    } else {
+        str += tr("正确：%1 ").arg(mDt->serialNumber); ret = true;
+    }
+    updatePro(str, ret);
+
+    str = "Mac " + tr("检查");
+    if(mDt->macAddress != mItem->macs.mac) {
+        str += tr("错误：%1 %2").arg(mDt->macAddress).arg(mItem->macs.mac); ret = false;
+    } else {
+        str += tr("正确：%1 ").arg(mDt->macAddress); ret = true;
+    }
+    updatePro(str, ret);
+}
+
+void Test_CoreThread::workDown()
+{   
+    bool ret = programFab();
     if(ret) {
-        mNetWork->startProcess();
+        ret = mNetWork->startProcess();
+        if(ret) macSnCheck();
     }
 }
 
@@ -61,6 +89,8 @@ void Test_CoreThread::run()
     if(ret) {
         switch (mPro->step) {
         case Test_Start: workDown(); break;
+        case Test_Set:  programFab(); break;
+        case Test_Collect:  mNetWork->startProcess(); break;
         }
     } else mPro->result = Test_Fail;
 

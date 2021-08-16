@@ -65,8 +65,8 @@ QString Test_NetWork::getExeFile()
     if (file.exists()){
         updatePro(tr("正在启动测试脚本"));
     } else {
+        updatePro(tr("启动测试脚本 %1 失败").arg(fn), false);
         fn.clear();
-        updatePro(tr("启动测试脚本 %1").arg(fn), false);
     }
 
     return fn;

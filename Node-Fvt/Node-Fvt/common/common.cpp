@@ -26,7 +26,7 @@ bool cm_pingNet(const QString& ip)
     QString p_stdout = QString::fromLocal8Bit(pingProcess.readAllStandardOutput());
     bool bPingSuccess = false;
 
-    if(p_stdout.contains("TTL=") || p_stdout.contains("time=")) { //我采用这个字符来判断 对不对？
+    if(p_stdout.contains("TTL=") || p_stdout.contains("ttl=")) { //我采用这个字符来判断 对不对？
         bPingSuccess = true;
     }else {
         bPingSuccess = false;

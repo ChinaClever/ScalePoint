@@ -66,11 +66,11 @@ QString test_FabPartition::processOn(const QString &cmd)
     static char res[10][512];
 
     QString str;
-    emit fabSig("shexec, cmd: \n" + cmd);
+    emit fabSig("shexec, cmd: －－－－\n" + cmd);
     char *ptr = cmd.toLatin1().data();
     int cnt = shexec(ptr, res, 10);
     for(int i=0; i<cnt; ++i) str.append(res[i]);
-    emit fabSig("return results: \n" +str);
+    emit fabSig("return results: －－－－\n" +str);
     return str;
 }
 

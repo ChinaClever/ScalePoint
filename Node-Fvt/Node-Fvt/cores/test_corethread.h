@@ -11,6 +11,8 @@ public:
 protected:
     void run();
     bool initFun();
+    bool programFab();
+    void macSnCheck();
     void workDown();
     void workResult();
 
