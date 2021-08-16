@@ -30,7 +30,7 @@ Cfg *Cfg::bulid()
 
 void Cfg::setDate()
 {
-    QString value = QDate::currentDate().toString("yyyy-MM");
+    QString value = QDate::currentDate().toString("yyyy-MM-dd");
     write("date", value, "Date");
 }
 
@@ -40,8 +40,10 @@ bool Cfg::getDate()
 
     QString str = read("date","","Date").toString();
     if(!str.isEmpty()) {
-        QDate date = QDate::fromString(str, "yyyy-MM");
-        if(QDate::currentDate() > date) {
+        QDate date = QDate::fromString(str, "yyyy-MM-dd");
+        QDate cu = QDate::currentDate();
+        date.setDate(date.year(), date.month(), cu.day());
+        if(cu > date) {
             ret = true;
         }
     }

@@ -130,7 +130,7 @@ void Home_WorkWid::updateResult()
 
 void Home_WorkWid::updateWid()
 {
-    QString str = mDt->sn;
+    QString str = mDt->serialNumber;
     if(str.isEmpty()) str = "--- ---";
     ui->snLab->setText(str);
 
@@ -206,7 +206,7 @@ void Home_WorkWid::initData()
 
 bool Home_WorkWid::initWid()
 {
-    bool ret = initSerial();
+    bool ret = true; //initSerial();
     if(ret) {
         initUser();
         if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}

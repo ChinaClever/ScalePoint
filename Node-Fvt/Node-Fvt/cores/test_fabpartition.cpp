@@ -1,0 +1,157 @@
+#include "test_fabpartition.h"
+
+test_FabPartition::test_FabPartition(QObject *parent) : BaseThread(parent)
+{
+
+}
+
+
+test_FabPartition *test_FabPartition::bulid(QObject *parent)
+{
+    static test_FabPartition* sington = nullptr;
+    if(sington == nullptr)
+        sington = new test_FabPartition(parent);
+    return sington;
+}
+
+bool test_FabPartition::isFileExist(const QString &fn)
+{
+    QFile file(fn);
+    if (file.exists()){
+        return true;
+    }
+
+    return false;
+}
+
+//execute shell command
+int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
+{
+#if defined(Q_OS_LINUX)
+    FILE* pp = popen(cmd, "r");
+#elif
+    FILE* fp = nullptr;
+#endif
+
+    if(!pp) {
+        qDebug("error, cannot popen cmd: %s\n", cmd);
+        return -1;
+    }
+
+    int i = 0;
+    res[0][0] = 0;
+    char tmp[512] ={0};
+    while(fgets(tmp, sizeof(tmp), pp) != NULL) {
+        if(tmp[strlen(tmp)-1] == '\n') {
+            tmp[strlen(tmp)-1] = '\0';
+        }
+        // qDebug("%d.get return results: %s\n", i, tmp);
+        strcpy(res[i], tmp); i++;
+        if(i >= count) {
+            qDebug("get enough results, return\n");
+            break;
+        }
+    }
+
+    int rv = pclose(pp);
+    qDebug("ifexited: %d\n", WIFEXITED(rv));
+    if (WIFEXITED(rv)) {
+        qDebug("subprocess exited, exit code: %d\n", WEXITSTATUS(rv));
+    }
+
+    return i;
+}
+
+QString test_FabPartition::processOn(const QString &cmd)
+{
+    static char res[100][512];
+
+    QString str;
+    emit fabSig("shexec, cmd: \n" + cmd);
+    char *ptr = cmd.toLatin1().data();
+    int cnt = shexec(ptr, res, 100);
+    for(int i=0; i<cnt; ++i) str.append(res[i]);
+    qDebug() <<"AAAAAAAAAA" << str;
+
+    emit fabSig("return results: \n" +str);
+    return str;
+}
+
+bool test_FabPartition::devExist()
+{
+    QString str = "Atmel USB";
+    bool ret = isFileExist("/dev/ttyACM0");
+    if(ret) {
+        str += tr("已连接");
+        // processOn("echo \"123456\" | sudo -S chmod 777 /dev/ttyACM0");
+    } else {
+        str += tr("未找到设备，请确认烧录线是否连接正确？");
+    }
+
+    return updatePro(str, ret);
+}
+
+
+bool test_FabPartition::at91recovery()
+{
+    bool ret = isFileExist("at91recovery");
+    if(ret) {
+        // processOn("echo \"123456\" | sudo -S chmod 777 at91recovery");
+    } else {
+        updatePro(tr(" at91recovery 执行程序未发现"), ret);
+    }
+
+    return ret;
+}
+
+bool test_FabPartition::programFab()
+{
+    QString cmd = "echo \"123456\" | sudo -S ";
+    cmd += "./at91recovery –y /dev/ttyACM0 %1.img fab";
+
+    bool ret = true;
+    QString str = "S/N Mac ";
+    QString res = processOn(cmd.arg(mDt->sn));
+    if(res.contains("ERR")) {
+        ret = false;
+        str += tr("写入 失败");
+    } else {
+        str += tr("写入 成功");
+    }
+
+    emit fabSig(res);
+    return updatePro(str, ret);
+}
+
+bool test_FabPartition::createFab()
+{
+    QString cmd = "mkdir -p ScalePoint \n"
+                  "cd ScalePoint \n"
+                  "echo \"MAC=%1\" > system.cfg \n"
+                  "echo \"BOARD_SERIAL=%2\" >> system.cfg \n"
+                  "cd ../ \n"
+                  "mkfs.cramfs -b 4096 ScalePoint/ %2.img \n"
+                  "echo \"123456\" | sudo -S chmod 777 %2.img";
+
+    QString str = "create FAB partition ";
+    bool ret = isFileExist("ScalePoint/eto-desc.xml");
+    if(ret) {
+        QString res = processOn(cmd.arg(mItem->macs.mac).arg(mDt->sn));
+    } else {
+        str = tr("配置文件缺少 eto-desc.xml");
+    }
+
+    return updatePro(str, ret);
+}
+
+
+bool test_FabPartition::workDown()
+{
+    bool ret = at91recovery();
+    if(ret) ret = createFab();
+    if(ret) ret = programFab();
+
+    return ret;
+}
+
+

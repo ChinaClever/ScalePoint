@@ -14,7 +14,9 @@ void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
     mSn = Test_SerialNumber::bulid(this);
+    mFab = test_FabPartition::bulid(this);
     mNetWork = Test_NetWork::bulid(this);
+    connect(mFab, SIGNAL(fabSig(QString)), mNetWork, SIGNAL(msgSig(QString)));
 }
 
 void Test_CoreThread::workResult()
@@ -41,8 +43,15 @@ bool Test_CoreThread::initFun()
 
 void Test_CoreThread::workDown()
 {
-    mNetWork->startProcess();
+    bool ret = mFab->check();
+    if(ret) {
+        mSn->createSn();
+        ret = mFab->workDown();
+    }
 
+    if(ret) {
+        mNetWork->startProcess();
+    }
 }
 
 void Test_CoreThread::run()

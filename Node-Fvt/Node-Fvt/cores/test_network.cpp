@@ -54,38 +54,44 @@ QStringList Test_NetWork::getCmd()
     return arguments;
 }
 
+QString Test_NetWork::getExeFile()
+{
+    QString fn = "py_fvt_node";
+#if defined(Q_OS_WIN32)
+    fn += ".exe";
+#endif
+
+    QFile file(fn);
+    if (file.exists()){
+        updatePro(tr("正在启动测试脚本"));
+    } else {
+        fn.clear();
+        updatePro(tr("启动测试脚本 %1").arg(fn), false);
+    }
+
+    return fn;
+}
+
 bool Test_NetWork::startProcess()
 {
     bool ret = mDt->aiFind;
-    if(!ret) ret = checkNet();
+    //if(!ret) ret = checkNet();
+    ret = true; ///////==========
     if(ret) {
-        updatePro(tr("正在启动测试脚本"));
-        QString fn = "py_fvt_node.exe";
+        QString fn = getExeFile();
+        if(!fn.size()) return false;
+
         QStringList cmd = getCmd();
         mProcess->start(fn, cmd); // , QIODevice::ReadWrite  startDetached
         ret = mProcess->waitForFinished();
 
         QByteArray bs = mProcess->readAllStandardOutput();
         QString str = QString::fromLocal8Bit(bs); emit msgSig(str);
-       // msleep(225); updatePro(tr("测试脚本执行完成"));
     }
 
     return ret;
 }
 
-
-QString Test_NetWork::updateMacAddr(int step)
-{
-    sMac *it = &(mItem->macs);
-    if(it->mac.size() > 5) {
-        BaseLogs::bulid()->writeMac(it->mac);
-        MacAddr *mac = MacAddr::bulid();
-        it->mac = mac->macAdd(it->mac, step);
-        Cfg::bulid()->write("mac", it->mac, "Mac");
-    }
-
-    return it->mac;
-}
 
 void Test_NetWork::pduInfo(int fn, QString &msg)
 {
@@ -94,7 +100,7 @@ void Test_NetWork::pduInfo(int fn, QString &msg)
     case 2: mDt->macAddress = msg; break;
     case 3: mDt->hwRevision = msg; break;
     case 4: mDt->fwRevision = msg; break;
-    case 5: mDt->sn = msg; break;
+    case 5: mDt->serialNumber = msg; break;
     case 6: mDt->manufacturer = msg; break;
     case 7: mDt->model = msg; break;
     }
@@ -115,8 +121,7 @@ void Test_NetWork::workDown()
                 updatePro(str, pass, 0);
             }
         } else {
-            if(QString(res->datagram).contains("MAC-1")) mac = false; else
-                qDebug() <<"Test_NetWork workDown err" << list.size();
+            qDebug() <<"Test_NetWork workDown err" << list;
         }
         delete res;
     } else {
