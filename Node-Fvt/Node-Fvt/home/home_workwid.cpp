@@ -173,8 +173,21 @@ void Home_WorkWid::timeoutDone()
 
 bool Home_WorkWid::initSerial()
 {
-    bool ret = mItem->com->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+    //bool ret = mItem->com->isOpened();
+    //if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+
+    bool ret = true;
+    sMac *it = &(mItem->macs);
+    uint res =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
+    if(res <= it->cntMac) {
+        if(res < 1) {
+            MsgBox::critical(this, tr("MAC地址已用完，无法继续使用")); return false;
+        } else {
+            QString str = tr("剩余MAC地址，仅有%1个，请向领导反馈").arg(res);
+            MsgBox::critical(this, str);
+        }
+    }
+
     return ret;
 }
 
