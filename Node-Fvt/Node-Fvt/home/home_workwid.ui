@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1002</width>
-    <height>447</height>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>180</height>
+       <height>220</height>
       </size>
      </property>
      <property name="font">
@@ -35,7 +35,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>100</y>
+        <y>130</y>
         <width>151</width>
         <height>60</height>
        </rect>
@@ -68,7 +68,7 @@
       <property name="geometry">
        <rect>
         <x>48</x>
-        <y>52</y>
+        <y>82</y>
         <width>55</width>
         <height>35</height>
        </rect>
@@ -102,7 +102,7 @@
       <property name="geometry">
        <rect>
         <x>110</x>
-        <y>50</y>
+        <y>80</y>
         <width>100</width>
         <height>35</height>
        </rect>
@@ -316,7 +316,7 @@
      <property name="maximumSize">
       <size>
        <width>260</width>
-       <height>300</height>
+       <height>350</height>
       </size>
      </property>
      <property name="font">
@@ -329,6 +329,9 @@
       <string>计时区</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
       <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="timeLab">
         <property name="text">
@@ -589,10 +592,16 @@
    </item>
    <item row="2" column="2">
     <widget class="QGroupBox" name="groupBox_3">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>130</height>
+      </size>
+     </property>
      <property name="maximumSize">
       <size>
        <width>250</width>
-       <height>150</height>
+       <height>220</height>
       </size>
      </property>
      <property name="font">

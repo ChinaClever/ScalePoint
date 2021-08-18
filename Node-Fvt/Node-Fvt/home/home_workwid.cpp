@@ -41,6 +41,7 @@ void Home_WorkWid::initFunSlot()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
+    connect(mCoreThread, SIGNAL(waitSig()), this, SLOT(waitForSlot()));
 }
 
 void Home_WorkWid::setTextColor()
@@ -255,4 +256,10 @@ void Home_WorkWid::on_startBtn_clicked()
 void Home_WorkWid::on_adCheckBox_clicked(bool checked)
 {
     ui->ipEdit->setEnabled(!checked);
+}
+
+void Home_WorkWid::waitForSlot()
+{
+    bool ret = MsgBox::information(this, tr("请断开短接点，重新上电，重启设备 Node..."));
+    if(ret) mCoreThread->isContinue = true;
 }

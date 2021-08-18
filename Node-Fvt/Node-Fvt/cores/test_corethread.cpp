@@ -60,10 +60,10 @@ void Test_CoreThread::macSnCheck()
 {
     bool ret = false;
     QString str = "serial Number" + tr("检查");
-    if(mDt->serialNumber != mDt->sn) {
-        str += tr("错误：%1 %2").arg(mDt->serialNumber).arg(mDt->sn);
+    if(mDt->ctrlBoardSerial != mDt->sn) {
+        str += tr("错误：%1 %2").arg(mDt->ctrlBoardSerial).arg(mDt->sn);
     } else {
-        str += tr("正确：%1 ").arg(mDt->serialNumber); ret = true;
+        str += tr("正确：%1 ").arg(mDt->ctrlBoardSerial); ret = true;
     }
     updatePro(str, ret);
 
@@ -76,10 +76,19 @@ void Test_CoreThread::macSnCheck()
     updatePro(str, ret);
 }
 
+bool Test_CoreThread::waitFor()
+{
+    isContinue = false;
+    while(!isContinue) msleep(10);
+
+    return updatePro(tr("等待设备重新上电，启动完成..."), true, 15);
+}
+
 void Test_CoreThread::workDown()
 {   
     bool ret = programFab();
     if(ret) {
+        emit waitSig(); waitFor();
         ret = mNetWork->startProcess();
         if(ret) macSnCheck();
     }

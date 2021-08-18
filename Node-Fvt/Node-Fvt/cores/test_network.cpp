@@ -96,7 +96,7 @@ void Test_NetWork::pduInfo(int fn, QString &msg)
 {
     switch (fn) {
     case 1: mDt->ctrlBoardSerial = msg; break;
-    case 2: mDt->macAddress = msg; break;
+    case 2: mDt->macAddress = msg.toUpper(); break;
     case 3: mDt->hwRevision = msg; break;
     case 4: mDt->fwRevision = msg; break;
     case 5: mDt->serialNumber = msg; break;
