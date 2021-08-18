@@ -61,10 +61,10 @@ void Cfg::initCurrentNum()
 {
     bool ret = getDate();
     if(ret) {
-        item->currentNum = 0;
+        item->currentNum = 1;
         setCurrentNum();
     } else {
-        int value = read("num", 0,"Date").toInt();
+        int value = read("num", 1,"Date").toInt();
         item->currentNum = value;
     }
 }

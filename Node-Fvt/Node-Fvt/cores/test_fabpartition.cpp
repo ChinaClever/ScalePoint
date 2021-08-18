@@ -2,7 +2,7 @@
 
 test_FabPartition::test_FabPartition(QObject *parent) : BaseThread(parent)
 {
-
+    mSn = Test_SerialNumber::bulid(this);
 }
 
 
@@ -33,7 +33,6 @@ int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
         qDebug("error, cannot popen cmd: %s\n", cmd);
         return -1;
     }
-
 
     res[0][0] = 0;
     char tmp[512] ={0};
@@ -69,7 +68,7 @@ QString test_FabPartition::processOn(const QString &cmd)
     char *ptr = cmd.toLatin1().data();
     int cnt = shexec(ptr, res, 10);
     for(int i=0; i<cnt; ++i) str.append(res[i]);
-    emit fabSig("return results: －－－－\n" +str);
+    if(str.size()>2) emit fabSig("return results: －－－－\n" +str);
 #else
     updatePro(tr("不支持Window系统"), false);
 #endif
@@ -127,16 +126,18 @@ bool test_FabPartition::programFab()
     pro.start("at91recovery", ls);
     bool ret = pro.waitForFinished();
 
+    str = "S/N:" + mDt->sn + " Mac:" + mItem->macs.mac;
     QByteArray bs = pro.readAllStandardOutput();
     bs +=  pro.readAllStandardError();
     QString res = QString::fromLocal8Bit(bs);
     if(res.contains("ERR")) {
         ret = false;
-        str += tr(" 失败");
+        str += tr(" 写入失败");
     } else {
-        str += tr(" 成功");
+        str += tr(" 写入成功");
     }
 
+    mvFile(ret);
     emit fabSig(res);
     return updatePro(str, ret);
 }
@@ -147,7 +148,7 @@ bool test_FabPartition::createFab()
                   "cd ScalePoint \n"
                   "echo \"MAC=%1\" > system.cfg \n"
                   "echo \"BOARD_SERIAL=%2\" >> system.cfg \n"
-                  "cd ../ \n"
+                  "cat system.cfg \n cd ../ \n"
                   "mkfs.cramfs -b 4096 ScalePoint/ %2.img \n";
 
     QString str = "create FAB partition ";
@@ -161,6 +162,20 @@ bool test_FabPartition::createFab()
     return updatePro(str, ret);
 }
 
+bool test_FabPartition::mvFile(bool res)
+{
+    QString cmd = "mkdir -p fabs fabs/%1 \n"
+                  "cp -rf ScalePoint/* fabs/%1/ \n"
+                  "mv %1.img fabs/%1" ;
+    if(res) {
+        processOn(cmd.arg(mDt->sn));
+    } else {
+        mItem->currentNum--;
+        mSn->updateMacAddr(-1);
+    }
+
+    return res;
+}
 
 bool test_FabPartition::workDown()
 {

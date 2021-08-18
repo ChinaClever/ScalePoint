@@ -10,9 +10,9 @@ class Test_SerialNumber : public BaseThread
 public:
     static Test_SerialNumber *bulid(QObject *parent = nullptr);
     void createSn();
+    QString updateMacAddr(int step=1);
 
 protected:
-    QString updateMacAddr(int step=1);
     QString getSn();
 };
 
