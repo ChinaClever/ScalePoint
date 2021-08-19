@@ -41,6 +41,7 @@ void Home_WorkWid::initFunSlot()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
+    connect(mCoreThread, SIGNAL(waitSig()), this, SLOT(waitForSlot()));
 }
 
 void Home_WorkWid::setTextColor()
@@ -108,7 +109,7 @@ void Home_WorkWid::updateResult()
 {
     QString style;
     QString str = tr("---");
-    if(isCheck){ if(mId < 14) mPro->result = Test_Fail; }
+    if(isCheck){ if(mId < 20) mPro->result = Test_Fail; }
     if(Test_Fail == mPro->result) {
         str = tr("失败");
         style = "background-color:red; color:rgb(255, 255, 255);";
@@ -173,8 +174,21 @@ void Home_WorkWid::timeoutDone()
 
 bool Home_WorkWid::initSerial()
 {
-    bool ret = mItem->com->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+    //bool ret = mItem->com->isOpened();
+    //if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+
+    bool ret = true;
+    sMac *it = &(mItem->macs);
+    uint res =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
+    if(res <= it->cntMac) {
+        if(res < 1) {
+            MsgBox::critical(this, tr("MAC地址已用完，无法继续使用")); return false;
+        } else {
+            QString str = tr("剩余MAC地址，仅有%1个，请向领导反馈").arg(res);
+            MsgBox::critical(this, str);
+        }
+    }
+
     return ret;
 }
 
@@ -215,7 +229,7 @@ bool Home_WorkWid::initWid()
         initData();
         ui->groupBox_2->setEnabled(false);
         ui->startBtn->setText(tr("终 止"));
-        mPro->step = Test_Start; emit startSig();
+        mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
         QString str = mPro->startTime.toString("hh:mm:ss");
         ui->startLab->setText(str);
@@ -242,4 +256,14 @@ void Home_WorkWid::on_startBtn_clicked()
 void Home_WorkWid::on_adCheckBox_clicked(bool checked)
 {
     ui->ipEdit->setEnabled(!checked);
+}
+
+void Home_WorkWid::waitForSlot()
+{
+    bool ret = MsgBox::question(this, tr("请重新上电，等待设备重新重启\n 设备能正常启动，并重启完成..."));
+    if(!ret) {
+        mPro->step = Test_Over;
+        mPro->result = Test_Fail;
+    }
+    mCoreThread->isContinue = true;
 }

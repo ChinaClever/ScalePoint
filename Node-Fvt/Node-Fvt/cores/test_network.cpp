@@ -65,8 +65,8 @@ QString Test_NetWork::getExeFile()
     if (file.exists()){
         updatePro(tr("正在启动测试脚本"));
     } else {
+        updatePro(tr("启动测试脚本 %1 失败").arg(fn), false);
         fn.clear();
-        updatePro(tr("启动测试脚本 %1").arg(fn), false);
     }
 
     return fn;
@@ -75,8 +75,7 @@ QString Test_NetWork::getExeFile()
 bool Test_NetWork::startProcess()
 {
     bool ret = mDt->aiFind;
-    //if(!ret) ret = checkNet();
-    ret = true; ///////==========
+    if(!ret) ret = checkNet();
     if(ret) {
         QString fn = getExeFile();
         if(!fn.size()) return false;
@@ -97,7 +96,7 @@ void Test_NetWork::pduInfo(int fn, QString &msg)
 {
     switch (fn) {
     case 1: mDt->ctrlBoardSerial = msg; break;
-    case 2: mDt->macAddress = msg; break;
+    case 2: mDt->macAddress = msg.toUpper(); break;
     case 3: mDt->hwRevision = msg; break;
     case 4: mDt->fwRevision = msg; break;
     case 5: mDt->serialNumber = msg; break;

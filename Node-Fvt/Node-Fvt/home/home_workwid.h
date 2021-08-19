@@ -38,9 +38,9 @@ protected:
 private slots:
     void timeoutDone();
     void initFunSlot();
+    void waitForSlot();
     void updateCntSlot();
     void on_startBtn_clicked();
-
     void on_adCheckBox_clicked(bool checked);
 
 private:

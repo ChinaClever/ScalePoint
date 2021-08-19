@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1002</width>
-    <height>447</height>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,12 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_4">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>220</height>
+      </size>
+     </property>
      <property name="font">
       <font>
        <family>微软雅黑</family>
@@ -28,8 +34,8 @@
      <widget class="QPushButton" name="startBtn">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>50</y>
+        <x>60</x>
+        <y>130</y>
         <width>151</width>
         <height>60</height>
        </rect>
@@ -57,6 +63,80 @@
       <property name="text">
        <string>开 始</string>
       </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>48</x>
+        <y>82</y>
+        <width>55</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>55</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>70</width>
+        <height>35</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>模式：</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="modeBox">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>80</y>
+        <width>100</width>
+        <height>35</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::NoContextMenu</enum>
+      </property>
+      <item>
+       <property name="text">
+        <string>标准流程</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>配置写入</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>数据读取</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </item>
@@ -236,7 +316,7 @@
      <property name="maximumSize">
       <size>
        <width>260</width>
-       <height>300</height>
+       <height>350</height>
       </size>
      </property>
      <property name="font">
@@ -249,6 +329,9 @@
       <string>计时区</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="bottomMargin">
+       <number>20</number>
+      </property>
       <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="timeLab">
         <property name="text">
@@ -321,7 +404,7 @@
      <property name="maximumSize">
       <size>
        <width>245</width>
-       <height>16777215</height>
+       <height>245</height>
       </size>
      </property>
      <property name="font">
@@ -509,10 +592,16 @@
    </item>
    <item row="2" column="2">
     <widget class="QGroupBox" name="groupBox_3">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>130</height>
+      </size>
+     </property>
      <property name="maximumSize">
       <size>
        <width>250</width>
-       <height>150</height>
+       <height>220</height>
       </size>
      </property>
      <property name="font">

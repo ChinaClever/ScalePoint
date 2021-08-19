@@ -22,9 +22,16 @@ protected:
 
     bool createFab();
     bool programFab();
+
+    bool writeImage();
+    bool changePermissions();
     int shexec(const char *cmd, char res[][512], int count);
     QString processOn(const QString &cmd);
     bool isFileExist(const QString &fn);
+    bool mvFile(bool res);
+
+private:
+    Test_SerialNumber *mSn;
 };
 
 #endif // TEST_FBAPARTITION_H
