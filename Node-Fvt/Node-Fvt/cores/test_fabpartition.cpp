@@ -81,7 +81,7 @@ bool test_FabPartition::devExist()
     bool ret = isFileExist("/dev/ttyACM0");
     if(ret) {
         str += tr("已连接");
-        // processOn("echo \"123456\" | sudo -S chmod 777 /dev/ttyACM0");
+        processOn("echo \"123456\" | sudo -S chmod 777 /dev/ttyACM0");
     } else {
         str += tr("未找到设备，请确认烧录线是否连接正确？");
     }
@@ -92,9 +92,9 @@ bool test_FabPartition::devExist()
 
 bool test_FabPartition::at91recovery()
 {
-    bool ret = isFileExist("at91recovery");
+    bool ret = isFileExist("firmware/at91recovery");
     if(ret) {
-        // processOn("echo \"123456\" | sudo -S chmod 777 at91recovery");
+        processOn("echo \"123456\" | sudo -S chmod 777 -R firmware/*");
     } else {
         updatePro(tr(" at91recovery 执行程序未发现"), ret);
     }
@@ -107,9 +107,7 @@ bool test_FabPartition::changePermissions()
     QString str = tr("改变IMG文件的权限");
     updatePro(tr("准备")+str);
 
-    QString cmd = "echo \"123456\" | sudo -S chmod 777 %1.img \n"
-                  "sudo chmod 777 at91recovery \n"
-                  "sudo chmod 777 /dev/ttyACM0" ;
+    QString cmd = "cd firmware/ \n echo \"123456\" | sudo -S chmod 777 %1.img \n";
     processOn(cmd.arg(mDt->sn));
 
     return updatePro(tr("已")+str);
@@ -122,8 +120,8 @@ bool test_FabPartition::programFab()
 
     QStringList ls;
     QProcess pro(this);
-    ls << "-y" << "/dev/ttyACM0" << mDt->sn+".img" << "fab";
-    pro.start("at91recovery", ls);
+    ls << "-y" << "/dev/ttyACM0" << "firmware/"+mDt->sn+".img" << "fab";
+    pro.start("./firmware/at91recovery", ls);
     bool ret = pro.waitForFinished();
 
     str = "S/N:" + mDt->sn + " Mac:" + mItem->macs.mac;
@@ -144,7 +142,7 @@ bool test_FabPartition::programFab()
 
 bool test_FabPartition::createFab()
 {
-    QString cmd = "mkdir -p ScalePoint \n"
+    QString cmd = "cd firmware/ \n mkdir -p ScalePoint \n"
                   "cd ScalePoint \n"
                   "echo \"MAC=%1\" > system.cfg \n"
                   "echo \"BOARD_SERIAL=%2\" >> system.cfg \n"
@@ -152,7 +150,7 @@ bool test_FabPartition::createFab()
                   "mkfs.cramfs -b 4096 ScalePoint/ %2.img \n";
 
     QString str = "create FAB partition ";
-    bool ret = isFileExist("ScalePoint/eto-desc.xml");
+    bool ret = isFileExist("firmware/ScalePoint/eto-desc.xml");
     if(ret) {
         QString res = processOn(cmd.arg(mItem->macs.mac).arg(mDt->sn));
     } else {
@@ -164,7 +162,7 @@ bool test_FabPartition::createFab()
 
 bool test_FabPartition::mvFile(bool res)
 {
-    QString cmd = "mkdir -p fabs fabs/%1 \n"
+    QString cmd = "cd firmware/ \n mkdir -p fabs fabs/%1 \n"
                   "cp -rf ScalePoint/* fabs/%1/ \n"
                   "mv %1.img fabs/%1" ;
     if(res) {
@@ -172,9 +170,21 @@ bool test_FabPartition::mvFile(bool res)
     } else {
         mItem->currentNum--;
         mSn->updateMacAddr(-1);
+        Cfg::bulid()->setCurrentNum();
     }
 
     return res;
+}
+
+// 不使用
+bool  test_FabPartition::writeImage()
+{
+    QString cmd = "gnome-terminal --window -- "
+                  "./firmware/at91recovery /dev/ttyACM0 -y firmware/images/"
+                  "pdug4-ixg4-040000-47880-flash-image-sama5d2-without-at91bootstrap-with-sshkey.img 0x00000 \n";
+    system(cmd.toLocal8Bit().data());  //tab
+
+    return true;
 }
 
 bool test_FabPartition::workDown()

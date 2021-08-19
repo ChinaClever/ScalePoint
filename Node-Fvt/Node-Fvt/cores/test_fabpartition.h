@@ -22,6 +22,8 @@ protected:
 
     bool createFab();
     bool programFab();
+
+    bool writeImage();
     bool changePermissions();
     int shexec(const char *cmd, char res[][512], int count);
     QString processOn(const QString &cmd);
