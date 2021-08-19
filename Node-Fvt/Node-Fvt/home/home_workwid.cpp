@@ -260,6 +260,10 @@ void Home_WorkWid::on_adCheckBox_clicked(bool checked)
 
 void Home_WorkWid::waitForSlot()
 {
-    bool ret = MsgBox::information(this, tr("请断开短接点，重新上电，重启设备 Node..."));
-    if(ret) mCoreThread->isContinue = true;
+    bool ret = MsgBox::question(this, tr("请重新上电，等待设备重新重启\n 设备能正常启动，并重启完成..."));
+    if(!ret) {
+        mPro->step = Test_Over;
+        mPro->result = Test_Fail;
+    }
+    mCoreThread->isContinue = true;
 }

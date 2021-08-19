@@ -78,18 +78,22 @@ void Test_CoreThread::macSnCheck()
 
 bool Test_CoreThread::waitFor()
 {
+    emit waitSig();
+    bool ret = false;
     isContinue = false;
     while(!isContinue) msleep(10);
+    if(mPro->step < Test_Over) ret = true;
+    else updatePro(tr("设备未正常启动.."), ret);
 
-    return updatePro(tr("等待设备重新上电，启动完成..."), true, 15);
+    return ret;
 }
 
 void Test_CoreThread::workDown()
 {   
     bool ret = programFab();
     if(ret) {
-        emit waitSig(); waitFor();
-        ret = mNetWork->startProcess();
+        ret =  waitFor();
+        if(ret) ret = mNetWork->startProcess();
         if(ret) macSnCheck();
     }
 }
