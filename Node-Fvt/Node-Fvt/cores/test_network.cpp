@@ -79,11 +79,10 @@ bool Test_NetWork::startProcess()
     if(ret) {
         QString fn = getExeFile();
         if(!fn.size()) return false;
-
         QStringList cmd = getCmd();
-        mProcess->start(fn, cmd); // , QIODevice::ReadWrite  startDetached
-        ret = mProcess->waitForFinished();
+        mProcess->start(fn, cmd);
 
+        ret = mProcess->waitForFinished(5*60*1000);
         QByteArray bs = mProcess->readAllStandardOutput();
         bs += mProcess->readAllStandardError();
         QString str = QString::fromLocal8Bit(bs); emit msgSig(str);

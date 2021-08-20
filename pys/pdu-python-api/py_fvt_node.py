@@ -52,9 +52,9 @@ Password = 'legrand'
 IpAddress = '192.168.1.100'
 
 def getOptArgvs():
-	global User
-	global Password
-	global IpAddress
+    global User
+    global Password
+    global IpAddress
     num = len(sys.argv)
     if(num > 2):
         User = sys.argv[1]

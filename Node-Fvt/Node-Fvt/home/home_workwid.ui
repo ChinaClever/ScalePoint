@@ -129,12 +129,12 @@
       </item>
       <item>
        <property name="text">
-        <string>配置写入</string>
+        <string>修改配置</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>数据读取</string>
+        <string>信息读取</string>
        </property>
       </item>
      </widget>
