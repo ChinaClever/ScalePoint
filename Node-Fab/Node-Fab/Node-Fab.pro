@@ -19,11 +19,13 @@ SOURCES += \
     backcolourcom.cpp \
     main.cpp \
     mainwindow.cpp \
+    programthread.cpp \
     programwid.cpp
 
 HEADERS += \
     backcolourcom.h \
     mainwindow.h \
+    programthread.h \
     programwid.h
 
 FORMS += \

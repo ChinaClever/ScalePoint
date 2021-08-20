@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QHeaderView>
 #include <QColor>
+#include <QtCore>
 
 namespace cm {
 
