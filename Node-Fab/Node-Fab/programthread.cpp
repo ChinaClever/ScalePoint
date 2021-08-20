@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年10月1日
+ *      Author: Lzy
+ */
 #include "programthread.h"
 
 ProgramThread::ProgramThread(int id, QObject *parent) : QThread(parent)

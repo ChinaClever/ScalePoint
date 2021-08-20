@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年10月1日
+ *      Author: Lzy
+ */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "backcolourcom.h"

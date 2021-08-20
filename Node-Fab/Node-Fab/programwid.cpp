@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年10月1日
+ *      Author: Lzy
+ */
 #include "programwid.h"
 #include "ui_programwid.h"
 #include <QPalette>
