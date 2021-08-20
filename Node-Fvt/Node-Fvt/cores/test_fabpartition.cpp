@@ -142,8 +142,7 @@ bool test_FabPartition::programFab()
 
 bool test_FabPartition::createFab()
 {
-    QString cmd = "cd firmware/ \n mkdir -p ScalePoint \n"
-                  "cd ScalePoint \n"
+    QString cmd = "mkdir -p firmware/ScalePoint \n cd ScalePoint \n"
                   "echo \"MAC=%1\" > system.cfg \n"
                   "echo \"BOARD_SERIAL=%2\" >> system.cfg \n"
                   "cat system.cfg \n cd ../ \n"
@@ -163,7 +162,7 @@ bool test_FabPartition::createFab()
 bool test_FabPartition::mvFile(bool res)
 {
     QString cmd = "cd firmware/ \n mkdir -p fabs fabs/%1 \n"
-                  "cp -rf ScalePoint/* fabs/%1/ \n"
+                  "mv ScalePoint/system.cfg fabs/%1/ \n"
                   "mv %1.img fabs/%1" ;
     if(res) {
         processOn(cmd.arg(mDt->sn));
