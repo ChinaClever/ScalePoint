@@ -85,6 +85,7 @@ bool Test_NetWork::startProcess()
         ret = mProcess->waitForFinished();
 
         QByteArray bs = mProcess->readAllStandardOutput();
+        bs += mProcess->readAllStandardError();
         QString str = QString::fromLocal8Bit(bs); emit msgSig(str);
     }
 
