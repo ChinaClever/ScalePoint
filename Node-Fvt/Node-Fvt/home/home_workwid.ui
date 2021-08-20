@@ -547,7 +547,7 @@
       <item row="3" column="1">
        <widget class="QLineEdit" name="pwdEdit">
         <property name="text">
-         <string>raritan</string>
+         <string>legrand</string>
         </property>
        </widget>
       </item>
@@ -569,6 +569,9 @@
       </item>
       <item row="4" column="1">
        <widget class="QLineEdit" name="ipEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>192.168.1.162</string>
         </property>
@@ -584,6 +587,9 @@
         </property>
         <property name="text">
          <string>自动发现</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
