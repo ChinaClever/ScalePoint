@@ -4,7 +4,7 @@ import sys, time, csv, socket
 from raritan import rpc
 from raritan import zeroconf
 #from raritan.rpc.pdumodel import *
-from raritan.rpc import Agent, pdumodel, firmware, test, usb
+from raritan.rpc import Agent, security , pdumodel, production , firmware, test, usb
 from raritan.rpc import servermon, event, usermgmt, um, devsettings, pdumodel, cert, sensors
 
 gSocket =  None
@@ -20,14 +20,18 @@ def initNetWork():
     else:
         dest_ip = '127.0.0.1'
 
-def sendtoMainApp(parameter, res=1, fn = 0):
+def sendtoMainApp(parameter, res = 1, fn = 0):
     global gSocket; #print(parameter)
     if(res):
         res = 1
     else:
         parameter = parameter + ' 异常'
-    message = str(fn) + ";" + parameter + ";" + str(res)
-    gSocket.sendto(message.encode('utf-8-sig'), (dest_ip, 12306))
+    try:
+        message = str(fn) + ";" + parameter + ";" + str(res)
+        gSocket.sendto(message.encode('utf-8-sig'), (dest_ip, 12306))
+    except Exception as e:
+        print (e)
+
 
 def discoverIpAddr():
     ip = '192.168.1.163'
@@ -42,10 +46,10 @@ def discoverIpAddr():
         print('use default IP: 192.168.1.163')
     return ip
 
-Logined = 0
+
 User = 'admin'
-Password = 'Admin123'
-IpAddress = '192.168.1.162'
+Password = 'legrand'
+IpAddress = '192.168.1.100'
 
 def getOptArgvs():
     num = len(sys.argv)
@@ -64,9 +68,7 @@ def createAgent():
     except Exception as e:
         print (str(e))
         sendtoMainApp('登录失败：' + str , 0)
-    else:
-        global Logined; Logined = 1
-        sendtoMainApp('登录成功：'+str)
+        
     return agent
 
 def devLogin():
@@ -76,6 +78,11 @@ def devLogin():
 
 def show_PDU_Info(agent):
     pdu = pdumodel.Pdu("/model/pdu/0", agent)
+    global User
+    global Password
+    global IpAddress
+    str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress
+    sendtoMainApp('登录成功：'+str)
     metadata = pdu.getMetaData(); print (metadata)
     nameplate = pdu.getNameplate();
 
@@ -232,6 +239,63 @@ def J1_Connection_Test(agent):
         print(str(e))
     return suc
 
+def changeDefaultPassword(agent):
+    '''
+    After calling factory hard reset, password becomes default 'legrand'.
+    PDU firmware fources user to change passowrd to enable the other JSON-RPC interfaces.
+    The method is to change password to 'Raritan1', disable strong password request and change password back to default 'legrand'
+    '''
+    try:
+        # change password to Raritan1
+        user = usermgmt.User("/auth/user/admin", agent)
+        idlRet = user.setAccountPassword('Raritan1')
+        time.sleep(1)
+        # create new agent using new password Raritan1
+        global Password
+        Password = 'Raritan1'
+        agent = createAgent()
+        # disable strong passowrd request
+        sec = security.Security("/security", agent)
+        pwset = sec.getPwSettings()
+        pwset.enableStrongReq = False
+        sec.setPwSettings(pwset)
+        time.sleep(1)
+        # change password to back to original one
+        user = usermgmt.User("/auth/user/admin", agent)
+        Password = 'legrand'
+        idlRet = user.setAccountPassword(Password)
+        # return new agent with original password
+        return createAgent()
+    except rpc.HttpException as e:
+        global User
+        global IpAddress
+        str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress
+        sendtoMainApp('登录失败：' + str , 0)
+        print(e)
+    return None
+    
+def performFactoryHardReset(agent):
+    suc = False
+    try:
+        fw = firmware.Firmware("/firmware", agent)
+        print('Enter production mode')
+        sendtoMainApp('进入恢复出厂设置模式...')
+        prod = production.Production('/production', agent)
+        prod.enterFactoryConfigMode('Cr4sh&8urn')
+        print('sending factory defaults command ...')
+        sendtoMainApp('发送恢复出厂设置命令...')
+        if (fw.hardFactoryReset() == 0):
+            time.sleep(2)
+            print('OK')
+            suc = True
+            sendtoMainApp('恢复出厂设置成功')
+        else:
+            print('Factory hard reset failed')
+            sendtoMainApp('恢复出厂设置', 0)
+    except rpc.HttpException as e:
+        print(str(e))
+    return suc
+
 def close():
     try:
         time.sleep(0.1)
@@ -243,16 +307,19 @@ def close():
 
 
 if __name__=='__main__':
-    agent = devLogin()
-    if(0 == Logined): sys.exit()
-
     try:
-        show_PDU_Info(agent)
-        ret = LCD_Button_Test(agent)
-        ret = USB_A_Test(agent)
-        #print(J1_Connection_Test(agent))
+        agent = devLogin()
+        agent = changeDefaultPassword(agent)
+        if(None != agent):
+            show_PDU_Info(agent)
+            ret = LCD_Button_Test(agent)
+            ret = USB_A_Test(agent)
+            #print(J1_Connection_Test(agent))
+            ret = performFactoryHardReset(agent)
     except Exception as e:
-        print (str(e))
+        str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress
+        sendtoMainApp('登录失败：' + str , 0)
+        print (e)
     finally:
         close()
     sys.exit()
