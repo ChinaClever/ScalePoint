@@ -13,13 +13,12 @@ public:
 
 signals:
     void fabSig(bool);
+    void proSig(int, int);
 
 protected:
-    void secure_boot_prov();
     bool programFull();
-    bool programFab();
-    bool checkTime(const QTime &st);
-
+    void updatePro(QString &str);
+    bool readOutput(QProcess &pro);
     void workDown();
     void run();
 
