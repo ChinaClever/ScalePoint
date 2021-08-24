@@ -59,8 +59,8 @@ void Setup_MainWid::checkPcNumSlot()
 
 void Setup_MainWid::initSerial()
 {
-    mComWid = new SerialStatusWid(ui->comWid);
-    mItem->com = mComWid->initSerialPort(tr("PDU"));
+    //mComWid = new SerialStatusWid(ui->comWid);
+    //mItem->com = mComWid->initSerialPort(tr("PDU"));
 
     mDeWid = new SerialStatusWid(ui->deWid);
     mItem->deSerial = mDeWid->initSerialPort(tr("Debug"));
