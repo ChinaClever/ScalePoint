@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "test_serialnumber.h"
 
 Test_SerialNumber::Test_SerialNumber(QObject *parent) : BaseThread(parent)

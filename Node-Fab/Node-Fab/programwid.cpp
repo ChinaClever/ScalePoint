@@ -15,7 +15,6 @@ ProgramWid::ProgramWid(int id, QWidget *parent) :
 
     initWid();
     mId=id; isRun = false;
-    ui->progressBar->setMaximum(8*60);
     mThread = new ProgramThread(id, this);
     ui->groupBox->setTitle(tr("设备 %1").arg(mId+1));
 
@@ -23,6 +22,7 @@ ProgramWid::ProgramWid(int id, QWidget *parent) :
     timer->start(1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     connect(mThread, SIGNAL(fabSig(bool)), this, SLOT(endFunSlot(bool)));
+    connect(mThread, SIGNAL(proSig(int, int)), this, SLOT(updateProSlot(int, int)));
 }
 
 ProgramWid::~ProgramWid()
@@ -32,9 +32,10 @@ ProgramWid::~ProgramWid()
 
 void ProgramWid::initWid()
 {
-    QPalette pl = ui->progressBar->palette();
+    QPalette pl = ui->progressBar_1->palette();
     pl.setBrush(QPalette::Base,QBrush(QColor(255,0,0,0)));
-    ui->progressBar->setPalette(pl);
+    ui->progressBar_1->setPalette(pl);
+    ui->progressBar_2->setPalette(pl);
     // ui->progressBar->setAlignment(Qt::AlignTop);
 
     QPalette pa;
@@ -63,27 +64,38 @@ void ProgramWid::endFunSlot(bool res)
 {
     QString style;
     QString str = tr("---");
-
-    isRun = false;
-    if((mCount < 380)) {
-        str = tr("失 败");
-        style = "background-color:red; color:rgb(255, 255, 255);";
-    } else if(res){
+    if(res){
         str = tr("成 功");
         style = "background-color:green; color:rgb(255, 255, 255);";
-        int m = ui->progressBar->maximum();
-        ui->progressBar->setMaximum(m);
+        ui->progressBar_2->setValue(100);
+    } else {
+        str = tr("失 败");
+        style = "background-color:red; color:rgb(255, 255, 255);";
     }
 
+    isRun = false;
     style += "font:100 24pt \"微软雅黑\";";
     ui->statusLab->setStyleSheet(style);
     ui->startBtn->setEnabled(true);
     ui->statusLab->setText(str);
 }
 
+void ProgramWid::updateProSlot(int id, int v)
+{
+    switch (id) {
+    case 1: ui->progressBar_1->setValue(v); break;
+    case 2: ui->progressBar_2->setValue(v); break;
+    }
+
+    if(id > 1) {
+        int ret = ui->progressBar_1->value();
+        if(ret > 80)ui->progressBar_1->setValue(100);
+    }
+}
+
 void ProgramWid::firmwareBurn()
 {
-    ui->progressBar->setValue(mCount++);
+    mCount += 1;
     int sec = mCount % 60; int min = mCount / 60;
     ui->statusLab->setText(QString("0%1:%2").arg(min).arg(sec, 2, 10, QLatin1Char('0')));
     QString str = QDateTime::currentDateTime().toString("hh:mm:ss");
@@ -127,8 +139,9 @@ void ProgramWid::on_startBtn_clicked()
 {
     QString str = QDateTime::currentDateTime().toString("hh:mm:ss");
     ui->startLab->setText(str); isRun = true; mCount =0;
-    ui->progressBar->setValue(mCount++);
     ui->startBtn->setDisabled(true);
+    ui->progressBar_1->setValue(0);
+    ui->progressBar_2->setValue(0);
     ui->endLab->setText("");
     mThread->start();
 }

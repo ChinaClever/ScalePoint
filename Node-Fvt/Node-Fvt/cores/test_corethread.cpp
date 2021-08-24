@@ -49,6 +49,10 @@ bool Test_CoreThread::programFab()
 {
     bool ret = mFab->check();
     if(ret) {
+        if(mDt->img.size()) {
+            ret = mFab->programFull();
+        }
+
         mSn->createSn();
         ret = mFab->workDown();
     }
@@ -106,6 +110,7 @@ void Test_CoreThread::run()
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Set:  programFab(); break;
+        case Test_Secure: mFab->secure_boot_prov(); break;
         case Test_Collect:  mNetWork->startProcess(); break;
         }
     } else mPro->result = Test_Fail;

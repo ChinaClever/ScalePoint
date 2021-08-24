@@ -35,7 +35,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>130</y>
+        <y>120</y>
         <width>151</width>
         <height>60</height>
        </rect>
@@ -68,7 +68,7 @@
       <property name="geometry">
        <rect>
         <x>48</x>
-        <y>82</y>
+        <y>72</y>
         <width>55</width>
         <height>35</height>
        </rect>
@@ -102,7 +102,7 @@
       <property name="geometry">
        <rect>
         <x>110</x>
-        <y>80</y>
+        <y>70</y>
         <width>100</width>
         <height>35</height>
        </rect>
@@ -129,7 +129,12 @@
       </item>
       <item>
        <property name="text">
-        <string>修改配置</string>
+        <string>Fab编程</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>安全引导</string>
        </property>
       </item>
       <item>
@@ -137,6 +142,35 @@
         <string>信息读取</string>
        </property>
       </item>
+     </widget>
+     <widget class="QCheckBox" name="checkBox">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>190</y>
+        <width>95</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>镜像烧录</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="imgBtn">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>192</y>
+        <width>61</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>未选择</string>
+      </property>
      </widget>
     </widget>
    </item>
