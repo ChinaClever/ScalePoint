@@ -25,6 +25,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    QString mDir;
     ProgramWid *mProgramWid[6];
 };
 #endif // MAINWINDOW_H

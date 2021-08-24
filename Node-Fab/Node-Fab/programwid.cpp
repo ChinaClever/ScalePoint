@@ -15,14 +15,14 @@ ProgramWid::ProgramWid(int id, QWidget *parent) :
 
     initWid();
     mId=id; isRun = false;
-    ui->progressBar->setMaximum(200);
+    ui->progressBar->setMaximum(8*60);
     mThread = new ProgramThread(id, this);
     ui->groupBox->setTitle(tr("设备 %1").arg(mId+1));
 
     timer = new QTimer(this);
     timer->start(1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
-    connect(mThread, SIGNAL(fabSig(int)), this, SLOT(endFunSlot(int)));
+    connect(mThread, SIGNAL(fabSig(bool)), this, SLOT(endFunSlot(bool)));
 }
 
 ProgramWid::~ProgramWid()
@@ -59,16 +59,16 @@ bool ProgramWid::isFileExist()
     return ret;
 }
 
-void ProgramWid::endFunSlot(int res)
+void ProgramWid::endFunSlot(bool res)
 {
     QString style;
     QString str = tr("---");
 
     isRun = false;
-    if((mCount < 190) || res) {
+    if((mCount < 380)) {
         str = tr("失 败");
         style = "background-color:red; color:rgb(255, 255, 255);";
-    } else {
+    } else if(res){
         str = tr("成 功");
         style = "background-color:green; color:rgb(255, 255, 255);";
         int m = ui->progressBar->maximum();

@@ -23,7 +23,7 @@ protected:
     void firmwareBurn();
 
 protected slots:
-    void endFunSlot(int res);
+    void endFunSlot(bool res);
     void timeoutDone();
 
 private slots:
