@@ -52,9 +52,9 @@ Password = 'legrand'
 IpAddress = '192.168.1.100'
 
 def getOptArgvs():
-	global User
-	global Password
-	global IpAddress
+    global User
+    global Password
+    global IpAddress
     num = len(sys.argv)
     if(num > 2):
         User = sys.argv[1]
@@ -217,7 +217,7 @@ def check_count(expectcnt, cnt):
 def count_descs(descs, vid, pid):
     cnt = 0
     for d in descs:
-        print('d.vendorId : %d ; d.productId ：%d' % ( d.vendorId , d.productId))
+        print('d.vendorId : %d ; d.productId :%d' % ( d.vendorId , d.productId))
         if d.vendorId == vid and d.productId == pid:
             cnt += 1
     return cnt
