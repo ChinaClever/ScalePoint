@@ -12,15 +12,22 @@ public:
     ~ProgramThread();
 
 signals:
-    void fabSig(int);
+    void fabSig(bool);
 
 protected:
+    void secure_boot_prov();
+    bool programFull();
+    bool programFab();
+    bool checkTime(const QTime &st);
+
     void workDown();
     void run();
 
 private:
     int mId;
     bool isRun;
+    QString mDir;
+    QReadWriteLock *mRwLock;
 };
 
 #endif // PROGRAMTHREAD_H
