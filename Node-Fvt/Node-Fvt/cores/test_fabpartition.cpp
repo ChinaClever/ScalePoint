@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "test_fabpartition.h"
 
 test_FabPartition::test_FabPartition(QObject *parent) : BaseThread(parent)

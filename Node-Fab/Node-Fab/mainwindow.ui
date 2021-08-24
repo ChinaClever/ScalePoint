@@ -17,7 +17,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Node 烧录软件</string>
+   <string>Node 批量烧录软件</string>
   </property>
   <property name="windowIcon">
    <iconset resource="images/image.qrc">
@@ -190,7 +190,7 @@
           <string notr="true">color: rgb(255, 255, 255);</string>
          </property>
          <property name="text">
-          <string>Node 烧录软件</string>
+          <string>Node 批量烧录软件</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
