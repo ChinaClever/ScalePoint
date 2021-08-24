@@ -47,7 +47,6 @@ QString Test_SerialNumber::updateMacAddr(int step)
     return it->mac;
 }
 
-
 void Test_SerialNumber::createSn()
 {
     mDt->sn = getSn();

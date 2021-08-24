@@ -44,7 +44,6 @@ bool Test_CoreThread::initFun()
     return ret;
 }
 
-
 bool Test_CoreThread::programFab()
 {
     bool ret = mFab->check();
