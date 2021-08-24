@@ -10,8 +10,10 @@ class test_FabPartition : public BaseThread
 public:
     static test_FabPartition *bulid(QObject *parent = nullptr);
 
+    bool check();
     bool workDown();
-    bool check(){return devExist();}
+    bool programFull();
+    void secure_boot_prov();
 
 signals:
     void fabSig(QString str);
@@ -23,14 +25,15 @@ protected:
     bool createFab();
     bool programFab();
 
-    bool writeImage();
     bool changePermissions();
+    bool readOutput(QProcess &pro);
     int shexec(const char *cmd, char res[][512], int count);
     QString processOn(const QString &cmd);
     bool isFileExist(const QString &fn);
     bool mvFile(bool res);
 
 private:
+    QString mDir;
     Test_SerialNumber *mSn;
 };
 

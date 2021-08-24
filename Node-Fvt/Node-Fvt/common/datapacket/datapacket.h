@@ -6,6 +6,7 @@
 
 struct sDevType
 {
+    QString img;
     QString user;
     QString pwd;
     QString ip;
@@ -36,6 +37,7 @@ enum {
     Test_Fun, // 功能
     Test_Start, // 开始
     Test_Set,
+    Test_Secure,
     Test_Collect,
     Test_Over, // 终止
     Test_End, // 完成

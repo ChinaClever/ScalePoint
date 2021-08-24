@@ -5,6 +5,7 @@
  */
 #include "home_workwid.h"
 #include "ui_home_workwid.h"
+#include <QFileDialog>
 
 Home_WorkWid::Home_WorkWid(QWidget *parent) :
     QWidget(parent),
@@ -30,6 +31,7 @@ void Home_WorkWid::initLayout()
     QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->addWidget(this);
+    ui->imgBtn->setHidden(true);
 }
 
 void Home_WorkWid::initFunSlot()
@@ -105,6 +107,14 @@ void Home_WorkWid::updateTime()
     ui->timeLab->setStyleSheet(style);
 }
 
+void Home_WorkWid::setWidEnabled(bool en)
+{
+    ui->imgBtn->setEnabled(en);
+    ui->modeBox->setEnabled(en);
+    ui->checkBox->setEnabled(en);
+    ui->groupBox_2->setEnabled(en);
+}
+
 void Home_WorkWid::updateResult()
 {
     QString style;
@@ -119,9 +129,9 @@ void Home_WorkWid::updateResult()
     }
     style += "font:100 34pt \"微软雅黑\";";
 
+    setWidEnabled(true);
     mPro->step = Test_End;
     ui->timeLab->setText(str);
-    ui->groupBox_2->setEnabled(true);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
@@ -227,7 +237,7 @@ bool Home_WorkWid::initWid()
         if(mItem->cnt.cnt < 1){MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;}
 
         initData();
-        ui->groupBox_2->setEnabled(false);
+        setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
@@ -266,4 +276,36 @@ void Home_WorkWid::waitForSlot()
         mPro->result = Test_Fail;
     }
     mCoreThread->isContinue = true;
+}
+
+void Home_WorkWid::on_checkBox_clicked(bool checked)
+{
+    QString str = tr("未选择");
+    if(checked) {
+
+    } else {
+        mDt->img.clear();
+    }
+
+    ui->imgBtn->setText(str);
+    ui->imgBtn->setHidden(!checked);
+    ui->startBtn->setDisabled(checked);
+}
+
+void Home_WorkWid::on_imgBtn_clicked()
+{
+    bool en = true;
+    QString str = tr("未选择");
+    QString dir = "./Firmware_Build/4.0.0.5-48035/";
+    QString fn = QFileDialog::getOpenFileName(this, tr("选择烧录文件"), dir, "镜像文件(*.img)");
+    if(fn.contains(".img")){
+        mDt->img = fn;
+        str = tr("已选择");
+    } else {
+        en = false;
+        mDt->img.clear();
+    }
+
+    ui->imgBtn->setText(str);
+    ui->startBtn->setEnabled(en);
 }

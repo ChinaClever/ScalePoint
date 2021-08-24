@@ -39,7 +39,8 @@ void Td_MainWid::timeoutDone()
 {
     if(mSerial->isOpened()) {
         QString str = mSerial->readAll();
-        if(str.size()>2) ui->textEdit->appendPlainText(str);
+        ui->textEdit->moveCursor(QTextCursor::Start);
+        if(str.size()>2) ui->textEdit->insertPlainText(str);
     }
 }
 
@@ -50,5 +51,9 @@ void Td_MainWid::startSlot()
 
 void Td_MainWid::insertSlot(QString str)
 {
-    ui->textEdit->appendPlainText(str);
+    if(str.size()>2) ui->textEdit->appendPlainText(str);
+    QTextCursor cursor = ui->textEdit->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->textEdit->setTextCursor(cursor);
+
 }
