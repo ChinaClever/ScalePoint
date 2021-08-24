@@ -11,7 +11,6 @@ test_FabPartition::test_FabPartition(QObject *parent) : BaseThread(parent)
     mDir = "./Firmware_Build/4.0.0.5-48035/";
 }
 
-
 test_FabPartition *test_FabPartition::bulid(QObject *parent)
 {
     static test_FabPartition* sington = nullptr;
@@ -102,8 +101,6 @@ void test_FabPartition::secure_boot_prov()
     processOn(cmd.toLocal8Bit().data());
     updatePro(tr("启用完全引导"));
 }
-
-
 
 bool test_FabPartition::at91recovery()
 {

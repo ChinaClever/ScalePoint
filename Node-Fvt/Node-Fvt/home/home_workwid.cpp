@@ -189,10 +189,10 @@ bool Home_WorkWid::initSerial()
 
     bool ret = true;
     sMac *it = &(mItem->macs);
-    uint res =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
+    int res =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
     if(res <= it->cntMac) {
         if(res < 1) {
-            MsgBox::critical(this, tr("MAC地址已用完，无法继续使用")); return false;
+            MsgBox::critical(this, tr("MAC地址已用完，无法继续使用")); ret = false;
         } else {
             QString str = tr("剩余MAC地址，仅有%1个，请向领导反馈").arg(res);
             MsgBox::critical(this, str);
@@ -230,7 +230,7 @@ void Home_WorkWid::initData()
 
 bool Home_WorkWid::initWid()
 {
-    bool ret = true; //initSerial();
+    bool ret = initSerial();
     if(ret) {
         initUser();
         if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}

@@ -32,7 +32,7 @@ struct sCount
 struct sMac
 {
     sMac() {cntMac=0;}
-    uint cntMac;
+    int cntMac;
     QString mac;
     QString user;
     QString startMac;
