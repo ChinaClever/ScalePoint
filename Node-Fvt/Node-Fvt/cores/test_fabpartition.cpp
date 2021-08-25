@@ -139,13 +139,13 @@ bool test_FabPartition::programFab()
     str = "S/N:" + mDt->sn + "  Mac:" + mItem->macs.mac;
     bool ret = readOutput(pro);
     if(ret) {
-        mvFile(ret);
         str += tr(" 写入成功");
     } else {
         ret = false;
         str += tr(" 写入失败");
     }
 
+    mvFile(ret);
     return updatePro(str, ret);
 }
 
