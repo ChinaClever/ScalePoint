@@ -141,7 +141,6 @@ bool test_FabPartition::programFab()
     if(ret) {
         str += tr(" 写入成功");
     } else {
-        ret = false;
         str += tr(" 写入失败");
     }
 
