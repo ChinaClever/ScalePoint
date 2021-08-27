@@ -89,3 +89,8 @@ QString cm_ByteArrayToUcharStr(const QByteArray &array)
 }
 
 
+QString cm_ByteArrayToHexStr(uchar *buf, int len)
+{
+    QByteArray array((char *)buf, len);
+    return cm_ByteArrayToHexStr(array);
+}

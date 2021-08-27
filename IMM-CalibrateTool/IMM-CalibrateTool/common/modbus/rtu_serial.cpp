@@ -4,6 +4,8 @@
  *      Author: Lzy
  */
 #include "rtu_serial.h"
+#define INITIAL_CRC_CC3 0x1D0F
+#define CRC_CCITT_POLY 0x1021
 
 Rtu_Serial::Rtu_Serial(QObject *parent) : QThread(parent)
 {
@@ -16,7 +18,7 @@ int Rtu_Serial::readSerial(quint8 *cmd, int secs)
     if(!mSerial) return rtn;
 
     sProgress *pro = sDataPacket::bulid()->getPro();
-    for(int i=0; i<=secs; ++i) {
+    for(int i=0; i<secs; ++i) {
         if(pro->step < Test_Over){
             rtn = mSerial->read(cmd, 1);
             if(rtn > 0) break;
@@ -95,6 +97,24 @@ uchar Rtu_Serial::xorNum(uchar *buf, int len)
     for(int i=0; i<len; i++)
         xorsum ^= buf[i];
     return xorsum;
+}
+
+ushort Rtu_Serial::CRC16(uchar *ptr, int len) // AUG-CCITT
+{
+    ushort crc = INITIAL_CRC_CC3;
+    while (len-- > 0)
+    {
+        crc = crc ^ ((uint16_t) (*ptr++ << 8));  // --len;
+        for (int i = 0; i < 8; i++) {
+            if (crc & 0x8000) {
+                crc = (crc << 1) ^ CRC_CCITT_POLY;
+            } else {
+                crc = crc << 1;
+            }
+        }
+    }
+
+    return crc;
 }
 
 

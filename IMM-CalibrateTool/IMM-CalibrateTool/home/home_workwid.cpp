@@ -143,6 +143,9 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
 
+    if(mData->version) str = QString::number(mData->version/100.0);
+    else str =  "--- ---"; ui->verLab->setText(str);
+
     if(mData->hz) str = QString::number(mData->hz);
     else str = "--- ---"; ui->hzLab->setText(str);
     if(mPro->step < Test_Over) {
@@ -162,8 +165,8 @@ bool Home_WorkWid::initSerial()
 {
     bool ret = mItem->com->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
-    ret = mItem->source->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
+    // ret = mItem->source->isOpened();  ///////===========
+    // if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
     return ret;
 }
 

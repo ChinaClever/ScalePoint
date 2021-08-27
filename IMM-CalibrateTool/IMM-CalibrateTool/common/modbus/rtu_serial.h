@@ -12,6 +12,7 @@ public:
 
     uchar xorNum(uchar *buf, int len);
     ushort rtu_crc(uchar *buf, int len);
+    ushort CRC16(uchar *ptr, int len);
 
     void init(SerialPort *s){mSerial=s;}
     int readSerial(quint8 *cmd, int secs);

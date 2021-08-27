@@ -23,9 +23,13 @@ void Test_CoreThread::initFunSlot()
 bool Test_CoreThread::readDev()
 {
     QString str = tr("Modbus RTU通讯 ");
-    Dev_Object *dev = Dev_ImmRtu::bulid();
+    Dev_ImmRtu *dev = Dev_ImmRtu::bulid();
 
-    bool ret = dev->readPduData();
+    bool ret = dev->readVersion();
+    if(!ret) {
+        //QProcess pro(this); pro.execute(); ///////=========
+        // ret = dev->readVersion();
+    }
     if(ret) str += tr("正常"); else str += tr("错误");
     updatePro(str, ret);
 
@@ -44,7 +48,7 @@ void Test_CoreThread::workResult()
         str += tr("失败");
     }
 
-    updatePro(str, res, 2);
+    updatePro(str, res, 1);
     mPro->step = Test_Over;
 }
 

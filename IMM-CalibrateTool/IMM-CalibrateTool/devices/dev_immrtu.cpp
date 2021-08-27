@@ -20,12 +20,19 @@ Dev_ImmRtu *Dev_ImmRtu::bulid(QObject *parent)
     return sington;
 }
 
-void Dev_ImmRtu::initRtuItem(sRtuItem &it)
+int Dev_ImmRtu::initRtuItem(uchar *cmd, uchar fn)
 {
-    it.addr = mItem->addr;  /////========
-    it.fn = 0x03;
-    it.reg = 0;
-    it.num = 10;
+    int i = 0;
+    cmd[i++] = fn;
+    cmd[i++] = mItem->addr;
+    cmd[i++] = 0x02;
+    cmd[i++] = 0x03;
+
+    ushort crc = mModbus->CRC16(cmd, 4);
+    cmd[i++] = (uint8_t) (crc >> 8);
+    cmd[i++] = (uint8_t) (crc & 0xFF);
+
+    return i;
 }
 
 int Dev_ImmRtu::recvLine(int len)
@@ -44,26 +51,76 @@ int Dev_ImmRtu::recvLine(int len)
 bool Dev_ImmRtu::recvPacket(uchar *buf, int len)
 {
     bool ret = true;
-    int line = recvLine(len);
+    int line = 3; // int line = recvLine(len);
 
-    ///////////===========
-    //if(line) getDevData(buf, line, mData);
-    //else ret = false;
+    getDevData(buf, line, mData);
 
     return ret;
 }
 
-bool Dev_ImmRtu::readPduData()
+bool Dev_ImmRtu::checkCrc(uchar *recv, int len)
 {
-    sRtuItem it;
-    uchar recv[MODBUS_RTU_SIZE] = {0};
+    bool ret = false;
+    ushort crc = mModbus->CRC16(recv, len-2);
+    ushort res = recv[len-2]*256 + recv[len-1];
+    if(crc == res) {
+        ret = true;
+    } else {
+        qDebug() << " Dev_ImmRtu CRC err" << crc << res;
+    }
 
-    initRtuItem(it);
-    int len = mModbus->read(it, recv);
-    return recvPacket(recv, len);
+    return ret;
 }
 
+int Dev_ImmRtu::filterUpolData(uchar *recv, uchar fn)
+{
+    uchar sent[10] = {0};
+    int len = initRtuItem(sent, fn);
+    len = mModbus->transmit(sent, len, recv, 2);
+    if(len < 10 || len > 200) len = mModbus->transmit(sent, len, recv, 1);
+    if(len < 10) { qDebug() << " Dev_ImmRtu read Pdu Data err" << len; return 0; }
 
+    uchar *ptr = recv + 6;
+    if((sent[0] == ptr[0]) && (sent[1] == ptr[1]) && (len > 10)) {
+        for(int i=0; i<len-6; ++i) recv[i] = recv[i+6]; len -= 6;
+        if(!checkCrc(recv, len)) len = 0;
+    } else {
+        qDebug() << " Dev_ImmRtu filter UPOL Data err" << sent[0] << sent[1] << len;
+        len = 0;
+    }
+
+    return len;
+}
+
+bool Dev_ImmRtu::readPduData()
+{
+    bool ret = false;
+    static uchar recv[2*MODBUS_RTU_SIZE] = {0};
+    int len = filterUpolData(recv);
+    if(len > 100) {
+        ret = recvPacket(recv, len);
+    } else {
+        qDebug() << " Dev_ImmRtu read Pdu Data err" << len;
+    }
+
+    return ret;
+}
+
+bool Dev_ImmRtu::readVersion()
+{
+    uchar recv[16] = {0};
+    bool ret = readPduData();
+    if(ret) {
+        int len = filterUpolData(recv, 5);
+        if(len) {
+            mData->version = recv[2]*256 + recv[3];
+        } else {
+            ret = false;
+        }
+    }
+
+    return ret;
+}
 
 uchar *Dev_ImmRtu::toItem(uchar *ptr, sItData &it)
 {
@@ -112,7 +169,7 @@ uchar *Dev_ImmRtu::toBranchIt(uchar *ptr, sBranchIt &it)
 
 uchar *Dev_ImmRtu::getBranchs(uchar *ptr, sDevObj *obj)
 {
-    for(int i=0; i<OpSize; ++i) {
+    for(int i=0; i<4; ++i) { // OpSize
         ptr = toBranchIt(ptr, obj->branchs[i]);
     }
     return ptr;
@@ -120,12 +177,12 @@ uchar *Dev_ImmRtu::getBranchs(uchar *ptr, sDevObj *obj)
 
 void Dev_ImmRtu::getDevData(uchar *ptr, int lines, sDevObj *obj)
 {
-    ptr = toShort(ptr, obj->version);
+    obj->size = lines; ptr += 2;
     ptr = toShort(ptr, obj->status);
-
-    obj->size = lines;
     ptr = getLines(ptr, obj);
+    ptr = toShort(ptr, obj->hz);
+
     ptr = toAngles(ptr, obj);
     ptr = getBranchs(ptr, obj);
-    ptr = toBranchIt(ptr, obj->neutral);
+    // ptr = toBranchIt(ptr, obj->neutral);
 }

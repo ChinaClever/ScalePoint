@@ -10,6 +10,7 @@ class Dev_ImmRtu : public Dev_Object
 
 public:
     bool readPduData();
+    bool readVersion();
     static Dev_ImmRtu *bulid(QObject *parent = nullptr);
 
 protected:
@@ -19,9 +20,11 @@ protected:
     uchar *toAngles(uchar *ptr, sDevObj *obj);
     uchar *toBranchIt(uchar *ptr, sBranchIt &it);
     uchar *getBranchs(uchar *ptr, sDevObj *obj);
-
     void getDevData(uchar *ptr, int lines, sDevObj *obj);
-    void initRtuItem(sRtuItem &it);
+
+    bool checkCrc(uchar *recv, int len);
+    int initRtuItem(uchar *cmd, uchar fn);
+    int filterUpolData(uchar *recv, uchar fn=45);
 
     int recvLine(int len);
     bool recvPacket(uchar *buf, int len);

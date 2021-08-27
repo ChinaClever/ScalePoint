@@ -6,6 +6,11 @@ BaseLogs::BaseLogs(QObject *parent) : QThread(parent)
 
 }
 
+BaseLogs::~BaseLogs()
+{
+    wait();
+}
+
 BaseLogs *BaseLogs::bulid(QObject *parent)
 {
     static BaseLogs* sington = nullptr;
