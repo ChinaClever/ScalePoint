@@ -5,6 +5,7 @@
  */
 #include "home_workwid.h"
 #include "ui_home_workwid.h"
+#include <QFileDialog>
 
 Home_WorkWid::Home_WorkWid(QWidget *parent) :
     QWidget(parent),
@@ -30,6 +31,7 @@ void Home_WorkWid::initLayout()
     QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->addWidget(this);
+    ui->imgBtn->setHidden(true);
 }
 
 void Home_WorkWid::initFunSlot()
@@ -41,6 +43,7 @@ void Home_WorkWid::initFunSlot()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
+    connect(mCoreThread, SIGNAL(waitSig()), this, SLOT(waitForSlot()));
 }
 
 void Home_WorkWid::setTextColor()
@@ -104,6 +107,14 @@ void Home_WorkWid::updateTime()
     ui->timeLab->setStyleSheet(style);
 }
 
+void Home_WorkWid::setWidEnabled(bool en)
+{
+    ui->imgBtn->setEnabled(en);
+    ui->modeBox->setEnabled(en);
+    ui->checkBox->setEnabled(en);
+    ui->groupBox_2->setEnabled(en);
+}
+
 void Home_WorkWid::updateResult()
 {
     QString style;
@@ -118,9 +129,9 @@ void Home_WorkWid::updateResult()
     }
     style += "font:100 34pt \"微软雅黑\";";
 
+    setWidEnabled(true);
     mPro->step = Test_End;
     ui->timeLab->setText(str);
-    ui->groupBox_2->setEnabled(true);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
@@ -173,8 +184,21 @@ void Home_WorkWid::timeoutDone()
 
 bool Home_WorkWid::initSerial()
 {
-    bool ret = mItem->com->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+    //bool ret = mItem->com->isOpened();
+    //if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+
+    bool ret = true;
+    sMac *it = &(mItem->macs);
+    int res =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
+    if(res <= it->cntMac) {
+        if(res < 1) {
+            MsgBox::critical(this, tr("MAC地址已用完，无法继续使用")); ret = false;
+        } else {
+            QString str = tr("剩余MAC地址，仅有%1个，请向领导反馈").arg(res);
+            MsgBox::critical(this, str);
+        }
+    }
+
     return ret;
 }
 
@@ -206,14 +230,14 @@ void Home_WorkWid::initData()
 
 bool Home_WorkWid::initWid()
 {
-    bool ret = true; //initSerial();
+    bool ret = initSerial();
     if(ret) {
         initUser();
         if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}
         if(mItem->cnt.cnt < 1){MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;}
 
         initData();
-        ui->groupBox_2->setEnabled(false);
+        setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
@@ -242,4 +266,46 @@ void Home_WorkWid::on_startBtn_clicked()
 void Home_WorkWid::on_adCheckBox_clicked(bool checked)
 {
     ui->ipEdit->setEnabled(!checked);
+}
+
+void Home_WorkWid::waitForSlot()
+{
+    bool ret = MsgBox::question(this, tr("请重新上电，等待设备重新重启\n 设备能正常启动，并重启完成..."));
+    if(!ret) {
+        mPro->step = Test_Over;
+        mPro->result = Test_Fail;
+    }
+    mCoreThread->isContinue = true;
+}
+
+void Home_WorkWid::on_checkBox_clicked(bool checked)
+{
+    QString str = tr("未选择");
+    if(checked) {
+
+    } else {
+        mDt->img.clear();
+    }
+
+    ui->imgBtn->setText(str);
+    ui->imgBtn->setHidden(!checked);
+    ui->startBtn->setDisabled(checked);
+}
+
+void Home_WorkWid::on_imgBtn_clicked()
+{
+    bool en = true;
+    QString str = tr("未选择");
+    QString dir = "./Firmware_Build/4.0.0.5-48035/";
+    QString fn = QFileDialog::getOpenFileName(this, tr("选择烧录文件"), dir, "镜像文件(*.img)");
+    if(fn.contains(".img")){
+        mDt->img = fn;
+        str = tr("已选择");
+    } else {
+        en = false;
+        mDt->img.clear();
+    }
+
+    ui->imgBtn->setText(str);
+    ui->startBtn->setEnabled(en);
 }

@@ -44,11 +44,14 @@ bool Test_CoreThread::initFun()
     return ret;
 }
 
-
 bool Test_CoreThread::programFab()
 {
     bool ret = mFab->check();
     if(ret) {
+        if(mDt->img.size()) {
+            ret = mFab->programFull();
+        }
+
         mSn->createSn();
         ret = mFab->workDown();
     }
@@ -60,10 +63,10 @@ void Test_CoreThread::macSnCheck()
 {
     bool ret = false;
     QString str = "serial Number" + tr("检查");
-    if(mDt->serialNumber != mDt->sn) {
-        str += tr("错误：%1 %2").arg(mDt->serialNumber).arg(mDt->sn);
+    if(mDt->ctrlBoardSerial != mDt->sn) {
+        str += tr("错误：%1 %2").arg(mDt->ctrlBoardSerial).arg(mDt->sn);
     } else {
-        str += tr("正确：%1 ").arg(mDt->serialNumber); ret = true;
+        str += tr("正确：%1 ").arg(mDt->ctrlBoardSerial); ret = true;
     }
     updatePro(str, ret);
 
@@ -76,11 +79,24 @@ void Test_CoreThread::macSnCheck()
     updatePro(str, ret);
 }
 
+bool Test_CoreThread::waitFor()
+{
+    emit waitSig();
+    bool ret = false;
+    isContinue = false;
+    while(!isContinue) msleep(10);
+    if(mPro->step < Test_Over) ret = true;
+    else updatePro(tr("设备未正常启动.."), ret);
+
+    return ret;
+}
+
 void Test_CoreThread::workDown()
 {   
     bool ret = programFab();
     if(ret) {
-        ret = mNetWork->startProcess();
+        ret =  waitFor();
+        if(ret) ret = mNetWork->startProcess();
         if(ret) macSnCheck();
     }
 }
@@ -93,6 +109,7 @@ void Test_CoreThread::run()
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Set:  programFab(); break;
+        case Test_Secure: mFab->secure_boot_prov(); break;
         case Test_Collect:  mNetWork->startProcess(); break;
         }
     } else mPro->result = Test_Fail;

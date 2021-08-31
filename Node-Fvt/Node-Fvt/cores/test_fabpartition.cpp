@@ -1,10 +1,15 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "test_fabpartition.h"
 
 test_FabPartition::test_FabPartition(QObject *parent) : BaseThread(parent)
 {
-
+    mSn = Test_SerialNumber::bulid(this);
+    mDir = "./Firmware_Build/4.0.0.5-48035/";
 }
-
 
 test_FabPartition *test_FabPartition::bulid(QObject *parent)
 {
@@ -34,12 +39,11 @@ int test_FabPartition::shexec(const char *cmd, char res[][512], int count)
         return -1;
     }
 
-
     res[0][0] = 0;
     char tmp[512] ={0};
     while(fgets(tmp, sizeof(tmp), pp) != NULL) {
         if(tmp[strlen(tmp)-1] == '\n') {
-            tmp[strlen(tmp)-1] = '\0';
+            //tmp[strlen(tmp)-1] = '\0';
         }
         // qDebug("%d.get return results: %s\n", i, tmp);
         strcpy(res[i], tmp); i++;
@@ -65,11 +69,11 @@ QString test_FabPartition::processOn(const QString &cmd)
 
     QString str;
 #if defined(Q_OS_LINUX)
-    emit fabSig("shexec, cmd: －－－－\n" + cmd);
+    emit fabSig("shexec, cmd: －－－－－－－－－－－－－－－－\n" + cmd);
     char *ptr = cmd.toLatin1().data();
     int cnt = shexec(ptr, res, 10);
     for(int i=0; i<cnt; ++i) str.append(res[i]);
-    emit fabSig("return results: －－－－\n" +str);
+    if(str.size()>2) emit fabSig("return results: －－－－－－－－－－－－－－－－\n" +str);
 #else
     updatePro(tr("不支持Window系统"), false);
 #endif
@@ -82,7 +86,7 @@ bool test_FabPartition::devExist()
     bool ret = isFileExist("/dev/ttyACM0");
     if(ret) {
         str += tr("已连接");
-        // processOn("echo \"123456\" | sudo -S chmod 777 /dev/ttyACM0");
+        processOn("echo \"123456\" | sudo -S chmod 777 /dev/ttyACM0");
     } else {
         str += tr("未找到设备，请确认烧录线是否连接正确？");
     }
@@ -90,12 +94,20 @@ bool test_FabPartition::devExist()
     return updatePro(str, ret);
 }
 
+void test_FabPartition::secure_boot_prov()
+{
+    QString cmd = "cd " + mDir +"secure_boot_prov-scalepoint-040000-48035/ \n"
+                                "sh secure_boot_permanent_scalepoint.sh";
+    processOn(cmd.toLocal8Bit().data());
+    updatePro(tr("启用完全引导"));
+}
 
 bool test_FabPartition::at91recovery()
 {
-    bool ret = isFileExist("at91recovery");
+    QString fn = mDir + "at91recovery";
+    bool ret = isFileExist(fn);
     if(ret) {
-        // processOn("echo \"123456\" | sudo -S chmod 777 at91recovery");
+        processOn("echo \"123456\" | sudo -S chmod 777 -R Firmware_Build/*");
     } else {
         updatePro(tr(" at91recovery 执行程序未发现"), ret);
     }
@@ -108,11 +120,9 @@ bool test_FabPartition::changePermissions()
     QString str = tr("改变IMG文件的权限");
     updatePro(tr("准备")+str);
 
-    QString cmd = "echo \"123456\" | sudo -S chmod 777 %1.img \n"
-                  "sudo chmod 777 at91recovery \n"
-                  "sudo chmod 777 /dev/ttyACM0" ;
+    QString cmd = "echo \"123456\" | sudo -S chmod 777 -R " + mDir +
+                  "*.img \n sudo chmod 777 /etc/pki/secure_boot_prov/*";
     processOn(cmd.arg(mDt->sn));
-
     return updatePro(tr("已")+str);
 }
 
@@ -123,37 +133,34 @@ bool test_FabPartition::programFab()
 
     QStringList ls;
     QProcess pro(this);
-    ls << "-y" << "/dev/ttyACM0" << mDt->sn+".img" << "fab";
-    pro.start("at91recovery", ls);
-    bool ret = pro.waitForFinished();
+    ls << "-y" << "/dev/ttyACM0" << mDir + mDt->sn+".img" << "fab";
+    pro.start(mDir +"at91recovery", ls);
 
-    QByteArray bs = pro.readAllStandardOutput();
-    bs +=  pro.readAllStandardError();
-    QString res = QString::fromLocal8Bit(bs);
-    if(res.contains("ERR")) {
-        ret = false;
-        str += tr(" 失败");
+    str = "S/N:" + mDt->sn + "  Mac:" + mItem->macs.mac;
+    bool ret = readOutput(pro);
+    if(ret) {
+        str += tr(" 写入成功");
     } else {
-        str += tr(" 成功");
+        str += tr(" 写入失败");
     }
 
-    emit fabSig(res);
+    mvFile(ret);
     return updatePro(str, ret);
 }
 
 bool test_FabPartition::createFab()
 {
-    QString cmd = "mkdir -p ScalePoint \n"
-                  "cd ScalePoint \n"
-                  "echo \"MAC=%1\" > system.cfg \n"
-                  "echo \"BOARD_SERIAL=%2\" >> system.cfg \n"
-                  "cd ../ \n"
-                  "mkfs.cramfs -b 4096 ScalePoint/ %2.img \n";
+    QString cmd = "mkdir -p %1ScalePoint \n cd %1ScalePoint \n"
+                  "rm -f system.cfg \n"
+                  "echo \"MAC=%2\" > system.cfg \n"
+                  "echo \"BOARD_SERIAL=%3\" >> system.cfg \n"
+                  "cat system.cfg \n cd ../ \n"
+                  "mkfs.cramfs -b 4096 ScalePoint/ %3.img \n";
 
     QString str = "create FAB partition ";
-    bool ret = isFileExist("ScalePoint/eto-desc.xml");
+    bool ret = isFileExist(mDir +"ScalePoint/eto-desc.xml");
     if(ret) {
-        QString res = processOn(cmd.arg(mItem->macs.mac).arg(mDt->sn));
+        QString res = processOn(cmd.arg(mDir).arg(mItem->macs.mac).arg(mDt->sn));
     } else {
         str = tr("配置文件缺少 eto-desc.xml");
     }
@@ -161,13 +168,70 @@ bool test_FabPartition::createFab()
     return updatePro(str, ret);
 }
 
+bool test_FabPartition::mvFile(bool res)
+{
+    QString cmd = "cd %2 \n mkdir -p fabs fabs/%1 \n"
+                  "mv ScalePoint/system.cfg fabs/%1/ \n"
+                  "mv %1.img fabs/%1" ;
+    if(res) {
+        processOn(cmd.arg(mDt->sn).arg(mDir));
+    } else {
+        mItem->currentNum--;
+        mSn->updateMacAddr(-1);
+        Cfg::bulid()->setCurrentNum();
+    }
+
+    return res;
+}
+
+bool test_FabPartition::readOutput(QProcess &pro)
+{
+    bool ret, res = true;
+    do {
+        ret = pro.waitForFinished(1000);
+        QByteArray bs = pro.readAllStandardOutput();
+        bs +=  pro.readAllStandardError();
+        QString str = QString::fromLocal8Bit(bs);
+        if(str.contains("ERR")) res = false; //else str = str.simplified();
+        if(str.size() > 2) emit fabSig(str);
+    } while(!ret);
+
+    pro.close();
+    return res;
+}
+
+
+bool test_FabPartition::programFull()
+{
+    QStringList ls;
+    QProcess pro(this);
+    updatePro(tr("开始烧录镜像文件，请耐心等待"));
+
+    ls << "-y" << "/dev/ttyACM0" << mDt->img << "0x00000";
+    QString exe = mDir + "at91recovery";
+    pro.start(exe, ls);
+
+    bool ret = readOutput(pro);
+    QString str = tr("录镜像文件，写入");
+    if(ret) str += tr("成功"); else str += tr("失败");
+    return updatePro(str, ret);
+}
+
+bool test_FabPartition::check()
+{
+    bool ret = at91recovery();
+    if(ret) ret = devExist();
+
+    return ret;
+}
 
 bool test_FabPartition::workDown()
 {
-    bool ret = at91recovery();
+    bool ret = check();
     if(ret) ret = createFab();
     if(ret) ret = changePermissions();
     if(ret) ret = programFab();
+    if(ret) secure_boot_prov();
 
     return ret;
 }

@@ -29,6 +29,7 @@ protected:
     void updateWid();
     void updateTime();
     void updateResult();
+    void setWidEnabled(bool en);
 
     bool initSerial();
     bool initWid();
@@ -38,10 +39,14 @@ protected:
 private slots:
     void timeoutDone();
     void initFunSlot();
+    void waitForSlot();
     void updateCntSlot();
     void on_startBtn_clicked();
-
     void on_adCheckBox_clicked(bool checked);
+
+    void on_checkBox_clicked(bool checked);
+
+    void on_imgBtn_clicked();
 
 private:
     Ui::Home_WorkWid *ui;

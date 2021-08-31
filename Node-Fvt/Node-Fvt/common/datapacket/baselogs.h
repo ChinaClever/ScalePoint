@@ -10,6 +10,7 @@ class BaseLogs : public QThread, public BaseObject
     explicit BaseLogs(QObject *parent = nullptr);
 public:
     static BaseLogs *bulid(QObject *parent = nullptr);
+    ~BaseLogs();
 
     void saveLogs();
     void writeMac(const QString &mac){mMac=mac;}

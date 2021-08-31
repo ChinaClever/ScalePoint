@@ -8,6 +8,11 @@ class Test_CoreThread : public BaseThread
 public:
     explicit Test_CoreThread(QObject *parent = nullptr);
 
+    bool isContinue;
+
+signals:
+    void waitSig();
+
 protected:
     void run();
     bool initFun();
@@ -15,12 +20,13 @@ protected:
     void macSnCheck();
     void workDown();
     void workResult();
+    bool waitFor();
 
 protected slots:
     void initFunSlot();
 
 private:
-    Test_NetWork *mNetWork;    
+    Test_NetWork *mNetWork;
     Test_SerialNumber *mSn;
     test_FabPartition *mFab;
 };

@@ -79,12 +79,12 @@ bool Test_NetWork::startProcess()
     if(ret) {
         QString fn = getExeFile();
         if(!fn.size()) return false;
-
         QStringList cmd = getCmd();
-        mProcess->start(fn, cmd); // , QIODevice::ReadWrite  startDetached
-        ret = mProcess->waitForFinished();
+        mProcess->start(fn, cmd);
 
+        ret = mProcess->waitForFinished(5*60*1000);
         QByteArray bs = mProcess->readAllStandardOutput();
+        bs += mProcess->readAllStandardError();
         QString str = QString::fromLocal8Bit(bs); emit msgSig(str);
     }
 
@@ -96,7 +96,7 @@ void Test_NetWork::pduInfo(int fn, QString &msg)
 {
     switch (fn) {
     case 1: mDt->ctrlBoardSerial = msg; break;
-    case 2: mDt->macAddress = msg; break;
+    case 2: mDt->macAddress = msg.toUpper(); break;
     case 3: mDt->hwRevision = msg; break;
     case 4: mDt->fwRevision = msg; break;
     case 5: mDt->serialNumber = msg; break;
