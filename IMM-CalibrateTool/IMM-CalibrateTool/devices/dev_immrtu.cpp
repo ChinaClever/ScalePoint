@@ -92,11 +92,28 @@ int Dev_ImmRtu::filterUpolData(uchar *recv, uchar fn)
     return len;
 }
 
+bool Dev_ImmRtu::requestAddr()
+{
+    static uchar recv[4*MODBUS_RTU_SIZE] = {0};
+    uchar sent[] = {0x01, 0x00, 0x01, 0x01, 0x5B, 0xB4};
+    bool ret = mModbus->writeSerial(sent, 6);
+    for(int i=0; i<3; ++i) mModbus->writeSerial(sent, 6);  //msleep(100);
+    if(ret) {
+        int len = mModbus->transmit(sent, 6, recv, 1);
+        if(len > 6) len = mModbus->transmit(sent, 6, recv, 1);
+        if(len > 6) len = mModbus->transmit(sent, 6, recv, 1);
+        if(len > 6) ret = false; else mItem->addr = 1;
+    }
+
+    return ret;
+}
+
 bool Dev_ImmRtu::readPduData()
 {
     bool ret = false;
-    static uchar recv[2*MODBUS_RTU_SIZE] = {0};
+    static uchar recv[4*MODBUS_RTU_SIZE] = {0};
     int len = filterUpolData(recv);
+    if(!len) len = filterUpolData(recv);
     if(len > 100) {
         ret = recvPacket(recv, len);
     } else {
@@ -109,7 +126,7 @@ bool Dev_ImmRtu::readPduData()
 bool Dev_ImmRtu::readVersion()
 {
     uchar recv[16] = {0};
-    bool ret = readPduData();
+    bool ret = readPduData();   
     if(ret) {
         int len = filterUpolData(recv, 5);
         if(len) {

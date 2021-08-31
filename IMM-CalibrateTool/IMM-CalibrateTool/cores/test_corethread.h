@@ -14,6 +14,8 @@ protected:
     void run();
     bool initFun();
     bool readDev();
+    bool execute();
+    bool readOutput(QProcess &pro);
 
     void workDown();
     void collectData();

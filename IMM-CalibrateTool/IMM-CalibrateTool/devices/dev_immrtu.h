@@ -9,9 +9,10 @@ class Dev_ImmRtu : public Dev_Object
     explicit Dev_ImmRtu(QObject *parent = nullptr);
 
 public:
+    static Dev_ImmRtu *bulid(QObject *parent = nullptr);
     bool readPduData();
     bool readVersion();
-    static Dev_ImmRtu *bulid(QObject *parent = nullptr);
+    bool requestAddr();
 
 protected:
     uchar *toItem(uchar *ptr, sItData &it);

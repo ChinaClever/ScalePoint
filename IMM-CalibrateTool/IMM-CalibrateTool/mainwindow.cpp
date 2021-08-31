@@ -19,8 +19,6 @@ MainWindow::~MainWindow()
 void MainWindow::initFunSlot()
 {
     initWid();
-    //QProcess pro(this);
-    //pro.startDetached(); ///////=========
 }
 
 void MainWindow::initWid()

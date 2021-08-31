@@ -20,18 +20,56 @@ void Test_CoreThread::initFunSlot()
     mSn = Sn_SerialNum::bulid(this);
 }
 
+
+bool Test_CoreThread::readOutput(QProcess &pro)
+{
+    bool ret, res = false;
+    do {
+        ret = pro.waitForFinished(1000);
+        QByteArray bs = pro.readAllStandardOutput();
+        bs +=  pro.readAllStandardError();
+        QString str = QString::fromLocal8Bit(bs);
+        if(str.contains("CONNECTED")) res = true; //else str = str.simplified();
+        QStringList ls = str.split("\n", QString::SkipEmptyParts);
+        for(int i=0; i<ls.size(); ++i) updatePro(ls.at(i).simplified());
+    } while(!ret);
+    pro.close();
+
+    return res;
+}
+
+bool Test_CoreThread::execute()
+{
+    bool ret = false;
+    QString exe = "SimpleIO_UM_CSExampleCode.exe";
+    QFile file(exe);
+    if (file.exists()){
+        QProcess pro(this);
+        pro.start(exe);
+        ret = readOutput(pro);
+        if(!ret) updatePro(tr("串口未正常连接") , ret);
+    } else {
+        updatePro(exe+tr(" 文件不存在") , ret);
+    }
+
+    return ret;
+}
+
+
 bool Test_CoreThread::readDev()
 {
-    QString str = tr("Modbus RTU通讯 ");
+    QString str = tr("请求地址 ");
     Dev_ImmRtu *dev = Dev_ImmRtu::bulid();
-
-    bool ret = dev->readVersion();
-    if(!ret) {
-        //QProcess pro(this); pro.execute(); ///////=========
-        // ret = dev->readVersion();
-    }
+    bool ret = dev->requestAddr();
     if(ret) str += tr("正常"); else str += tr("错误");
     updatePro(str, ret);
+
+    if(ret) {
+        str = tr("Modbus RTU通讯 ");
+        ret = dev->readVersion();
+        if(ret) str += tr("正常"); else str += tr("错误");
+        updatePro(str, ret);
+    }
 
     return ret;
 }
@@ -56,8 +94,9 @@ bool Test_CoreThread::initFun()
 {
     updatePro(tr("即将开始"));
     bool ret = mYc->powerOn();
-    if(ret) ret = mSn->snEnter();
+    if(ret) ret = execute();
     if(ret) ret = readDev();
+    if(ret) ret = mSn->snEnter();
     return ret;
 }
 
