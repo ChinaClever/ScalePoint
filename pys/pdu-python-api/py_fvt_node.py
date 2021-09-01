@@ -217,8 +217,8 @@ def check_count(expectcnt, cnt):
 def count_descs(descs, vid, pid):
     cnt = 0
     for d in descs:
-        print('d.vendorId : %d ; d.productId ：%d' % ( d.vendorId , d.productId))
         if d.vendorId == vid and d.productId == pid:
+            print('d.vendorId : %d ; d.productId : %d' % ( d.vendorId , d.productId))
             cnt += 1
     return cnt
 
@@ -234,9 +234,13 @@ def J1_Connection_Test(agent):
         for controller in pdu.getControllers():
             metadata = controller.getMetaData()
             serialNumber = metadata.serial
-            print("metadata.serial : %d " % (metadata.serial))
-            if serialNumber == '3096445020':
+            print("metadata.serial : %s " % (metadata.serial))
+            #if serialNumber == '3096445020':
+            if serialNumber == '180149487':
+                sendtoMainApp('检测J1口OK (%s)' % serialNumber)
                 return True
+            else:
+                sendtoMainApp('检测J1口Failed' , 0 )
 
     except rpc.HttpException as e:
         print(str(e))
@@ -317,7 +321,7 @@ if __name__=='__main__':
             show_PDU_Info(agent)
             ret = LCD_Button_Test(agent)
             ret = USB_A_Test(agent)
-            #print(J1_Connection_Test(agent))
+            ret = J1_Connection_Test(agent)
             ret = performFactoryHardReset(agent)
     except Exception as e:
         str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress
