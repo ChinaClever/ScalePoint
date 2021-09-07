@@ -43,8 +43,11 @@ void LOG_DateHash::setDate(const QStringList &dateList)
  */
 void LOG_DateHash::addDate(const QString &date)
 {
+#if(QT_VERSION < QT_VERSION_CHECK(6,0,0))
     QStringList list = date.split("-",QString::SkipEmptyParts);
-
+#else
+    QStringList list = date.split("-");
+#endif
     if(list.size() == 3) {
         QString str = list[0];
         if(!mYearList.contains(str))

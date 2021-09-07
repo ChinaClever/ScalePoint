@@ -42,7 +42,7 @@ void SqlExportDlg::init(const QString &title, QList<QStringList> &list)
 void SqlExportDlg::on_pushButton_clicked()
 {
     QFileDialog dlg(this,tr("路径选择"));
-    dlg.setFileMode(QFileDialog::DirectoryOnly);
+    dlg.setFileMode(QFileDialog::Directory);
     dlg.setDirectory("E:");
     if(dlg.exec() == QDialog::Accepted) {
         QString fn = dlg.selectedFiles().at(0);

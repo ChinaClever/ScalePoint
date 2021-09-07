@@ -44,10 +44,12 @@ QString CfgCom::pathOfData(const QString& name)
 bool CfgCom::cfgOpen(QObject *parent, const QString& fn)
 {
     QString strFilename = pathOfData(fn);
-    bool ret = QFileInfo(strFilename).exists();
+    bool ret = QFileInfo::exists(strFilename);
     if(mCfgIni == nullptr) {
         mCfgIni = new QSettings(strFilename, QSettings::IniFormat, parent);
+#if(QT_VERSION < QT_VERSION_CHECK(6,0,0))
         mCfgIni->setIniCodec(QTextCodec::codecForName("utf-8")); // gb18030
+#endif
     }
 
     return ret;

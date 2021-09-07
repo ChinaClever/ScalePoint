@@ -131,7 +131,7 @@ bool Json_Recv::recv(const QString &name)
             }
         }
         else
-            qDebug()<<"open file error!"<<endl;
+            qDebug()<<"open file error!";
     }
 
 
