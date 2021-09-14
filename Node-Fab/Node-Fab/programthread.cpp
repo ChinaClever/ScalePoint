@@ -4,13 +4,11 @@
  *      Author: Lzy
  */
 #include "programthread.h"
-static QReadWriteLock  *gRwLock = new QReadWriteLock();
 
 ProgramThread::ProgramThread(int id, QObject *parent) : QThread(parent)
 {
     mId = id;
     isRun = false;
-    mRwLock = gRwLock;
     mDir = "./Firmware_Build/4.0.0.5-48035/";
 }
 

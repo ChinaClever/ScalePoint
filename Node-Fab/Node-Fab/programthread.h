@@ -26,7 +26,6 @@ private:
     int mId;
     bool isRun;
     QString mDir;
-    QReadWriteLock *mRwLock;
 };
 
 #endif // PROGRAMTHREAD_H
