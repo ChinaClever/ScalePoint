@@ -30,7 +30,7 @@ bool Test_CoreThread::readOutput(QProcess &pro)
         bs +=  pro.readAllStandardError();
         QString str = QString::fromLocal8Bit(bs);
         if(str.contains("CONNECTED")) res = true; //else str = str.simplified();
-        QStringList ls = str.split("\n" /*, QString::SkipEmptyParts*/);
+        QStringList ls = str.split("\n", QString::SkipEmptyParts);
         for(int i=0; i<ls.size(); ++i) updatePro(ls.at(i).simplified());
     } while(!ret);
     pro.close();

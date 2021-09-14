@@ -247,9 +247,12 @@
           </property>
           <property name="font">
            <font>
-            <family>微软雅黑 Light</family>
-            <pointsize>9</pointsize>
+            <family>微软雅黑</family>
+            <pointsize>11</pointsize>
            </font>
+          </property>
+          <property name="text">
+           <string>01 00 01 01 5B B4</string>
           </property>
          </widget>
         </item>
@@ -289,9 +292,12 @@
           </property>
           <property name="font">
            <font>
-            <family>微软雅黑 Light</family>
-            <pointsize>9</pointsize>
+            <family>微软雅黑</family>
+            <pointsize>11</pointsize>
            </font>
+          </property>
+          <property name="text">
+           <string>30 01 00 00 15 C9</string>
           </property>
          </widget>
         </item>
@@ -331,9 +337,12 @@
           </property>
           <property name="font">
            <font>
-            <family>微软雅黑 Light</family>
-            <pointsize>9</pointsize>
+            <family>微软雅黑</family>
+            <pointsize>11</pointsize>
            </font>
+          </property>
+          <property name="text">
+           <string>30 01 00 01 05 E8</string>
           </property>
          </widget>
         </item>

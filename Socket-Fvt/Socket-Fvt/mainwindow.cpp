@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     SerialStatusWid *com = new SerialStatusWid(ui->comBox);
     mCom = com->initSerialPort(tr("PDU"));
     isRun = false;
+    execute();
 }
 
 MainWindow::~MainWindow()
@@ -27,6 +28,24 @@ void MainWindow::msleep(int msec)
         if(isRun) continue; else break;
     }
 }
+
+
+bool MainWindow::execute()
+{
+    bool ret = true;
+    QString exe = "SimpleIO_UM_CSExampleCode.exe";
+    QFile file(exe);
+    if (file.exists()){
+        QProcess pro(this);
+        pro.startDetached(exe);
+    } else {
+        exe += tr(" 文件不存在");
+        ret = MsgBox::critical(this, exe);
+    }
+
+    return ret;
+}
+
 
 bool MainWindow::sentCmd(const QString &cmd)
 {
@@ -45,7 +64,7 @@ bool MainWindow::sentCmd(const QString &cmd)
 void MainWindow::on_addrBtn_clicked()
 {
     QString str = ui->addrEdit->text();
-    sentCmd(str);
+    if(execute()) sentCmd(str);
 }
 
 void MainWindow::on_openBtn_clicked()

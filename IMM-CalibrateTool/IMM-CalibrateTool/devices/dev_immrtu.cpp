@@ -9,7 +9,7 @@
 #define IMM_RTU_THREE_LEN 10
 
 Dev_ImmRtu::Dev_ImmRtu(QObject *parent) : Dev_Object(parent)
-{   
+{
 }
 
 Dev_ImmRtu *Dev_ImmRtu::bulid(QObject *parent)

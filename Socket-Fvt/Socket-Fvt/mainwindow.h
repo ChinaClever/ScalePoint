@@ -18,6 +18,7 @@ public:
 
 protected:
     void workDown();
+    bool execute();
     bool sentCmd(const QString &cmd);
     void msleep(int msec);
 

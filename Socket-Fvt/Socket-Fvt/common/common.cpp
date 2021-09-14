@@ -103,7 +103,7 @@ QByteArray cm_HexStringToByteArray(QString hex, bool *ok)
     int p;
 
     QByteArray ret;
-    QStringList lst = hex.simplified().split(' ');//转化为字符串数组
+    QStringList lst = hex.simplified().split(' ', QString::SkipEmptyParts);//转化为字符串数组
     ret.resize(lst.count());
     for(int i = 0; i < lst.count(); i++)
     {
