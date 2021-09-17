@@ -47,7 +47,7 @@ void BaseLogs::saveLogs()
     bool ret = writeLog();
     if(ret) {
         writeLogs();
-        if(mMac.size()) writeMac();
+        //if(mMac.size()) writeMac();
     } else {
         // updatePro(tr("因未创建序列号，日志无法保存！"), false);
     }
@@ -59,8 +59,8 @@ bool BaseLogs::writeLog()
     Db_Tran db;
     sLogItem it;
 
-    it.dev = "Node";
-    // it.op = user_land_name(); ////========
+    it.fw = mDt->fw;
+    it.hw = mDt->hw;;
     it.user = mItem->user;
     it.sn = mDt->sn;
 
@@ -89,8 +89,8 @@ bool BaseLogs::writeLog()
 
 bool BaseLogs::initItem(sStateItem &it)
 {
-    it.dev = "Node";
     it.user = mItem->user;
+    it.fw = mDt->fw;
     it.sn = mDt->sn;
 
     return it.sn.size();

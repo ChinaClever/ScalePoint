@@ -211,7 +211,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>设备类型：</string>
+    <string>软件版本：</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

@@ -4,7 +4,7 @@
 
 struct sLogItem : public DbBasicItem{
     sLogItem(){}
-    QString dev, user, op, result, sn;
+    QString user, fw, hw, result, sn;
 };
 
 class DbLogs : public SqlBasic<sLogItem>

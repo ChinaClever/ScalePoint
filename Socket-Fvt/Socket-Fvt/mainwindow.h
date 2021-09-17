@@ -2,7 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "common.h"
+#include "navbarwid.h"
+#include "logmainwid.h"
+#include "setup_mainwid.h"
+#include "home_mainwid.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,20 +20,18 @@ public:
     ~MainWindow();
 
 protected:
-    void workDown();
-    bool execute();
-    bool sentCmd(const QString &cmd);
-    void msleep(int msec);
+    void initWid();
 
-private slots:
-    void on_addrBtn_clicked();
-    void on_openBtn_clicked();
-    void on_closeBtn_clicked();
-    void on_startBtn_clicked();
+protected slots:
+    void initFunSlot();
+    void navBarSlot(int);
 
 private:
     Ui::MainWindow *ui;
-    SerialPort *mCom;
-    bool isRun;
+
+    LogMainWid *mLog;
+    NavBarWid *mNavBarWid;
+    Home_MainWid *mHomeWid;
+    Setup_MainWid *mSetupWid;
 };
 #endif // MAINWINDOW_H

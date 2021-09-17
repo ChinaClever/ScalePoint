@@ -5,7 +5,8 @@
 
 enum eDevTypes {
     IMM=0,
-    Node=0,
+    Node=1,
+    Socket,
 
     AC = 1, // 交流
     DC,     // 直流
@@ -46,7 +47,6 @@ struct sCfgItem
     QString user;
     sCount cnt;
     int logCount;
-    uchar aiMode;
     uchar pcNum;
     ushort currentNum;
 

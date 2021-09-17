@@ -6,19 +6,13 @@
 
 struct sDevType
 {
-    sDevType() {devId=devType=lines=0;}
+    sDevType() {outputs=2;}
 
-    uchar devId;
-    uchar devType; // 0 SI-PDU  1 IP-PDU
-    uchar lines;
-
-    QString manufacturer;
-    QString model;
+    uchar outputs;
     QString sn;
-    QString hwRevision;
-    QString fwRevision;
-    QString ctrlBoardSerial;
-    QString macAddress;
+    QString hw;
+    QString fw;
+    QString pn;
 };
 
 
@@ -35,9 +29,9 @@ struct sDevData
 enum {
     Test_Fun, // 功能
     Test_Start, // 开始
-    Test_Collect,
-    Test_Ading,
-    Test_vert, // 验证
+    Test_Addr,
+    Test_Ctrl,
+    Test_Zero, // 验证
     Test_Over, // 终止
     Test_End, // 完成
 

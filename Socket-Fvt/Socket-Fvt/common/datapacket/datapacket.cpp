@@ -29,12 +29,10 @@ void sDataPacket::init()
     pro->status.clear();
     dev->dt.sn.clear();
 
-    dev->dt.ctrlBoardSerial.clear();
-    dev->dt.manufacturer.clear();
-    dev->dt.hwRevision.clear();
-    dev->dt.fwRevision.clear();
-    dev->dt.macAddress.clear();
-    dev->dt.model.clear();
+    dev->dt.pn.clear();
+    dev->dt.sn.clear();
+    dev->dt.hw.clear();
+    dev->dt.fw.clear();
 
     pro->result = Test_Info;
     pro->startTime = QTime::currentTime();

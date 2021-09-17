@@ -24,7 +24,7 @@ bool BaseLogs::writeMac()
 {
     sMacItem it;
 
-    it.dev = "Node";
+    it.fw = mDt->fwRevision;
     it.user = mItem->user;
     it.sn = mDt->sn;
     it.mac = mMac;
@@ -64,8 +64,8 @@ bool BaseLogs::writeLog()
     Db_Tran db;
     sLogItem it;
 
-    it.dev = "Node";
-    it.op = user_land_name();
+    it.fw = mDt->fwRevision;
+    it.hw = mDt->hwRevision;
     it.user = mItem->user;
     it.sn = mDt->sn;
 
@@ -94,7 +94,7 @@ bool BaseLogs::writeLog()
 
 bool BaseLogs::initItem(sStateItem &it)
 {
-    it.dev = "Node";
+    it.fw = mDt->fwRevision;
     it.user = mItem->user;
     it.sn = mDt->sn;
 
