@@ -81,7 +81,7 @@ void MainWindow::on_startBtn_clicked()
 {
    int ret = QMessageBox::question(this, tr("信息询问"), tr("请确认进行一键烧录"),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-   if(QMessageBox::Ok == ret) {
+   if(QMessageBox::Yes == ret) {
        emit startSig();
    }
 }
