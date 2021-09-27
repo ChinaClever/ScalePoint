@@ -56,6 +56,7 @@ int MainWindow::initWidget()
             if(name.contains("widget_")) {
                 id = name.remove("widget_").toInt()-1;
                 mProgramWid[id] = new ProgramWid(id, b);
+                connect(this, &MainWindow::startSig, mProgramWid[id], &ProgramWid::startSlot);
             }
         }
     }
@@ -76,3 +77,11 @@ void MainWindow::on_fnBtn_clicked()
 }
 
 
+void MainWindow::on_startBtn_clicked()
+{
+   int ret = QMessageBox::question(this, tr("信息询问"), tr("请确认进行一键烧录"),
+                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+   if(QMessageBox::Ok == ret) {
+       emit startSig();
+   }
+}

@@ -16,12 +16,16 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void startSig();
+
 protected:
     int initWidget();
 
 private slots:
     void initFunSlot();
     void on_fnBtn_clicked();
+    void on_startBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
