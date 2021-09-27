@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     set_background_icon(ui->barWid,":/image/title_back.jpg");
     QTimer::singleShot(50,this,SLOT(initFunSlot()));
     mDir = "./Firmware_Build/4.0.0.5-48035/";
-    initWidget();
+    mSize = initWidget();
 }
 
 MainWindow::~MainWindow()
@@ -33,7 +33,7 @@ void MainWindow::initFunSlot()
         QString cmd = "cd " + mDir +" \n mkdir -p tmp/ \n"
                       "echo \"123456\" | sudo -S chmod -R 777 ./ \n"
                       "rm -f tmp/* \n ";
-        for(int i=0; i<6; ++i) {
+        for(int i=0; i<mSize; ++i) {
             cmd += "cp -f at91recovery tmp/at91recovery_" + QString::number(i) + " \n";
         }   system(cmd.toLocal8Bit().data());
     } else {
@@ -44,8 +44,9 @@ void MainWindow::initFunSlot()
 
 }
 
-void MainWindow::initWidget()
+int MainWindow::initWidget()
 {
+    int id = 0;
     QObjectList list = ui->widget->children();
     foreach (QObject *obj1, list)
     {
@@ -53,11 +54,12 @@ void MainWindow::initWidget()
             QWidget *b = qobject_cast<QWidget*>(obj1);
             QString name = b->objectName();
             if(name.contains("widget_")) {
-                int id = name.remove("widget_").toInt()-1;
+                id = name.remove("widget_").toInt()-1;
                 mProgramWid[id] = new ProgramWid(id, b);
             }
         }
     }
+    return id;
 }
 
 void MainWindow::on_fnBtn_clicked()
@@ -66,7 +68,7 @@ void MainWindow::on_fnBtn_clicked()
     if(fn.contains(".img")) {
         ui->fnLab->setText(fn.split("/").last());
         QString cmd = "cd " + mDir +" \n echo \"123456\" | sudo -S chmod 777 " + fn +" \n";
-        for(int i=0; i<6; ++i) cmd += "cp -f " + fn +" tmp/" + QString::number(i) + ".img \n";
+        for(int i=0; i<mSize; ++i) cmd += "cp -f " + fn +" tmp/" + QString::number(i) + ".img \n";
         cmd += "sudo chmod -R 777 ./tmp/* \n";
         system(cmd.toLocal8Bit().data());
         ui->widget->setEnabled(true);

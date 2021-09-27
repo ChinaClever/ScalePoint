@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 protected:
-    void initWidget();
+    int initWidget();
 
 private slots:
     void initFunSlot();
@@ -26,7 +26,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
+    int mSize;
     QString mDir;
-    ProgramWid *mProgramWid[6];
+    ProgramWid *mProgramWid[16];
 };
 #endif // MAINWINDOW_H
