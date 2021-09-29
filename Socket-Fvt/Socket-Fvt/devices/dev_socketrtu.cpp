@@ -10,7 +10,6 @@ Dev_SocketRtu::Dev_SocketRtu(QObject *parent) : Dev_Object(parent)
 
 }
 
-
 Dev_SocketRtu *Dev_SocketRtu::bulid(QObject *parent)
 {
     static Dev_SocketRtu* sington = nullptr;
