@@ -16,6 +16,9 @@ public:
     explicit ProgramWid(int id, QWidget *parent = nullptr);
     ~ProgramWid();
 
+public slots:
+    void startSlot();
+
 protected:
     void initWid();
     bool connected();
@@ -24,11 +27,9 @@ protected:
 
 protected slots:
     void updateProSlot(int, int);
+    void on_startBtn_clicked();
     void endFunSlot(bool res);
     void timeoutDone();
-
-private slots:
-    void on_startBtn_clicked();
 
 private:
     Ui::ProgramWid *ui;

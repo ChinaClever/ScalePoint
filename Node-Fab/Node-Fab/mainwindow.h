@@ -16,17 +16,22 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void startSig();
+
 protected:
-    void initWidget();
+    int initWidget();
 
 private slots:
     void initFunSlot();
     void on_fnBtn_clicked();
+    void on_startBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
 
+    int mSize;
     QString mDir;
-    ProgramWid *mProgramWid[6];
+    ProgramWid *mProgramWid[16];
 };
 #endif // MAINWINDOW_H

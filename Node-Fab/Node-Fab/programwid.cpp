@@ -49,7 +49,7 @@ bool ProgramWid::isFileExist()
     bool ret = false;
     QString fn = "/dev/ttyACM%1";
 
-    QFile file(fn.arg(mId));
+    QFileInfo file(fn.arg(mId));
     if (file.exists()){
         ret =  true;
     } else {
@@ -144,4 +144,12 @@ void ProgramWid::on_startBtn_clicked()
     ui->progressBar_2->setValue(0);
     ui->endLab->setText("");
     mThread->start();
+}
+
+void ProgramWid::startSlot()
+{
+    bool en = ui->startBtn->isEnabled();
+    if(en && !isRun) {
+        on_startBtn_clicked();
+    }
 }
