@@ -5,9 +5,6 @@
  */
 #include "dev_immrtu.h"
 
-#define IMM_RTU_DC_LEN  5
-#define IMM_RTU_THREE_LEN 10
-
 Dev_ImmRtu::Dev_ImmRtu(QObject *parent) : Dev_Object(parent)
 {
 }
@@ -23,10 +20,10 @@ Dev_ImmRtu *Dev_ImmRtu::bulid(QObject *parent)
 int Dev_ImmRtu::recvLine(int len)
 {
     int ret = 0;
-    switch (len) {
-    case IMM_RTU_DC_LEN: ret = 1; break;
-    case IMM_RTU_THREE_LEN: ret = 3; break;
-    default: qDebug() << "SI rtu recv len Err!!" << len; break;
+    switch (len-4) {
+    case LEN_READ_IMM_1L: ret = 1; break;
+    case LEN_READ_IMM_3L: ret = 3; break;
+    default: qDebug() << "IMM rtu recv len Err!!" << len; break;
     }
 
     return ret;
@@ -36,9 +33,12 @@ int Dev_ImmRtu::recvLine(int len)
 bool Dev_ImmRtu::recvPacket(uchar *buf, int len)
 {
     bool ret = true;
-    int line = 3; // int line = recvLine(len);
-
-    getDevData(buf, line, mData);
+    int line = 3; // int line = recvLine(len); //////========
+    if(line) {
+        getDevData(buf, line, mData);
+    } else {
+        ret = false;
+    }
 
     return ret;
 }
