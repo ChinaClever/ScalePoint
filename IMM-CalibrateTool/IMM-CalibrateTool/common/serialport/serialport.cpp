@@ -211,7 +211,7 @@ int SerialPort::read(QByteArray &array, int secs)
     if(isOpen) {
         for(int i=0; i<10*secs; ++i) {
             int rtn = mSerialData.size();
-            if(rtn > 0) {
+             if(rtn && i) {
                 msleep(350);
                 QWriteLocker locker(&mRwLock);
                 array += mSerialData;

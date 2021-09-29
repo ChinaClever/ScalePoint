@@ -11,8 +11,6 @@ class Dev_ImmRtu : public Dev_Object
 public:
     static Dev_ImmRtu *bulid(QObject *parent = nullptr);
     bool readPduData();
-    bool readVersion();
-    bool requestAddr();
 
 protected:
     uchar *toItem(uchar *ptr, sItData &it);
@@ -22,10 +20,6 @@ protected:
     uchar *toBranchIt(uchar *ptr, sBranchIt &it);
     uchar *getBranchs(uchar *ptr, sDevObj *obj);
     void getDevData(uchar *ptr, int lines, sDevObj *obj);
-
-    bool checkCrc(uchar *recv, int len);
-    int initRtuItem(uchar *cmd, uchar fn);
-    int filterUpolData(uchar *recv, uchar fn=45);
 
     int recvLine(int len);
     bool recvPacket(uchar *buf, int len);

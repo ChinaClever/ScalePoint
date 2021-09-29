@@ -10,14 +10,8 @@ class Dev_SocketRtu : public Dev_Object
 public:
     static Dev_SocketRtu *bulid(QObject *parent = nullptr);
 
-    bool requestAddr();
-    bool readVersion();
-
-protected:
-    int initRtuItem(uchar *cmd, uchar fn);
-    bool checkCrc(uchar *recv, int len);
-    int filterUpolData(uchar *recv, uchar fn);
-
+    bool openAll();
+    bool closeAll();
 };
 
 #endif // DEV_SOCKETRTU_H

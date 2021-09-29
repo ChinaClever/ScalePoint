@@ -3,6 +3,7 @@ INCLUDEPATH += $$PWD
 
 
 HEADERS += \
+    $$PWD/Function_Block.h \
     $$PWD/dev_immrtu.h \
     $$PWD/dev_object.h
 	
