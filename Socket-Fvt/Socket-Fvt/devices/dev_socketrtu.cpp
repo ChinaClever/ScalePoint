@@ -23,7 +23,17 @@ bool Dev_SocketRtu::openAll()
     return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x00);
 }
 
+bool Dev_SocketRtu::openOutput(uchar addr)
+{
+    return  masterWrite(FC_RELAY_WRITE, addr, 0x00, 0x00);
+}
+
 bool Dev_SocketRtu::closeAll()
 {
     return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x01);
+}
+
+bool Dev_SocketRtu::closeOutput(uchar addr)
+{
+    return  masterWrite(FC_RELAY_WRITE, addr, 0x00, 0x01);
 }

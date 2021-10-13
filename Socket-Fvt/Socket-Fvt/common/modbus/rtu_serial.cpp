@@ -18,7 +18,7 @@ int Rtu_Serial::readSerial(quint8 *cmd, int secs)
     if(!mSerial) return rtn;
 
     sProgress *pro = sDataPacket::bulid()->getPro();
-    for(int i=0; i<=secs; ++i) {
+    for(int i=0; i<secs; ++i) {
         if(pro->step < Test_Over){
             rtn = mSerial->read(cmd, 1);
             if(rtn > 0) break;

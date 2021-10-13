@@ -57,7 +57,7 @@ int Dev_Object::transmit(sFrameFormat &it, uchar *recv)
 {
     uchar sent[10] = {0};
     int len = toArray(it, sent);
-    len = mModbus->transmit(sent, len, recv, 2);
+    len = mModbus->transmit(sent, len, recv, 1);
     if(len < 10 || len > 200) len = mModbus->transmit(sent, len, recv, 1);
     if(len < 10) { qDebug() << " Dev_Object read Data err" << len; return 0; }
     return len;

@@ -34,6 +34,7 @@ bool Test_CoreThread::readDev()
 
     return ret;
 }
+
 void Test_CoreThread::workResult()
 {
     bool res = true;
@@ -59,9 +60,6 @@ bool Test_CoreThread::initFun()
     return ret;
 }
 
-
-
-
 void Test_CoreThread::workDown()
 {
 
@@ -74,8 +72,9 @@ void Test_CoreThread::run()
     if(ret) {
         switch (mPro->step) {
         case Test_Start: workDown(); break;
-        //case Test_Ctrl:  programFab(); break;
-        //case Test_Zero: mFab->secure_boot_prov(); break;
+        // case Test_Zero: mFab->secure_boot_prov(); break;
+        case Test_Ctrl_Open: mRtu->openAll(); updatePro(tr("Socket 打开所有的输出位")); break;
+        case Test_Ctrl_Close: mRtu->closeAll(); updatePro(tr("Socket 关闭所有的输出位")); break;
         }
     } else mPro->result = Test_Fail;
 

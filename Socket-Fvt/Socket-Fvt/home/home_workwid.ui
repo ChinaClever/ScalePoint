@@ -304,7 +304,12 @@
       </item>
       <item>
        <property name="text">
-        <string>开关控制</string>
+        <string>输出位全开</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>输出位全关</string>
        </property>
       </item>
       <item>

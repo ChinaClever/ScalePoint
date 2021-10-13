@@ -12,9 +12,7 @@ public:
 protected:
     void run();
     bool initFun();
-    bool execute();
     bool readDev();
-    bool readOutput(QProcess &pro);
 
     void workDown();
     void workResult();

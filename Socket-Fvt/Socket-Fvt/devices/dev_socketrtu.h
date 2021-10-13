@@ -11,7 +11,10 @@ public:
     static Dev_SocketRtu *bulid(QObject *parent = nullptr);
 
     bool openAll();
+    bool openOutput(uchar addr);
+
     bool closeAll();
+    bool closeOutput(uchar addr);
 };
 
 #endif // DEV_SOCKETRTU_H
