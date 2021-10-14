@@ -157,8 +157,7 @@ bool Dev_Object::readVersion()
     bool ret = true;
     QByteArray res = masterRequest(FC_FW_VERSION, mItem->addr, 0, 0);
     if(res.size()) {
-        ushort version = res[2]*256 + res[3];
-        if(version) mDt->fw = QString::number(version/100.0);
+        mDt->fw = tr("%1.%2").arg((uchar)res[2]).arg((uchar)res[3]);
     } else {
         ret = false;
     }

@@ -8,7 +8,7 @@
 
 
 // ****************************************************************************************************
-// User define 
+// User define
 // ****************************************************************************************************
 #define    MASTER_ADDR             0x00    // Base ADDRESS
 #define    BROADCAST_ADDR          0xFF    // Broadcast Address
@@ -25,7 +25,7 @@
 
 
 // ****************************************************************************************************
-// Function code define 
+// Function code define
 // ****************************************************************************************************
 #define    FC_REQUEST_ADDR       0x01    // Enumeration: (start if CTRL = 0) (Device is the MASTER in this case !)
 #define    FC_SET_CTRL           0x02    // SET CTRL line (must be send at end of enumeration by the Base

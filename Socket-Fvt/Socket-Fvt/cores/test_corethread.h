@@ -13,6 +13,7 @@ protected:
     void run();
     bool initFun();
     bool readDev();
+    void outputCtrl();
 
     void workDown();
     void workResult();

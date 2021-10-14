@@ -13,10 +13,9 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
-    mExe =Test_Execute::bulid(this);
+    mExe = Test_Execute::bulid(this);
     mRtu = Dev_SocketRtu::bulid(this);
 }
-
 
 bool Test_CoreThread::readDev()
 {
@@ -51,6 +50,15 @@ void Test_CoreThread::workResult()
     mPro->step = Test_Over;
 }
 
+void Test_CoreThread::outputCtrl()
+{
+    mRtu->openAll(); msleep(500);
+    updatePro(tr("Socket 打开所有的输出位"));
+    mRtu->closeAll(); sleep(1);
+    updatePro(tr("Socket 关闭所有的输出位"));
+    mRtu->openAll();
+}
+
 bool Test_CoreThread::initFun()
 {    
     bool ret = updatePro(tr("即将开始"));
@@ -65,6 +73,7 @@ void Test_CoreThread::workDown()
 
 }
 
+
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
@@ -72,9 +81,8 @@ void Test_CoreThread::run()
     if(ret) {
         switch (mPro->step) {
         case Test_Start: workDown(); break;
+        case Test_Ctrl: outputCtrl(); break;
         // case Test_Zero: mFab->secure_boot_prov(); break;
-        case Test_Ctrl_Open: mRtu->openAll(); updatePro(tr("Socket 打开所有的输出位")); break;
-        case Test_Ctrl_Close: mRtu->closeAll(); updatePro(tr("Socket 关闭所有的输出位")); break;
         }
     } else mPro->result = Test_Fail;
 
