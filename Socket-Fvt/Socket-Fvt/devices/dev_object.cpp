@@ -59,7 +59,7 @@ int Dev_Object::transmit(sFrameFormat &it, uchar *recv)
     int len = toArray(it, sent);
     len = mModbus->transmit(sent, len, recv, 1);
     if(len < 10 || len > 200) len = mModbus->transmit(sent, len, recv, 1);
-    if(len < 10) { qDebug() << " Dev_Object read Data err" << len; return 0; }
+    if(len < 6) { qDebug() << " Dev_Object read Data err" << len; return 0; }
     return len;
 }
 
@@ -69,11 +69,11 @@ int Dev_Object::filterUpolData(sFrameFormat &it)
     int len = transmit(it, recv);
 
     uchar *ptr = recv + 6;
-    if((it.fc == ptr[0]) && (it.addr == ptr[1]) && (len > 10)) {
+    if(/*(it.fc == ptr[0]) && */(it.addr == ptr[1]) && (len > 10)) {
         for(int i=0; i<len-6; ++i) recv[i] = recv[i+6]; len -= 6;
         if(checkCrc(recv, len)) it.reply = recv; else len = 0;
     } else {
-        qDebug() << " Dev_Object filter UPOL Data err" << it.fc << it.addr << len;
+        if(len!=6) qDebug() << " Dev_Object filter UPOL Data err" << it.fc << ptr[0] << it.addr << len;
         len = 0;
     }
 

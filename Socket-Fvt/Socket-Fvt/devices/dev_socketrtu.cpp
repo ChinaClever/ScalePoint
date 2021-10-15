@@ -23,9 +23,19 @@ bool Dev_SocketRtu::openAll()
     return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x00);
 }
 
+int Dev_SocketRtu::readOutput(uchar addr)
+{
+    int ret = -1;
+    QByteArray res = masterRequest(FC_RELAY_READ, addr, 0x00, 0x00);
+    if(res.size()) ret = res.at(3);
+    return ret;
+}
+
 bool Dev_SocketRtu::openOutput(uchar addr)
 {
-    return  masterWrite(FC_RELAY_WRITE, addr, 0x00, 0x00);
+    bool ret = masterWrite(FC_RELAY_WRITE, addr, 0x00, 0x00);
+    if(ret) if(readOutput(addr)) ret = false;
+    return ret;
 }
 
 bool Dev_SocketRtu::closeAll()
@@ -35,5 +45,7 @@ bool Dev_SocketRtu::closeAll()
 
 bool Dev_SocketRtu::closeOutput(uchar addr)
 {
-    return  masterWrite(FC_RELAY_WRITE, addr, 0x00, 0x01);
+    bool ret = masterWrite(FC_RELAY_WRITE, addr, 0x00, 0x01);
+    if(ret) if(!readOutput(addr)) ret = false;
+    return ret;
 }

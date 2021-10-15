@@ -56,7 +56,9 @@ void Test_CoreThread::outputCtrl()
     updatePro(tr("Socket 打开所有的输出位"));
     mRtu->closeAll(); sleep(1);
     updatePro(tr("Socket 关闭所有的输出位"));
+
     mRtu->openAll();
+    updatePro(tr("Socket 再次打开所有的输出位"));
 }
 
 bool Test_CoreThread::initFun()
@@ -70,6 +72,15 @@ bool Test_CoreThread::initFun()
 
 void Test_CoreThread::workDown()
 {
+    bool ret = mRtu->openOutput(1);
+    QString str = tr("打开输出位 1 ");
+    if(ret) str += tr("正常"); else str += tr("错误");
+    updatePro(str, ret);
+
+    ret = mRtu->closeOutput(1);
+    str = tr("关闭输出位 1 ");
+    if(ret) str += tr("正常"); else str += tr("错误");
+    updatePro(str, ret);
 
 }
 
@@ -82,7 +93,7 @@ void Test_CoreThread::run()
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Ctrl: outputCtrl(); break;
-        // case Test_Zero: mFab->secure_boot_prov(); break;
+            // case Test_Zero: mFab->secure_boot_prov(); break;
         }
     } else mPro->result = Test_Fail;
 

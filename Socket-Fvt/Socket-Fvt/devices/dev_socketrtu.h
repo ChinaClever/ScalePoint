@@ -15,6 +15,7 @@ public:
 
     bool closeAll();
     bool closeOutput(uchar addr);
+    int readOutput(uchar addr);
 };
 
 #endif // DEV_SOCKETRTU_H
