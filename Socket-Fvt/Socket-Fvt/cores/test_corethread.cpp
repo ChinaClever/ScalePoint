@@ -52,13 +52,14 @@ void Test_CoreThread::workResult()
 
 void Test_CoreThread::outputCtrl()
 {
-    mRtu->openAll(); msleep(500);
     updatePro(tr("Socket 打开所有的输出位"));
-    mRtu->closeAll(); sleep(1);
-    updatePro(tr("Socket 关闭所有的输出位"));
+    mRtu->openAll(); msleep(500);
 
-    mRtu->openAll();
+    updatePro(tr("Socket 关闭所有的输出位"));
+    mRtu->closeAll(); sleep(1);
+
     updatePro(tr("Socket 再次打开所有的输出位"));
+    mRtu->openAll();
 }
 
 bool Test_CoreThread::initFun()
@@ -83,7 +84,6 @@ void Test_CoreThread::workDown()
     updatePro(str, ret);
 
 }
-
 
 void Test_CoreThread::run()
 {

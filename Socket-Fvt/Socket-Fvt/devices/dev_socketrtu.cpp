@@ -20,7 +20,9 @@ Dev_SocketRtu *Dev_SocketRtu::bulid(QObject *parent)
 
 bool Dev_SocketRtu::openAll()
 {
-    return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x00);
+    int size = mDt->outputs ? 8 : mDt->outputs;
+    for(int i=0; i<size; ++i) masterWrite(FC_RELAY_WRITE, i+1, 0x00, 0x00); return true;
+    // return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x00);
 }
 
 int Dev_SocketRtu::readOutput(uchar addr)
@@ -40,7 +42,9 @@ bool Dev_SocketRtu::openOutput(uchar addr)
 
 bool Dev_SocketRtu::closeAll()
 {
-    return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x01);
+    int size = mDt->outputs ? 8 : mDt->outputs;
+    for(int i=0; i<size; ++i) masterWrite(FC_RELAY_WRITE, i+1, 0x00, 0x01); return true;
+    //return  masterWrite(FC_RELAY_WRITE, BROADCAST_ADDR, 0x00, 0x01);
 }
 
 bool Dev_SocketRtu::closeOutput(uchar addr)

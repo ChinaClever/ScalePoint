@@ -137,8 +137,7 @@ bool Dev_Object::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb)
 
 void Dev_Object::reflush()
 {
-    static uchar recv[4096] = {0};
-    mModbus->readSerial(recv, 1);
+    msleep(110); mModbus->reflush();
 }
 
 bool Dev_Object::requestAddr(int addr)
