@@ -17,15 +17,31 @@ void Test_CoreThread::initFunSlot()
     mRtu = Dev_SocketRtu::bulid(this);
 }
 
+bool Test_CoreThread::enumDeviceType()
+{
+    QString str = tr("获取设备类型：");
+    bool ret = mRtu->enumDeviceType();
+    if(!ret) {
+        ret = mExe->startProcess();
+        ret = mRtu->enumDeviceType();
+    }
+
+    if(ret) {
+        str += tr("%1；输出位：%2").arg(mDt->dt).arg(mDt->outputs);
+    } else str += tr("错误");
+    return updatePro(str, ret);
+}
+
+
 bool Test_CoreThread::readDev()
 {
     QString str = tr("请求地址 ");
     bool ret = mRtu->requestAddr();
-    if(ret) str += tr("正常"); else str += tr("错误");
+    if(ret) str += tr("正常：Addr=1"); else str += tr("错误");
     updatePro(str, ret);
 
     if(ret) {
-        str = tr("Modbus RTU通讯 ");
+        str = tr("Modbus-RTU通讯 版本读取 ");
         ret = mRtu->readVersion();
         if(ret) str += tr("正常"); else str += tr("错误");
         updatePro(str, ret);
@@ -66,6 +82,7 @@ bool Test_CoreThread::initFun()
 {    
     bool ret = updatePro(tr("即将开始"));
     if(ret) ret = mExe->startProcess();
+    if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
 
     return ret;
@@ -74,15 +91,16 @@ bool Test_CoreThread::initFun()
 void Test_CoreThread::workDown()
 {
     bool ret = mRtu->openOutput(1);
+    //bool ret = mRtu->openAll();
     QString str = tr("打开输出位 1 ");
     if(ret) str += tr("正常"); else str += tr("错误");
     updatePro(str, ret);
 
     ret = mRtu->closeOutput(1);
+   // ret = mRtu->closeAll();
     str = tr("关闭输出位 1 ");
     if(ret) str += tr("正常"); else str += tr("错误");
     updatePro(str, ret);
-
 }
 
 void Test_CoreThread::run()

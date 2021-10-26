@@ -13,6 +13,7 @@ protected:
     void run();
     bool initFun();
     bool readDev();
+    bool enumDeviceType();
     void outputCtrl();
 
     void workDown();

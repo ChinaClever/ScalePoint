@@ -9,10 +9,12 @@ struct sDevType
     sDevType() {outputs=2;}
 
     uchar outputs;
+    uchar devType;
     QString sn;
     QString hw;
     QString fw;
     QString pn;
+    QString dt;
 };
 
 
