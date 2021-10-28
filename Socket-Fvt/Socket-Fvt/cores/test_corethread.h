@@ -8,7 +8,6 @@ class Test_CoreThread : public BaseThread
 public:
     explicit Test_CoreThread(QObject *parent = nullptr);
 
-
 protected:
     void run();
     bool initFun();
@@ -24,7 +23,7 @@ protected slots:
 
 private:
     Test_Execute *mExe;
-    Dev_SocketRtu *mRtu;
+    SP_SocketRtu *mRtu;
 };
 
 #endif // TEST_CORETHREAD_H

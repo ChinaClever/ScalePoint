@@ -14,7 +14,7 @@ void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
     mExe = Test_Execute::bulid(this);
-    mRtu = Dev_SocketRtu::bulid(this);
+    mRtu = SP_SocketRtu::bulid(this);
 }
 
 bool Test_CoreThread::enumDeviceType()
@@ -27,7 +27,7 @@ bool Test_CoreThread::enumDeviceType()
     }
 
     if(ret) {
-        str += tr("%1；输出位：%2").arg(mDt->dt).arg(mDt->outputs);
+        str += tr("%1；输出位：%2").arg(mDt->dt).arg(mDt->size);
     } else str += tr("错误");
     return updatePro(str, ret);
 }

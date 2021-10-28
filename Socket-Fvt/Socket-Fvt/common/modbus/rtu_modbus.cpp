@@ -7,7 +7,9 @@
 
 Rtu_Modbus::Rtu_Modbus(QObject *parent) : QObject(parent)
 {
-    mRtuRw = new RtuRw(this);
+    for(int i=0; i<RTU_RW_SIZE; ++i) {
+        mRtuRw[i] = new RtuRw(this);
+    }
 }
 
 Rtu_Modbus *Rtu_Modbus::bulid(QObject *parent)
@@ -19,16 +21,20 @@ Rtu_Modbus *Rtu_Modbus::bulid(QObject *parent)
     return sington;
 }
 
-RtuRw *Rtu_Modbus::get()
+
+RtuRw *Rtu_Modbus::get(int id)
 {
-    RtuRw *res = mRtuRw;
-    SerialPort *ser = Cfg::bulid()->item->com;
-    if(ser) {
-        res->init(ser);
-        //ser->reflush();
-    } else {
-        res = nullptr;
+    SerialPort *ser = nullptr;
+    RtuRw *res = mRtuRw[id];
+    sSerial *com = &(Cfg::bulid()->item->coms);
+
+    switch (id) {
+    case 0:  ser = com->sp; break;
+    case 1:  ser = com->pdu; break;
+    case 2:  ser = com->ser2; break;
     }
+    res->init(ser);
+    ser->reflush();
 
     return res;
 }

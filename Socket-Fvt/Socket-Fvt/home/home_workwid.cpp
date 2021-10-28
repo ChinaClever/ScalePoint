@@ -168,7 +168,7 @@ void Home_WorkWid::timeoutDone()
 
 bool Home_WorkWid::initSerial()
 {
-    bool ret = mItem->com->isOpened();
+    bool ret = mItem->coms.sp->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
 
     return ret;

@@ -3,29 +3,21 @@
  *  Created on: 2021年1月1日
  *      Author: Lzy
  */
-#include "dev_socketrtu.h"
+#include "sp_socketctrl.h"
 
-Dev_SocketRtu::Dev_SocketRtu(QObject *parent) : Dev_ScalePoint(parent)
+SP_SocketCtrl::SP_SocketCtrl(QObject *parent) : SP_Object(parent)
 {
 
 }
 
-Dev_SocketRtu *Dev_SocketRtu::bulid(QObject *parent)
-{
-    static Dev_SocketRtu* sington = nullptr;
-    if(sington == nullptr)
-        sington = new Dev_SocketRtu(parent);
-    return sington;
-}
-
-bool Dev_SocketRtu::openAll()
+bool SP_SocketCtrl::openAll()
 {
     bool ret = true;
     // return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
-    for(int i=0; i<mDt->outputs; ++i){ if(!openOutput(mItem->addr+i)) ret = false; } return ret;
+    for(int i=0; i<mDt->size; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
 }
 
-int Dev_SocketRtu::readOutput(uchar addr)
+int SP_SocketCtrl::readOutput(uchar addr)
 {
     int ret = -1;
     QByteArray res = masterRequest(FC_READ_RELAY, addr, 0x00, 0x00);
@@ -33,31 +25,31 @@ int Dev_SocketRtu::readOutput(uchar addr)
     return ret;
 }
 
-bool Dev_SocketRtu::ctrlOutput(uchar addr, uchar status)
+bool SP_SocketCtrl::ctrlOutput(uchar addr, uchar status)
 {
     bool ret = masterWrite(FC_WRITE_RELAY, addr, 0x00, status);
     if(ret) if(status != readOutput(addr)) ret = false;
     return ret;
 }
 
-bool Dev_SocketRtu::openOutput(uchar addr)
+bool SP_SocketCtrl::openOutput(uchar addr)
 {
     return ctrlOutput(addr, 0x00);
 }
 
-bool Dev_SocketRtu::closeAll()
+bool SP_SocketCtrl::closeAll()
 {
     bool ret = true;
-    for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mItem->addr+i)) ret = false; } return ret;
+    for(int i=0; i<mDt->size; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
     //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
 }
 
-bool Dev_SocketRtu::closeOutput(uchar addr)
+bool SP_SocketCtrl::closeOutput(uchar addr)
 {
     return ctrlOutput(addr, 0x01);
 }
 
-bool Dev_SocketRtu::measRot(uchar addr)
+bool SP_SocketCtrl::measRot(uchar addr)
 {
     bool ret = false;
     for(int i=0; i<3; ++i) {
@@ -65,14 +57,14 @@ bool Dev_SocketRtu::measRot(uchar addr)
         if(array.size() && (array.at(0) == FC_MEAS_ROT)) {
             uint t =  array.at(2) * 256 + array.at(3);
             t = t / 20000.0 * 100.0; // 转换为ms
-            if((t > 200) && (t < 1500)) ret = true;
+            if((t>200)&&(t<1500)){ret = true;break;}
         }
     }
 
     return ret;
 }
 
-bool Dev_SocketRtu::storeValue(uchar addr)
+bool SP_SocketCtrl::storeValue(uchar addr)
 {
     return masterWrite(FC_SROT_TO_FLASH, addr, 0xFF, 0xFF, true);
 }

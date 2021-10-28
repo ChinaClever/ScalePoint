@@ -21,8 +21,8 @@ int Dev_ImmRtu::recvLine(int len)
 {
     int ret = 0;
     switch (len-4) {
-    case LEN_READ_IMM_1L: ret = 1; break;
-    case LEN_READ_IMM_3L: ret = 3; break;
+    //case LEN_READ_IMM_1L: ret = 1; break;
+    //case LEN_READ_IMM_3L: ret = 3; break;
     default: qDebug() << "IMM rtu recv len Err!!" << len; break;
     }
 

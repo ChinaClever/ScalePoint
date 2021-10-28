@@ -1,7 +1,7 @@
 #ifndef DEV_SCALEPOINT_H
 #define DEV_SCALEPOINT_H
 
-#include "dev_object.h"
+#include "baseobject.h"
 #include "Function_Block.h"
 
 struct sFrameFormat
@@ -16,11 +16,11 @@ struct sFrameFormat
     uchar *reply;
 };
 
-class Dev_ScalePoint : public Dev_Object
+class SP_Object : public BaseThread
 {
     Q_OBJECT
 public:
-    explicit Dev_ScalePoint(QObject *parent = nullptr);
+    explicit SP_Object(QObject *parent = nullptr);
 
     bool readVersion();
     bool enumDeviceType();
@@ -33,9 +33,13 @@ public:
 
 protected:
     int toArray(sFrameFormat &it, uchar *cmd);
-    bool checkCrc(uchar *recv, int len);
     int transmit(sFrameFormat &it, uchar *recv);
     int filterUpolData(sFrameFormat &it);
+    bool checkCrc(uchar *recv, int len);
+    void reflush();
+
+protected slots:
+    void initFunSlot();
 };
 
 #endif // DEV_SCALEPOINT_H

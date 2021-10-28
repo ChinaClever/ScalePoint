@@ -4,14 +4,14 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/Function_Block.h \
-    $$PWD/dev_object.h \
-    $$PWD/dev_scalepoint.h \
-    $$PWD/dev_socketrtu.h
+    $$PWD/sp_object.h \
+    $$PWD/sp_socketctrl.h \
+    $$PWD/sp_socketrtu.h
 	
 SOURCES += \
-    $$PWD/dev_object.cpp \
-    $$PWD/dev_scalepoint.cpp \
-    $$PWD/dev_socketrtu.cpp
+    $$PWD/sp_object.cpp \
+    $$PWD/sp_socketctrl.cpp \
+    $$PWD/sp_socketrtu.cpp
 
 FORMS +=
 

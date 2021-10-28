@@ -10,7 +10,7 @@ Cfg::Cfg()
 {
     mCfg = CfgCom::bulid();
     item = new sCfgItem();
-    item->com = nullptr;
+    item->coms.sp = nullptr;
 
     initMac();
     initCnt();

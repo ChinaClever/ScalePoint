@@ -40,6 +40,14 @@ struct sMac
     QString endMac;
 };
 
+struct sSerial
+{
+    sSerial() {sp=pdu=ser2=nullptr;}
+    SerialPort *sp; // 标准源
+    SerialPort *pdu; // 串口对象
+    SerialPort *ser2; // 串口对象
+};
+
 struct sCfgItem
 {
     uchar addr;
@@ -50,7 +58,7 @@ struct sCfgItem
     uchar pcNum;
     ushort currentNum;
 
-    SerialPort *com;
+    sSerial coms;
 };
 
 

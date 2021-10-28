@@ -3,14 +3,24 @@
  *  Created on: 2021年1月1日
  *      Author: Lzy
  */
-#include "dev_scalepoint.h"
+#include "sp_object.h"
 
-Dev_ScalePoint::Dev_ScalePoint(QObject *parent) : Dev_Object(parent)
+SP_Object::SP_Object(QObject *parent) : BaseThread(parent)
 {
 
 }
 
-int Dev_ScalePoint::toArray(sFrameFormat &it, uchar *cmd)
+void SP_Object::initFunSlot()
+{
+    mModbus = Rtu_Modbus::bulid(this)->get(1);
+}
+
+void SP_Object::reflush()
+{
+    msleep(50); mModbus->reflush();
+}
+
+int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
 {
     int i = 0;
     cmd[i++] = it.fc;
@@ -25,7 +35,7 @@ int Dev_ScalePoint::toArray(sFrameFormat &it, uchar *cmd)
     return i;
 }
 
-bool Dev_ScalePoint::checkCrc(uchar *recv, int len)
+bool SP_Object::checkCrc(uchar *recv, int len)
 {
     bool ret = false;
     ushort crc = mModbus->CRC16(recv, len-2);
@@ -39,7 +49,7 @@ bool Dev_ScalePoint::checkCrc(uchar *recv, int len)
     return ret;
 }
 
-int Dev_ScalePoint::transmit(sFrameFormat &it, uchar *recv)
+int SP_Object::transmit(sFrameFormat &it, uchar *recv)
 {
     uchar sent[10] = {0};
     int len = toArray(it, sent); reflush();
@@ -49,7 +59,7 @@ int Dev_ScalePoint::transmit(sFrameFormat &it, uchar *recv)
     return len;
 }
 
-int Dev_ScalePoint::filterUpolData(sFrameFormat &it)
+int SP_Object::filterUpolData(sFrameFormat &it)
 {
     static uchar recv[4096] = {0};
     int len = transmit(it, recv);
@@ -65,14 +75,14 @@ int Dev_ScalePoint::filterUpolData(sFrameFormat &it)
     return len;
 }
 
-int Dev_ScalePoint::masterRequest(sFrameFormat &it)
+int SP_Object::masterRequest(sFrameFormat &it)
 {
     int ret = filterUpolData(it);
     if(!ret) ret = filterUpolData(it);
     return ret;
 }
 
-std::tuple<int, uchar *> Dev_ScalePoint::masterRequest(uchar fc)
+std::tuple<int, uchar *> SP_Object::masterRequest(uchar fc)
 {
     sFrameFormat it;
     it.fc = fc;
@@ -84,7 +94,7 @@ std::tuple<int, uchar *> Dev_ScalePoint::masterRequest(uchar fc)
     return std::make_tuple(ret, it.reply);
 }
 
-QByteArray Dev_ScalePoint::masterRequest(uchar fc, uchar addr, uchar msb, uchar lsb)
+QByteArray SP_Object::masterRequest(uchar fc, uchar addr, uchar msb, uchar lsb)
 {
     sFrameFormat it;
     it.fc = fc;
@@ -99,7 +109,7 @@ QByteArray Dev_ScalePoint::masterRequest(uchar fc, uchar addr, uchar msb, uchar 
     return res;
 }
 
-bool Dev_ScalePoint::writeSerial(uchar fc, uchar addr, uchar msb, uchar lsb)
+bool SP_Object::writeSerial(uchar fc, uchar addr, uchar msb, uchar lsb)
 {
     sFrameFormat it;
     it.fc = fc;
@@ -115,7 +125,7 @@ bool Dev_ScalePoint::writeSerial(uchar fc, uchar addr, uchar msb, uchar lsb)
     return mModbus->writeSerial(sent, len);
 }
 
-bool Dev_ScalePoint::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb, bool ack)
+bool SP_Object::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb, bool ack)
 {
     bool ret = false;
     QByteArray array = masterRequest(fc, addr, msb, lsb);
@@ -130,16 +140,16 @@ bool Dev_ScalePoint::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb, boo
     return ret;
 }
 
-bool Dev_ScalePoint::enumDeviceType()
+bool SP_Object::enumDeviceType()
 {
     bool ret = false; reflush();
     for(int i=0,k=0; i<9; ++i,k=0) {
         QByteArray array = mModbus->readSerial(250);
         if(array.size()) {
             if((array.at(k++) == FC_REQUEST_ADDR) && (array.at(k++) == MASTER_ADDR)) {
-                mDt->devType = array.at(k++) >> 1;
-                mDt->outputs = array.at(k++);
-                switch (mDt->devType) {
+                mDt->id = array.at(k++) >> 1;
+                mDt->size = array.at(k++);
+                switch (mDt->id) {
                 case DEVICE_TYPE_A: mDt->dt = "Standard Socket"; break;
                 case DEVICE_TYPE_B: mDt->dt = "Socket with Relay"; break;
                 case DEVICE_TYPE_C: mDt->dt = "Socket Metered"; break;
@@ -147,7 +157,7 @@ bool Dev_ScalePoint::enumDeviceType()
                 case DEVICE_TYPE_IMM_1L: mDt->dt = "IMM single line with 3 branch current"; break;
                 case DEVICE_TYPE_IMM_3L: mDt->dt = "IMM three lines with 6 branch current"; break;
                 case DEVICE_TYPE_IMM_3L_N: mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
-                default: qDebug() << "enumDeviceType err" <<  mDt->dt; continue;
+                default: qDebug() << "enumDeviceType err" <<  mDt->id << mDt->size; continue;
                 } ret = true; break;
             }
         } else writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2);
@@ -156,17 +166,17 @@ bool Dev_ScalePoint::enumDeviceType()
     return ret;
 }
 
-bool Dev_ScalePoint::requestAddr(int addr)
+bool SP_Object::requestAddr(int addr)
 {
-    mItem->addr = addr;
-    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
-    return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
+    mDt->addr = addr;
+    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->size, addr);
+    return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, mDt->size, addr);
 }
 
-bool Dev_ScalePoint::readVersion()
+bool SP_Object::readVersion()
 {
     bool ret = true;
-    QByteArray res = masterRequest(FC_FW_VERSION, mItem->addr, 0, 0);
+    QByteArray res = masterRequest(FC_FW_VERSION, mDt->addr, 0, 0);
     if(res.size() && (res.at(0) == FC_FW_VERSION)) {
         mDt->fw = tr("%1.%2").arg((uchar)res[2]).arg((uchar)res[3]);
     } else {
