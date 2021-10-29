@@ -17,7 +17,7 @@ void SP_Object::initFunSlot()
 
 void SP_Object::reflush()
 {
-    msleep(50); mModbus->reflush();
+    msleep(150); mModbus->reflush();
 }
 
 int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
@@ -40,10 +40,10 @@ bool SP_Object::checkCrc(uchar *recv, int len)
     bool ret = false;
     ushort crc = mModbus->CRC16(recv, len-2);
     ushort res = recv[len-2]*256 + recv[len-1];
-    if((crc == res) || (len ==6)) {
+    if((crc == res) || (len%6 == 0)) {
         ret = true;
     } else {
-        qDebug() << " Dev_ScalePoint CRC err" << recv[0] <<crc << res;
+        qDebug() << " Dev_ScalePoint CRC err" << len << recv[0] <<crc << res;
     }
 
     return ret;
