@@ -4,6 +4,7 @@
  *      Author: Lzy
  */
 #include "sp_object.h"
+#include "common.h"
 
 SP_Object::SP_Object(QObject *parent) : BaseThread(parent)
 {
@@ -15,10 +16,6 @@ void SP_Object::initFunSlot()
     mModbus = Rtu_Modbus::bulid(this)->get(0);
 }
 
-void SP_Object::reflush()
-{
-    msleep(50); mModbus->reflush();
-}
 
 int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
 {
@@ -31,7 +28,7 @@ int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
     it.crc = mModbus->CRC16(cmd, 4);
     cmd[i++] = (uint8_t) (it.crc >> 8);
     cmd[i++] = (uint8_t) (it.crc & 0xFF);
-    // qDebug () << cm_ByteArrayToHexString(QByteArray((char *)cmd, 6));
+    // qDebug () << cm_ByteArrayToHexStr(QByteArray((char *)cmd, 6));
     return i;
 }
 
@@ -40,10 +37,10 @@ bool SP_Object::checkCrc(uchar *recv, int len)
     bool ret = false;
     ushort crc = mModbus->CRC16(recv, len-2);
     ushort res = recv[len-2]*256 + recv[len-1];
-    if((crc == res) || (len ==6)) {
+    if((crc == res) || (len%6 == 0)) {
         ret = true;
     } else {
-        qDebug() << " Dev_ScalePoint CRC err" << recv[0] <<crc << res;
+        qDebug() << " Dev_ScalePoint CRC err" << len << recv[0] << crc << res;
     }
 
     return ret;
@@ -53,8 +50,13 @@ int SP_Object::transmit(sFrameFormat &it, uchar *recv)
 {
     uchar sent[10] = {0};
     int len = toArray(it, sent); reflush();
-    len = mModbus->transmit(sent, len, recv, 1);
-    if(len < 6 || len > 2048) len = mModbus->transmit(sent, len, recv, 1);
+    len = mModbus->transmit(sent, len, recv, 2);
+    if((it.fc == FC_READ_IMM) || (it.fc ==  FC_FW_VERSION)){
+        QByteArray array = mModbus->readSerial(1450);
+        for(auto byte : array) recv[len++] = byte;
+    }
+
+    if(len < 6 || len > 2048) len = mModbus->transmit(sent, len, recv, 2);
     if(len < 6) { qDebug() << " Dev_ScalePoint read Data err" << len; return 0; }
     return len;
 }
@@ -128,7 +130,7 @@ bool SP_Object::writeSerial(uchar fc, uchar addr, uchar msb, uchar lsb)
 bool SP_Object::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb, bool ack)
 {
     bool ret = false;
-    QByteArray array = masterRequest(fc, addr, msb, lsb);
+    QByteArray array = masterRequest(fc, addr, msb, lsb).right(6);
     if(array.size()) {
         if(ack) {
             if(array.at(0) == fc) ret = true;
@@ -149,20 +151,20 @@ bool SP_Object::enumDeviceType()
             for(int k=0; k<=array.size()-6; ++k) {
                 if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR)) {
                     mDt->devType = array.at(k+2) >> 1;
-                    mDt->outputs = array.at(k+3);
+                    mDt->lines = array.at(k+3);
                     switch (mDt->devType) {
                     case DEVICE_TYPE_A: mDt->dt = "Standard Socket"; break;
                     case DEVICE_TYPE_B: mDt->dt = "Socket with Relay"; break;
                     case DEVICE_TYPE_C: mDt->dt = "Socket Metered"; break;
                     case DEVICE_TYPE_D: mDt->dt = "Socket Metered with Relay"; break;
-                    case DEVICE_TYPE_IMM_1L: mDt->dt = "IMM single line with 3 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L: mDt->dt = "IMM three lines with 6 branch current"; break;
+                    case DEVICE_TYPE_IMM_1L: mDt->lines = 1; mDt->outputs = 3; mDt->dt = "IMM single line with 3 branch current"; break;
+                    case DEVICE_TYPE_IMM_3L: mDt->lines = 3; mDt->outputs = 6; mDt->dt = "IMM three lines with 6 branch current"; break;
                     case DEVICE_TYPE_IMM_3L_N: mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
-                    default: qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->outputs; continue;
+                    default: qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->lines; continue;
                     } return true;
                 } else if(((array.at(k)&ERROR_MASK_BIT)) == 3 /*FC_RESET*/) return false;
             }
-        } else writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2);
+        } else {writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2); msleep(150);}
     }
 
     return ret;
@@ -171,8 +173,8 @@ bool SP_Object::enumDeviceType()
 bool SP_Object::requestAddr(int addr)
 {
     mDt->addr = addr;
-    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
-    return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
+    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 1, addr);
+    return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, 1, addr);
 }
 
 bool SP_Object::readVersion()

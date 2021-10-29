@@ -20,6 +20,8 @@
 #define    DEVICE_TYPE_D         0x04    // Socket metered with relay
 #define    DEVICE_TYPE_IMM_1L    0x05    // IMM single lines with 3 branch current
 #define    DEVICE_TYPE_IMM_3L    0x06    // IMM three line with 6 branch current
+#define    DEVICE_TYPE_IMM_3L_N  0x07    // IMM three line with Neutral and 6 branch current
+
 
 // ****************************************************************************************************
 // Function code define
@@ -90,7 +92,7 @@
 #define    FC_SROT_TO_FLASH      0x66    // Store Relay Operating Time to Flash Memory
 #define    FC_RROT_FROM_FLASH    0x67    // Restore Relay Operating Time from Flash Memory
 
-#define    FC_CALIBRATION        0XA0    // Calibration Rn8302 or Rn8209
+#define    FC_CALIBRATION        0X50    // Calibration Rn8302 or Rn8209
 
 // ****************************************************************************************************
 // Length define
@@ -163,7 +165,51 @@
 #define    LEN_BRANCH_REGISTER_1 8//
 
 
-
+#define    FC_STATUS_VAL             0x00    // Status and configuration indicators
+#define    FC_RMS_VOLTS_L1_VAL       22000   // Line 1 RMS voltage reading in 0.01 V
+#define    FC_RMS_AMPS_L1_VAL        100     // Line 1 RMS current reading in mA
+#define    FC_PEAK_AMPS_L1_VAL       110     // Line 1 peak current reading in mA
+#define    FC_WATTS_L1_VAL           18000   // Line 1 active power reading in mW
+#define    FC_VAR_L1_VAL             12649    // Line 1 reactive power reading in mVAR
+#define    FC_VA_L1_VAL              22000    // Line 1 apparent power reading in mVA
+#define    FC_WH_L1_VAL              100    // Line 1 active energy reading in mWh
+#define    FC_VARH_L1_VAL            10    // Line 1 reactive energy reading in mVARh
+#define    FC_VAH_L1_VAL             110    // Line 1 apparent energy reading in mVAh
+#define    FC_PHASE_L1_VAL           30    // Line 1 current Line 1ngle relative to voltage in 0.1 degrees
+#define    FC_RMS_VOLTS_L2_VAL       0x11    // Line 2 RMS voltage reading in 0.01 V
+#define    FC_RMS_AMPS_L2_VAL        0x12    // Line 2 RMS current reading in mA
+#define    FC_PEAK_AMPS_L2_VAL       0x13    // Line 2 peak current reading in mA
+#define    FC_WATTS_L2_VAL           0x14    // Line 2 active power reading in mW
+#define    FC_VAR_L2_VAL             0x15    // Line 2 reactive power reading in mVAR
+#define    FC_VA_L2_VAL              0x16    // Line 2 apparent power reading in mVA
+#define    FC_WH_L2_VAL              0x17    // Line 2 active energy reading in mWh
+#define    FC_VARH_L2_VAL            0x18    // Line 2 reactive energy reading in mVARh
+#define    FC_VAH_L2_VAL             0x19    // Line 2 apparent energy reading in mVAh
+#define    FC_PHASE_L2_VAL           0x1A    // Line 2 current Line 2ngle relative to voltage in 0.1 degrees
+#define    FC_RMS_VOLTS_L3_VAL       0x1B    // Line 3 RMS voltage reading in 0.01 V
+#define    FC_RMS_AMPS_L3_VAL        0x1C    // Line 3 RMS current reading in mA
+#define    FC_PEAK_AMPS_L3_VAL       0x1D    // Line 3 peak current reading in mA
+#define    FC_WATTS_L3_VAL           0x1E    // Line 3 active power reading in mW
+#define    FC_VAR_L3_VAL             0x1F    // Line 3 reactive power reading in mVAR
+#define    FC_VA_L3_VAL              0x20    // Line 3 apparent power reading in mVA
+#define    FC_WH_L3_VAL              0x21    // Line 3 active energy reading in mWh
+#define    FC_VARH_L3_VAL            0x22    // Line 3 reactive energy reading in mVARh
+#define    FC_VAH_L3_VAL             0x23    // Line 3 apparent energy reading in mVAh
+#define    FC_PHASE_L3_VAL           0x24    // Line 3 current Line 3ngle relative to voltage in 0.1 degrees
+#define    FC_RMS_AMPS_B1_VAL        20    // Branch 1 RMS current reading in mA
+#define    FC_PEAK_AMPS_B1_VAL       25    // Branch 1 PEAK current reading in mA
+#define    FC_RMS_AMPS_B2_VAL        80    // Branch 2 RMS current reading in mA
+#define    FC_PEAK_AMPS_B2_VAL       85    // Branch 2 PEAK current reading in mA
+#define    FC_RMS_AMPS_B3_VAL        0x29    // Branch 3 RMS current reading in mA
+#define    FC_PEAK_AMPS_B3_VAL       0x2A    // Branch 3 PEAK current reading in mA
+#define    FC_RMS_AMPS_B4_VAL        0x2B    // Branch 4 RMS current reading in mA
+#define    FC_PEAK_AMPS_B4_VAL       0x2C    // Branch 4 PEAK current reading in mA
+#define    FC_RMS_AMPS_B5_VAL        0x2D    // Branch 5 RMS current reading in mA
+#define    FC_PEAK_AMPS_B5_VAL       0x2E    // Branch 5 PEAK current reading in mA
+#define    FC_RMS_AMPS_B6_VAL        0x2F    // Branch 6 RMS current reading in mA
+#define    FC_PEAK_AMPS_B6_VAL       0x30    // Branch 6 PEAK current reading in mA
+#define    FC_RMS_AMPS_N_VAL         10    // Neutral RMS current reading in mA
+#define    FC_PEAK_AMPS_N_VAL        11    // Neutral PEAK current reading in mA
 
 
 

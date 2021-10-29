@@ -14,11 +14,13 @@ public:
     ushort rtu_crc(uchar *buf, int len);
     ushort CRC16(uchar *ptr, int len);
 
+    bool changeBaudRate();
     void init(SerialPort *s){mSerial=s;}
     int readSerial(quint8 *cmd, int secs);
     bool writeSerial(quint8 *cmd, int len);
     int transmit(uchar *sent, int len, uchar *recv, int secs);
-    bool changeBaudRate();
+    void reflush() {mSerial->reflush();}
+    QByteArray readSerial(int msecs=100) {return mSerial->readSerial(msecs);}
 
 protected:
     ushort calccrc (ushort crc, uchar crcbuf);

@@ -28,6 +28,14 @@ struct sCount
     int err;
 };
 
+struct sSerial
+{
+    sSerial() {sp=src=ser=nullptr;}
+    SerialPort *sp; // 标准源
+    SerialPort *src; // 串口对象
+    SerialPort *ser; // 串口对象
+};
+
 struct sCfgItem
 {    
     uchar modeId;
@@ -43,8 +51,7 @@ struct sCfgItem
     uchar pcNum;
     ushort currentNum;
 
-    SerialPort *com;
-    SerialPort *source;
+    sSerial coms;
 };
 
 

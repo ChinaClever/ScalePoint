@@ -66,14 +66,17 @@ struct sDevType
 {
     sDevType() {devId=devType=lines=0;}
 
+    uchar addr;
     uchar devId;
-    uchar devType; // 0 SI-PDU  1 IP-PDU
     uchar lines;
-    QString dev_type;
+    uchar outputs;
+    uchar devType; // 0 SI-PDU  1 IP-PDU
+
+    QString dt;
     QString sn;    
     QString hw;
     QString fw;
-    QString pn;
+    QString pn;    
 };
 
 

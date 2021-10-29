@@ -27,7 +27,7 @@ bool Test_CoreThread::enumDeviceType()
     }
 
     if(ret) {
-        str += tr("%1；输出位：%2").arg(mDt->dt).arg(mDt->size);
+        str += tr("%1；输出位：%2").arg(mDt->dt).arg(mDt->outputs);
     } else str += tr("错误");
     return updatePro(str, ret);
 }
@@ -37,7 +37,7 @@ bool Test_CoreThread::readDev()
 {
     QString str = tr("请求地址 ");
     bool ret = mRtu->requestAddr();
-    if(ret) str += tr("正常：Addr=1"); else str += tr("错误");
+    if(ret) str += tr("正常：Addr=%1").arg(mDt->addr); else str += tr("错误");
     updatePro(str, ret);
 
     if(ret) {

@@ -1,8 +1,6 @@
 #ifndef TEST_CORETHREAD_H
 #define TEST_CORETHREAD_H
-#include "yc_obj.h"
-#include "sn_serialnum.h"
-#include "ad_corethread.h"
+#include "test_execute.h"
 
 class Test_CoreThread : public BaseThread
 {
@@ -14,8 +12,7 @@ protected:
     void run();
     bool initFun();
     bool readDev();
-    bool execute();
-    bool readOutput(QProcess &pro);
+    bool enumDeviceType();
 
     void workDown();
     void collectData();
@@ -26,8 +23,10 @@ protected slots:
 
 private:
     Yc_Obj *mYc;
+    SP_ImmRtu *mDev;
     Sn_SerialNum *mSn;
     Ad_CoreThread *mAd;
+    Test_Execute *mExe;
 };
 
 #endif // TEST_CORETHREAD_H

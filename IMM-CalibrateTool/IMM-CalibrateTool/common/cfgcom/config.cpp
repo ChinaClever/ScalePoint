@@ -10,8 +10,6 @@ Cfg::Cfg()
 {
     mCfg = CfgCom::bulid();
     item = new sCfgItem();
-    item->com = nullptr;
-    item->source = nullptr;
     item->vol = 200;
 
     initCnt();

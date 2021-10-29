@@ -205,20 +205,28 @@ void SerialPort::recvSlot()
     }
 }
 
+QByteArray SerialPort::readSerial(int msecs)
+{
+    QByteArray array; msleep(msecs);
+    QWriteLocker locker(&mRwLock);
+    array += mSerialData;
+    mSerialData.clear();
+    return array;
+}
 
 int SerialPort::read(QByteArray &array, int secs)
 {
     if(isOpen) {
         for(int i=0; i<10*secs; ++i) {
             int rtn = mSerialData.size();
-             if(rtn && i) {
-                msleep(350);
+            if(rtn && i) {
+                msleep(150);
                 QWriteLocker locker(&mRwLock);
                 array += mSerialData;
                 mSerialData.clear();
                 break;
             } else {
-                if(i) msleep(SERIAL_TIMEOUT); else msleep(450);
+                if(i) msleep(SERIAL_TIMEOUT); else msleep(350);
             }
         }
     }

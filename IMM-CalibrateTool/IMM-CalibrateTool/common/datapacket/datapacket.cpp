@@ -29,7 +29,7 @@ void sDataPacket::init()
     pro->pass.clear();
     pro->status.clear();
     dev->dt.sn.clear();
-    dev->dt.dev_type.clear();
+    dev->dt.dt.clear();
 
     pro->result = Test_Info;
     pro->startTime = QTime::currentTime();

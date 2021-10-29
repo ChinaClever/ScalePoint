@@ -95,7 +95,7 @@ bool Sn_DevType::analysDevType(uint id)
     QString str = getDevStr(id);
     if(str.size()) {
         mDt->devId = id;
-        mDt->dev_type = str;
+        mDt->dt = str;
         mDt->devType = getDevType(str);
         mDt->lines = getLineNum(str);
     } else {

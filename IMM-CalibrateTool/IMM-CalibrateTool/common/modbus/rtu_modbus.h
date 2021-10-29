@@ -3,6 +3,7 @@
 
 #include "rtu_write.h"
 #include "common.h"
+#define RTU_RW_SIZE 3
 
 class Rtu_Modbus : public QObject
 {
@@ -10,10 +11,10 @@ class Rtu_Modbus : public QObject
     explicit Rtu_Modbus(QObject *parent = nullptr);
 public:
     static Rtu_Modbus *bulid(QObject *parent = nullptr);
-    RtuRw *get();
+    RtuRw *get(int id=0);
 
 private:
-    RtuRw *mRtuRw;
+    RtuRw *mRtuRw[RTU_RW_SIZE];
 };
 
 #endif // RTU_MODBUS_H

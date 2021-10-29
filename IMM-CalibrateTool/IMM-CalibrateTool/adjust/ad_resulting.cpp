@@ -8,6 +8,7 @@
 
 Ad_Resulting::Ad_Resulting(QObject *parent) : BaseThread(parent)
 {
+    mCollect = SP_ImmRtu::bulid(this);
 }
 
 Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
@@ -166,7 +167,7 @@ bool Ad_Resulting::eachCurEnter(int exValue)
 bool Ad_Resulting::initRtuThread()
 {
     switch (mItem->modeId) {
-    case IMM: mCollect = Dev_ImmRtu::bulid(this); break;
+    case IMM: mCollect = SP_ImmRtu::bulid(this); break;
     default: mCollect = nullptr; break;
     }
 

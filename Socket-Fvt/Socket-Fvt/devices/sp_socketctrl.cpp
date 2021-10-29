@@ -14,7 +14,7 @@ bool SP_SocketCtrl::openAll()
 {
     bool ret = true;
     // return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
-    for(int i=0; i<mDt->size; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
+    for(int i=0; i<mDt->outputs; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
 }
 
 int SP_SocketCtrl::readOutput(uchar addr)
@@ -40,7 +40,7 @@ bool SP_SocketCtrl::openOutput(uchar addr)
 bool SP_SocketCtrl::closeAll()
 {
     bool ret = true;
-    for(int i=0; i<mDt->size; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
+    for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
     //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
 }
 

@@ -16,7 +16,7 @@ BaseThread::BaseThread(QObject *parent) : QThread(parent)
 {
     isRun = false;
     BaseLogs::bulid(this);
-    int t = 550+rand()%150;
+    int t = 650+rand()%150;
     QTimer::singleShot(t,this,SLOT(initFunSlot()));
 }
 

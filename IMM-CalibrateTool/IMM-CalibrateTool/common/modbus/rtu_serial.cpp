@@ -57,6 +57,24 @@ int Rtu_Serial::transmit(uchar *sent, int len, uchar *recv, int secs)
 }
 
 
+ushort Rtu_Serial::CRC16(uchar *ptr, int len) // AUG-CCITT
+{
+    ushort crc = INITIAL_CRC_CC3;
+    while (len-- > 0)
+    {
+        crc = crc ^ ((uint16_t) (*ptr++ << 8));  // --len;
+        for (int i = 0; i < 8; i++) {
+            if (crc & 0x8000) {
+                crc = (crc << 1) ^ CRC_CCITT_POLY;
+            } else {
+                crc = crc << 1;
+            }
+        }
+    }
+
+    return crc;
+}
+
 ushort Rtu_Serial::calccrc (ushort crc, uchar crcbuf)
 {
     uchar x, kkk=0;
@@ -97,24 +115,6 @@ uchar Rtu_Serial::xorNum(uchar *buf, int len)
     for(int i=0; i<len; i++)
         xorsum ^= buf[i];
     return xorsum;
-}
-
-ushort Rtu_Serial::CRC16(uchar *ptr, int len) // AUG-CCITT
-{
-    ushort crc = INITIAL_CRC_CC3;
-    while (len-- > 0)
-    {
-        crc = crc ^ ((uint16_t) (*ptr++ << 8));  // --len;
-        for (int i = 0; i < 8; i++) {
-            if (crc & 0x8000) {
-                crc = (crc << 1) ^ CRC_CCITT_POLY;
-            } else {
-                crc = crc << 1;
-            }
-        }
-    }
-
-    return crc;
 }
 
 

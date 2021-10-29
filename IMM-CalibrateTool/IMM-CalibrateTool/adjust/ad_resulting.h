@@ -2,7 +2,7 @@
 #define AD_RESULTING_H
 
 #include "ad_adjusting.h"
-#include "dev_immrtu.h"
+#include "sp_immrtu.h"
 
 class Ad_Resulting : public BaseThread
 {
@@ -33,8 +33,8 @@ protected:
     bool powerOn();
 
 private:
+    SP_ImmRtu *mCollect;
     YC_StandSource *mSource;
-    Dev_Object *mCollect;
 };
 
 #endif // AD_RESULTING_H

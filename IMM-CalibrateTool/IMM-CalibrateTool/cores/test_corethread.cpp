@@ -14,61 +14,40 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
-    Dev_ImmRtu::bulid(this);
     mYc = Yc_Obj::bulid(this);
-    mAd = Ad_CoreThread::bulid(this);
+    mDev = SP_ImmRtu::bulid(this);
     mSn = Sn_SerialNum::bulid(this);
+    mAd = Ad_CoreThread::bulid(this);
+    mExe = Test_Execute::bulid(this);
 }
 
-
-bool Test_CoreThread::readOutput(QProcess &pro)
-{
-    bool ret, res = false;
-    do {
-        ret = pro.waitForFinished(1000);
-        QByteArray bs = pro.readAllStandardOutput();
-        bs +=  pro.readAllStandardError();
-        QString str = QString::fromLocal8Bit(bs);
-        if(str.contains("CONNECTED")) res = true; //else str = str.simplified();
-        QStringList ls = str.split("\n", QString::SkipEmptyParts);
-        for(int i=0; i<ls.size(); ++i) updatePro(ls.at(i).simplified());
-    } while(!ret);
-    pro.close();
-
-    return res;
-}
-
-bool Test_CoreThread::execute()
-{
-    bool ret = false;
-    QString exe = "SimpleIO_UM_CSExampleCode.exe";
-    QFile file(exe);
-    if (file.exists()){
-        QProcess pro(this);
-        pro.start(exe);
-        ret = readOutput(pro);
-        if(!ret) updatePro(tr("串口未正常连接") , ret);
-    } else {
-        updatePro(exe+tr(" 文件不存在") , ret);
+bool Test_CoreThread::enumDeviceType()
+{    
+    bool ret = mDev->enumDeviceType();
+    if(!ret) {
+        ret = mExe->startProcess();
+        ret = mDev->enumDeviceType();
     }
 
-    return ret;
+    QString str = tr("获取设备类型：");
+    if(ret) str += mDt->dt; else str += tr("错误");
+
+    return updatePro(str, ret);
 }
 
 
 bool Test_CoreThread::readDev()
 {
     QString str = tr("请求地址 ");
-    Dev_ImmRtu *dev = Dev_ImmRtu::bulid();
-    bool ret = dev->requestAddr();
-    if(ret) str += tr("正常"); else str += tr("错误");
-    updatePro(str, ret);
+    bool ret = mDev->requestAddr();
+    if(ret) str += tr("正常：Addr=%1").arg(mDt->addr); else str += tr("错误");
+    updatePro(str, ret, 1);
 
     if(ret) {
-        str = tr("Modbus RTU通讯 ");
-        ret = dev->readVersion();
+        str = tr("Modbus-RTU通讯 版本读取 ");
+        ret = mDev->readVersion();
         if(ret) str += tr("正常"); else str += tr("错误");
-        updatePro(str, ret);
+        updatePro(str, ret, 1);
     }
 
     return ret;
@@ -77,7 +56,8 @@ bool Test_CoreThread::readDev()
 void Test_CoreThread::workResult()
 {
     BaseLogs::bulid()->start();
-    bool res = mYc->powerDown();
+    //bool res = mYc->powerDown(); /////=========
+    bool res = true;
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         str += tr("通过");
@@ -93,10 +73,13 @@ void Test_CoreThread::workResult()
 bool Test_CoreThread::initFun()
 {
     updatePro(tr("即将开始"));
-    bool ret = mYc->powerOn();
-    if(ret) ret = execute();
+    //bool ret = mYc->powerOn(); /////=========
+    bool ret = true;
+    if(ret) ret = mExe->startProcess();
+    if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
-    if(ret) ret = mSn->snEnter();
+    //if(ret) ret = mSn->snEnter(); /////=========
+
     return ret;
 }
 
@@ -104,7 +87,7 @@ void Test_CoreThread::workDown()
 {
     bool ret = mAd->startAdjust(); if(!ret) return;
     Ad_Resulting::bulid(this)->initRtuThread();
-    for(int i=0; i<LINE_NUM; ++i) {
+    for(int i=0; i<mData->size; ++i) {
         sLineData *line = &(mData->lines[i]);
         if(line->ele.active) {
             QString e = QString::number(line->ele.active/COM_RATE_ELE)+"Wh";
@@ -117,13 +100,12 @@ void Test_CoreThread::workDown()
 void Test_CoreThread::collectData()
 {
     int cnt = 0;
-    Dev_Object *dev = Dev_ImmRtu::bulid();
     while(mPro->step == Test_Collect) {
-        bool ret = dev->readPduData();
+        bool ret = mDev->readPduData();
         if(ret && (++cnt%30)) continue;
         QString str = tr("正在读取设备数据 %1").arg(cnt);
-        if(!ret && (cnt>5)) str= tr("读取设备数据错误！");
-        updatePro(str, ret, 2);
+        if(!ret) str= tr("读取设备数据错误！");
+        updatePro(str, ret, 1);
     }
 
     QString str = tr("读取设备数据停止！");

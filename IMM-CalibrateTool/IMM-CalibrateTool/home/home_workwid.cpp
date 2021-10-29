@@ -76,7 +76,6 @@ void Home_WorkWid::updateCntSlot()
     ui->okLcd->display(cnt->ok);
     ui->allLcd->display(cnt->all);
     ui->errLcd->display(cnt->err);
-    ui->verLab->setText("--- ---");
 
     ui->cntSpin->setValue(mItem->cnt.cnt);
     if(mItem->cnt.cnt < 1)mItem->user.clear();
@@ -139,12 +138,13 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->snLab->setText(str);
 
-    str = mDt->dev_type;
+    str = mDt->dt;
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
 
-    if(mData->version) str = QString::number(mData->version/100.0);
-    else str =  "--- ---"; ui->verLab->setText(str);
+    str = mDt->fw;
+    if(str.isEmpty()) str = "--- ---";
+    ui->verLab->setText(str);
 
     if(mData->hz) str = QString::number(mData->hz);
     else str = "--- ---"; ui->hzLab->setText(str);
@@ -163,7 +163,7 @@ void Home_WorkWid::timeoutDone()
 
 bool Home_WorkWid::initSerial()
 {
-    bool ret = mItem->com->isOpened();
+    bool ret = mItem->coms.sp->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
     // ret = mItem->source->isOpened();  ///////===========
     // if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}

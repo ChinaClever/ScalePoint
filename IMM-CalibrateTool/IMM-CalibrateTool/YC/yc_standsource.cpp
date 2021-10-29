@@ -12,7 +12,7 @@ YC_StandSource::YC_StandSource(QObject *parent) : BaseThread(parent)
 
 void YC_StandSource::initFunSlot()
 {
-    mSerial = mItem->source;
+    mSerial = mItem->coms.src;
     if(mSerial); else QTimer::singleShot(350,this,SLOT(initFunSlot()));
 }
 

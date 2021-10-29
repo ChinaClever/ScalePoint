@@ -6,11 +6,11 @@
 
 struct sDevType
 {
-    sDevType() {size=2;}
+    sDevType() {outputs=2;}
 
-    uchar id;
     uchar addr;
-    uchar size;
+    uchar devType;
+    uchar outputs;
 
     QString sn;
     QString hw;

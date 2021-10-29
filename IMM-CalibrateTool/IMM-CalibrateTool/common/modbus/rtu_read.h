@@ -29,7 +29,6 @@ class Rtu_Read : public Rtu_Serial
     Q_OBJECT
 public:
     explicit Rtu_Read(QObject *parent = nullptr);
-
     int read(sRtuItem &pkt, uchar *recv);
 
 protected:
@@ -39,7 +38,6 @@ protected:
 
     bool rtuRecvCrc(uchar *buf, int len);
     bool recvCrc(uchar *buf, int len, sRtuReplyItem *msg);
-
     int rtuRead(sRtuItem *pkt, sRtuReplyItem *recv);
 };
 
