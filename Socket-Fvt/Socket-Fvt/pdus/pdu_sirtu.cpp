@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "pdu_sirtu.h"
 
 #define SI_RTU_DC_LEN 0x1B // 直流数据长度

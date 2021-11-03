@@ -15,6 +15,7 @@ public:
     ushort CRC16(uchar *ptr, int len);
 
     bool changeBaudRate();
+    bool setBaudRate(qint32 br);
     void init(SerialPort *s){mSerial=s;}
     int readSerial(quint8 *cmd, int secs);
     bool writeSerial(quint8 *cmd, int len);

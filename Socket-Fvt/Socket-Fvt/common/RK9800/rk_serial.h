@@ -6,6 +6,7 @@
 struct sRkItem
 {
     ushort header;
+    uchar flag;
     uchar rkId;   // 测试仪型号
     QString rkStr;
     uchar enAlarm; //是否启用报警及是否存在报警

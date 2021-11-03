@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
 #include "rk_serial.h"
 
 Rk_Serial::Rk_Serial(QObject *parent) : QThread(parent)
@@ -9,7 +14,7 @@ int Rk_Serial::transmit(uchar *recv)
 {
     if(!mSerial) return 0;
     static uchar sent[] = {0x55, 0xAA, 0x00, 0x01};
-    int len = mSerial->transmit(sent, sizeof(sent), recv, 2);
+    int len = mSerial->transmit(sent, sizeof(sent), recv, 1);
     if(len < 10) { qDebug() << " Rk_Serial read len err" << len; return 0; }
     else if(memcmp(sent, recv, 3)) { qDebug() << " Rk_Serial read Data err" << len; return 0; }
     return len;
@@ -37,7 +42,7 @@ bool Rk_Serial::readPacket(sRkItem &it)
         QByteArray array((char *)recv, len);
         QDataStream rxStream(array);
         rxStream.setByteOrder(QDataStream::LittleEndian);
-        rxStream >> it.header >> it.rkId >> it.enAlarm
+        rxStream >> it.header >> it.flag >> it.rkId >> it.enAlarm
                 >> it.vol >> it.curUnit >> it.cur >> it.pow
                 >> it.ele >> it.hz >> it.pf >> it.crc;
         it.rkStr = rkType(it.rkId);
