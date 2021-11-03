@@ -15,6 +15,9 @@ void Test_CoreThread::initFunSlot()
     BaseLogs::bulid(this);
     mExe = Test_Execute::bulid(this);
     mRtu = SP_SocketRtu::bulid(this);
+    mPdu = Pdu_ZRtu::bulid(this);
+    mBt = new Bt_Serial(this);
+
 }
 
 bool Test_CoreThread::enumDeviceType()
@@ -78,6 +81,37 @@ void Test_CoreThread::outputCtrl()
     mRtu->openAll();
 }
 
+bool Test_CoreThread::btCurCheck()
+{
+    sBtIt bt; mBt->init(1);
+    bool ret = mBt->readPacket(bt);
+    if(ret) {
+         ///////////==============
+    }
+
+    return ret;
+}
+
+bool Test_CoreThread::outputCheck()
+{
+    mPdu->initData(3);
+    bool ret = mPdu->readPduData();
+    if(ret) {
+        sPduData *data = mPdu->getPduData();
+        for(int i=0; i<mDt->outputs; ++i) {
+
+            ///////////==============
+
+
+
+
+
+        }
+    }
+
+    return ret;
+}
+
 bool Test_CoreThread::initFun()
 {    
     bool ret = updatePro(tr("即将开始"));
@@ -97,7 +131,7 @@ void Test_CoreThread::workDown()
     updatePro(str, ret);
 
     ret = mRtu->closeOutput(1);
-   // ret = mRtu->closeAll();
+    // ret = mRtu->closeAll();
     str = tr("关闭输出位 1 ");
     if(ret) str += tr("正常"); else str += tr("错误");
     updatePro(str, ret);

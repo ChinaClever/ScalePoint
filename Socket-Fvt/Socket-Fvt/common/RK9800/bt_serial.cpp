@@ -13,6 +13,7 @@ Bt_Serial::Bt_Serial(QObject *parent) : QThread(parent)
 void Bt_Serial::init(int id)
 {
     mModbus = Rtu_Modbus::bulid()->get(id);
+    mModbus->setBaudRate(9600);
 }
 
 

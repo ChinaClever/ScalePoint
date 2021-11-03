@@ -16,7 +16,7 @@ class Bt_Serial : public QThread
 public:
     explicit Bt_Serial(QObject *parent = nullptr);
 
-    void init(int id);
+    void init(int id=1);
     bool readPacket(sBtIt &bt);
 
 protected:
