@@ -22,7 +22,7 @@ Pdu_SiRtu *Pdu_SiRtu::bulid(QObject *parent)
 
 void Pdu_SiRtu::initRtuItem(sRtuItem &it)
 {
-    it.addr = mItem->addr;
+    it.addr = mPduData->addr;
     it.fn = 0x03;
     it.reg = 0;
     it.num = SI_RTU_THREE_LEN;

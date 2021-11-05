@@ -27,7 +27,7 @@ bool Pdu_ZRtu::recvZpduVolCur(uchar *recv, int len)
     sPduData *obj = mPduData;
 
     if((*ptr++ == 0x7B) && (*ptr++ == 0xC1) && (len == 127)) {
-        if(*ptr++ == mItem->addr) {
+        if(*ptr++ == mPduData->addr) {
             obj->size = *ptr++;
             obj->hz = *ptr++;
 

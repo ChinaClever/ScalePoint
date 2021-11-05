@@ -14,9 +14,9 @@ Pdu_Object::Pdu_Object(QObject *parent) : BaseThread(parent)
 
 void Pdu_Object::initData(int addr)
 {
+    if(mModbus) mModbus->setBaudRate(19200);
     memset(mPduData, 0, sizeof(sPduData));
     mPduData->addr = addr;
-    mModbus->setBaudRate(19200); ////////==========
 }
 
 

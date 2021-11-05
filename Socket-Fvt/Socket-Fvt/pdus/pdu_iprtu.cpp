@@ -37,7 +37,7 @@ int Pdu_IpRtu::recvLine(int len)
 
 void Pdu_IpRtu::initRtuItem(sRtuItem &it)
 {
-    it.addr = mItem->addr;
+    it.addr = mPduData->addr;
     it.fn = 0x03;
     it.reg = 0;
     it.num = IP_RTU_ONE_LEN;// V1
