@@ -6,7 +6,6 @@
 #include "logmainwid.h"
 #include "setup_mainwid.h"
 #include "home_mainwid.h"
-#include "printer_bartender.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,11 +28,9 @@ protected slots:
 
 private:
     Ui::MainWindow *ui;
-
     LogMainWid *mLog;
     NavBarWid *mNavBarWid;
     Home_MainWid *mHomeWid;
     Setup_MainWid *mSetupWid;
-    Printer_BarTender *mBar;
 };
 #endif // MAINWINDOW_H

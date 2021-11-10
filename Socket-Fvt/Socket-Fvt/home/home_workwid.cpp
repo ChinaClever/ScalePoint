@@ -141,10 +141,6 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->snLab->setText(str);
 
-    str = mDt->hw;
-    if(str.isEmpty()) str = "--- ---";
-    ui->hwLab->setText(str);
-
     str = mDt->fw;
     if(str.isEmpty()) str = "--- ---";
     ui->fwLab->setText(str);
@@ -170,6 +166,9 @@ bool Home_WorkWid::initSerial()
 {
     bool ret = mItem->coms.sp->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
+
+    mDt->hw = ui->hwEdit->text();
+    if(!mDt->hw.size()) {MsgBox::critical(this, tr("请填写设备硬件版本(HW)")); return false;}
 
     return ret;
 }
@@ -228,12 +227,6 @@ void Home_WorkWid::on_startBtn_clicked()
             updateResult();
         }
     }
-}
-
-
-void Home_WorkWid::on_adCheckBox_clicked(bool checked)
-{
-    ui->codeEdit->setEnabled(!checked);
 }
 
 

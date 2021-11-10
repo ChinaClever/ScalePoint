@@ -41,7 +41,6 @@ private slots:
     void initFunSlot();
     void updateCntSlot();
     void on_startBtn_clicked();
-    void on_adCheckBox_clicked(bool checked);
 
 private:
     Ui::Home_WorkWid *ui;

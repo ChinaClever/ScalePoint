@@ -6,7 +6,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -15,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     mNavBarWid = new NavBarWid(ui->barWid);
     QTimer::singleShot(50,this,SLOT(initFunSlot())); //延时初始化
     connect(mNavBarWid, SIGNAL(navBarSig(int)), this, SLOT(navBarSlot(int)));
-    mBar = Printer_BarTender::bulid(this);
 }
 
 MainWindow::~MainWindow()
@@ -26,15 +24,6 @@ MainWindow::~MainWindow()
 void MainWindow::initFunSlot()
 {
     initWid();
-
-    sBarTend it;
-
-    it.pn = "AG13095AA";
-    it.hw = "0.2";
-    it.fw = "1.2";
-    it.sn = "00 00 00 00 00 00 12 34 56 78 91";
-    bool ret = mBar->printer(it);
-    qDebug() << "AAAAAAAAAA" << ret;
 }
 
 void MainWindow::initWid()

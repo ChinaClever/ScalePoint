@@ -348,7 +348,7 @@
          </size>
         </property>
         <property name="text">
-         <string>扫码：</string>
+         <string>HW：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -383,67 +383,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="userEdit">
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <property name="cursorMoveStyle">
-         <enum>Qt::LogicalMoveStyle</enum>
-        </property>
-        <property name="clearButtonEnabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="codeEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_35">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>80</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>客户：</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="adCheckBox">
-        <property name="maximumSize">
-         <size>
-          <width>80</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>启用扫码</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_38">
         <property name="minimumSize">
@@ -463,6 +402,51 @@
         </property>
         <property name="text">
          <string>数量：</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="hwEdit">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="userEdit">
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="cursorMoveStyle">
+         <enum>Qt::LogicalMoveStyle</enum>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_35">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>客户：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -575,9 +559,6 @@
       <property name="leftMargin">
        <number>0</number>
       </property>
-      <property name="topMargin">
-       <number>5</number>
-      </property>
       <property name="rightMargin">
        <number>0</number>
       </property>
@@ -585,15 +566,15 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="label_14">
         <property name="maximumSize">
          <size>
-          <width>60</width>
+          <width>50</width>
           <height>16777215</height>
          </size>
         </property>
         <property name="text">
-         <string>HW：</string>
+         <string>P/N：</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -601,7 +582,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="hwLab">
+       <widget class="QLabel" name="pnLab">
         <property name="text">
          <string>--- ---</string>
         </property>
@@ -611,7 +592,7 @@
        <widget class="QLabel" name="label_11">
         <property name="maximumSize">
          <size>
-          <width>80</width>
+          <width>60</width>
           <height>16777215</height>
          </size>
         </property>
@@ -625,30 +606,25 @@
       </item>
       <item row="0" column="3">
        <widget class="QLabel" name="fwLab">
+        <property name="maximumSize">
+         <size>
+          <width>110</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>--- ---</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>P/N：</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="3">
-       <widget class="QLabel" name="pnLab">
-        <property name="text">
-         <string>--- ---</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
        <widget class="QLabel" name="label_13">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
          <string>S/N：</string>
         </property>
@@ -657,14 +633,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="3">
+      <item row="1" column="1" colspan="3">
        <widget class="QLabel" name="snLab">
         <property name="text">
          <string>--- ---</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
+      <item row="2" column="0" colspan="4">
        <widget class="QTextEdit" name="textEdit">
         <property name="enabled">
          <bool>true</bool>
