@@ -19,22 +19,8 @@ Cfg::Cfg()
 Cfg *Cfg::bulid()
 {
     static Cfg* sington = nullptr;
-    if(sington == nullptr)
-        sington = new Cfg();
+    if(!sington) sington = new Cfg();
     return sington;
-}
-
-
-bool Cfg::getDate()
-{
-    bool ret = false;
-    QString str = read("date","","Date").toString();
-    if(!str.isEmpty()) {
-        QDate date = QDate::fromString(str, "yyyy-MM-dd");
-        if(QDate::currentDate() > date)  ret = true;
-    }
-
-    return ret;
 }
 
 
@@ -57,8 +43,6 @@ void Cfg::initCnt()
     item->cnts.all = read("all", 0, "Cnts").toInt();
     item->cnts.ok = read("ok", 0, "Cnts").toInt();
     item->cnts.err = read("err", 0, "Cnts").toInt();
-    item->cnts.currentNum = read("num", 0,"Cnts").toInt();
-    if(getDate()) item->cnts.currentNum = 0;
 }
 
 void Cfg::writeCnt()
@@ -67,9 +51,6 @@ void Cfg::writeCnt()
     write("all", item->cnts.all, "Cnts");
     write("ok", item->cnts.ok, "Cnts");
     write("err", item->cnts.err, "Cnts");
-    write("num", item->cnts.currentNum, "Cnts");
-    QString value = QDate::currentDate().toString("yyyy-MM-dd");
-    write("date", value, "Cnts");
     write("user", item->user, "User");
 }
 

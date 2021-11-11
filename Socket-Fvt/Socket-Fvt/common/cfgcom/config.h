@@ -27,7 +27,6 @@ struct sCount
     int all;
     int ok;
     int err;
-    uint currentNum;
 };
 
 
@@ -54,7 +53,6 @@ class Cfg
     Cfg();
 public:
     static Cfg *bulid();
-
     sCfgItem *item;
 
     QString getSerialBr(const QString &com);
@@ -72,7 +70,6 @@ public:
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
 protected:
     void initCnt();
-    bool getDate();
     void initCfgDev();
 
 private:
