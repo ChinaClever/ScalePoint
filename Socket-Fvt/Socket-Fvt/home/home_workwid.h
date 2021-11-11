@@ -31,9 +31,10 @@ protected:
     void updateResult();
     void setWidEnabled(bool en);
 
+    bool inputCheck();
     bool initSerial();
     bool initWid();
-    void initUser();
+    bool initUser();
     void initData();
 
 private slots:

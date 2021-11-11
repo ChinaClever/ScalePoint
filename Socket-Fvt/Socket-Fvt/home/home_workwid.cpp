@@ -71,13 +71,13 @@ void Home_WorkWid::insertText()
 
 void Home_WorkWid::updateCntSlot()
 {
-    sCount *cnt = &(mItem->cnt);
+    sCount *cnt = &(mItem->cnts);
     ui->okLcd->display(cnt->ok);
     ui->allLcd->display(cnt->all);
     ui->errLcd->display(cnt->err);
 
-    ui->cntSpin->setValue(mItem->cnt.cnt);
-    if(mItem->cnt.cnt < 1)mItem->user.clear();
+    ui->cntSpin->setValue(mItem->cnts.cnt);
+    if(mItem->cnts.cnt < 1)mItem->user.clear();
     ui->userEdit->setText(mItem->user);
 
     QString str = "0";
@@ -167,25 +167,28 @@ bool Home_WorkWid::initSerial()
     bool ret = mItem->coms.sp->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
 
-    mDt->hw = ui->hwEdit->text();
-    if(!mDt->hw.size()) {MsgBox::critical(this, tr("请填写设备硬件版本(HW)")); return false;}
 
     return ret;
 }
 
-void Home_WorkWid::initUser()
+bool Home_WorkWid::initUser()
 {
     if(mItem->user != ui->userEdit->text()) {
         mItem->user = ui->userEdit->text();
-        sCount *cnt = &(mItem->cnt);
+        sCount *cnt = &(mItem->cnts);
         cnt->all = cnt->ok = cnt->err = 0;
         Cfg::bulid()->writeCnt();
     }
 
-    if(mItem->cnt.cnt != ui->cntSpin->value()) {
-        mItem->cnt.cnt = ui->cntSpin->value();
+    if(mItem->cnts.cnt != ui->cntSpin->value()) {
+        mItem->cnts.cnt = ui->cntSpin->value();
         Cfg::bulid()->writeCnt();
     }
+
+    if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}
+    if(mItem->cnts.cnt < 1){MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;}
+    if(!mDt->hw.size()){MsgBox::critical(this, tr("请填写设备硬件版本(HW)")); return false;}
+    return true;
 }
 
 void Home_WorkWid::initData()
@@ -193,17 +196,33 @@ void Home_WorkWid::initData()
     mId = 1;
     mPacket->init();
     ui->textEdit->clear();
+    mDt->hw = ui->hwEdit->text();
+}
+
+bool Home_WorkWid::inputCheck()
+{
+    initData();
+    bool ret = initSerial();
+    if(ret) ret = initUser();
+    if(ret) {
+        int index = ui->specBox->currentIndex();
+        switch (index) {
+        case 1: mDt->pn = "AG13093AA"; break;
+        case 2: mDt->pn = "AG13094AA"; break;
+        case 3: mDt->pn = "AG13095AA"; break;
+        case 4: mDt->pn = "AG13096AA"; break;
+        case 5: mDt->pn = "AG13097AA"; break;
+        default: MsgBox::critical(this, tr("请选择设备规格")); ret = false; break;
+        }
+    }
+
+    return ret;
 }
 
 bool Home_WorkWid::initWid()
 {
-    bool ret = initSerial();
+    bool ret = inputCheck();
     if(ret) {
-        initUser();
-        if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}
-        if(mItem->cnt.cnt < 1){MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;}
-
-        initData();
         setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();

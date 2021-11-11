@@ -23,11 +23,11 @@ enum eDevTypes {
 struct sCount
 {
     sCount() {all=ok=err=cnt=0;}
-
     int cnt;
     int all;
     int ok;
     int err;
+    uint currentNum;
 };
 
 struct sMac
@@ -53,12 +53,11 @@ struct sCfgItem
     uchar addr;
     sMac macs;
     QString user;
-    sCount cnt;
+
+    sCount cnts;
+    sSerial coms;
     int logCount;
     uchar pcNum;
-    ushort currentNum;
-
-    sSerial coms;
 };
 
 
@@ -82,7 +81,6 @@ public:
     void writeCnt();
     void writeCfgDev();
 
-    void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="cfg");
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
 
@@ -90,9 +88,7 @@ protected:
     void initMac();
     void initCnt();
     bool getDate();
-    void setDate();
     void initCfgDev();
-    void initCurrentNum();
 
 private:
     CfgCom *mCfg;

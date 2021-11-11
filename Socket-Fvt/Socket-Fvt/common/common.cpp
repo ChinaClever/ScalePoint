@@ -92,10 +92,10 @@ QString cm_ByteArrayToUcharStr(const QByteArray &array)
 QString cm_ByteArrayToHexString(QByteArray ascii)//字符串转16进制
 {
     QString ret;
-    for(int i = 0; i < ascii.count(); i++)
+    for(int i=0; i<ascii.size(); i++)
         ret.append(QString("%1 ").arg((uchar)ascii.at(i), 2, 16, (QChar)'0'));
 
-    return ret.toUpper();
+    return ret.toUpper().simplified();
 }
 
 QByteArray cm_HexStringToByteArray(QString hex, bool *ok)

@@ -4,6 +4,7 @@
  *      Author: Lzy
  */
 #include "printer_bartender.h"
+#include "common.h"
 
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
@@ -22,12 +23,13 @@ Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
 
 QString Printer_BarTender::createOrder(sBarTend &it)
 {
-    QString str = "P/N,HW,FW,Date,S/N\n";
-    str += it.pn + ",";
-    str += it.hw + ",";
-    str += it.fw + ",";
-    str += QDateTime::currentDateTime().toString("yyyy/MM/dd") + ",";
-    str += it.sn;
+    QString str = "PN,HW,FW,Date,SN,QR\n";
+    str += it.pn + ","; str += it.hw + ","; str += it.fw + ",";
+    QString date = QDate::currentDate().toString("yy") + "W";
+    date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0')); str += date+",";
+    QByteArray array; QDataStream stream(&array, QIODevice::WriteOnly); stream << it.sn;
+    QString sn = cm_ByteArrayToHexString(array); str += sn + ","; sn = sn.remove(QRegExp("\\s"));
+    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 
@@ -61,7 +63,7 @@ bool Printer_BarTender::printer(sBarTend &it)
 int Printer_BarTender::sendMsg(const QByteArray &msg, quint16 port, const QHostAddress &host)
 {
     int ret = mSocket->writeDatagram(msg, host, port);
-    if(ret > 0) mSocket->flush();
+    if(ret > 0) mSocket->flush(); delay(100);
     return ret;
 }
 

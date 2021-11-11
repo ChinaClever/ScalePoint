@@ -26,7 +26,7 @@ bool Test_CoreThread::enumDeviceType()
     bool ret = mRtu->enumDeviceType();
     if(!ret) {
         ret = mExe->startProcess();
-        ret = mRtu->enumDeviceType();
+        if(ret) ret = mRtu->enumDeviceType();
     }
 
     if(ret) {
@@ -108,6 +108,7 @@ bool Test_CoreThread::outputCheck()
 
         }
     }
+
 
     return ret;
 }

@@ -15,7 +15,6 @@ Cfg::Cfg()
     initMac();
     initCnt();
     initCfgDev();
-    initCurrentNum();
 }
 
 Cfg *Cfg::bulid()
@@ -27,43 +26,16 @@ Cfg *Cfg::bulid()
 }
 
 
-void Cfg::setDate()
-{
-    QString value = QDate::currentDate().toString("yyyy-MM-dd");
-    write("date", value, "Date");
-}
-
 bool Cfg::getDate()
 {
     bool ret = false;
-
     QString str = read("date","","Date").toString();
     if(!str.isEmpty()) {
         QDate date = QDate::fromString(str, "yyyy-MM-dd");
-        if(QDate::currentDate() > date) {
-            ret = true;
-        }
+        if(QDate::currentDate() > date)  ret = true;
     }
 
     return ret;
-}
-
-void Cfg::setCurrentNum()
-{
-    setDate();
-    write("num", item->currentNum, "Date");
-}
-
-void Cfg::initCurrentNum()
-{
-    bool ret = getDate();
-    if(ret) {
-        item->currentNum = 0;
-        setCurrentNum();
-    } else {
-        int value = read("num", 0,"Date").toInt();
-        item->currentNum = value;
-    }
 }
 
 
@@ -71,6 +43,7 @@ void Cfg::initCfgDev()
 {
     item->addr = read("addr", 1,"Sys").toInt();
     item->user = read("user", "", "User").toString();
+    item->pcNum = read("pc_num", 0, "Sys").toInt();
 }
 
 void Cfg::writeCfgDev()
@@ -78,22 +51,28 @@ void Cfg::writeCfgDev()
     writeCnt();
     write("addr", item->addr, "Sys");
     write("user", item->user, "User");
+    write("pc_num", item->pcNum, "Sys");
 }
 
 void Cfg::initCnt()
 {
-    item->cnt.cnt = read("cnt", 0, "Count").toInt();
-    item->cnt.all = read("all", 0, "Count").toInt();
-    item->cnt.ok = read("ok", 0, "Count").toInt();
-    item->cnt.err = read("err", 0, "Count").toInt();
+    item->cnts.cnt = read("cnt", 0, "Cnts").toInt();
+    item->cnts.all = read("all", 0, "Cnts").toInt();
+    item->cnts.ok = read("ok", 0, "Cnts").toInt();
+    item->cnts.err = read("err", 0, "Cnts").toInt();
+    item->cnts.currentNum = read("num", 0,"Cnts").toInt();
+    if(getDate()) item->cnts.currentNum = 0;
 }
 
 void Cfg::writeCnt()
 {
-    write("cnt", item->cnt.cnt, "Count");
-    write("all", item->cnt.all, "Count");
-    write("ok", item->cnt.ok, "Count");
-    write("err", item->cnt.err, "Count");
+    write("cnt", item->cnts.cnt, "Cnts");
+    write("all", item->cnts.all, "Cnts");
+    write("ok", item->cnts.ok, "Cnts");
+    write("err", item->cnts.err, "Cnts");
+    write("num", item->cnts.currentNum, "Cnts");
+    QString value = QDate::currentDate().toString("yyyy-MM-dd");
+    write("date", value, "Cnts");
     write("user", item->user, "User");
 }
 

@@ -28,8 +28,8 @@ Setup_MainWid::~Setup_MainWid()
 
 void Setup_MainWid::initFunSlot()
 {
-    initPcNum();
     initLogCount();
+    ui->pcNumSpin->setValue(mItem->pcNum);
     mUserWid = new UserMainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mUserWid);
     QTimer::singleShot(2*1000,this,SLOT(checkPcNumSlot()));
@@ -83,21 +83,6 @@ void Setup_MainWid::writeLogCount()
 }
 
 
-void Setup_MainWid::initPcNum()
-{
-    Cfg *con = Cfg::bulid();
-    int value = con->read("pc_num", 0, "Sys").toInt();
-
-    mItem->pcNum = value;
-    ui->pcNumSpin->setValue(value);
-}
-
-void Setup_MainWid::writePcNum()
-{
-    int arg1 = ui->pcNumSpin->value();
-    mItem->pcNum = arg1;
-    Cfg::bulid()->write("pc_num", arg1, "Sys");
-}
 
 void Setup_MainWid::on_pcBtn_clicked()
 {
@@ -112,9 +97,9 @@ void Setup_MainWid::on_pcBtn_clicked()
 
     if(flg++ %2) {
         ret = false;
-        writePcNum();
         writeLogCount();
-        Cfg::bulid()->writeCnt();
+        mItem->pcNum = ui->pcNumSpin->value();
+        Cfg::bulid()->writeCfgDev();
     } else {
         str = tr("保存");
     }

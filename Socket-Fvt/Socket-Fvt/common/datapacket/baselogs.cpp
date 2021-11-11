@@ -64,17 +64,17 @@ bool BaseLogs::writeLog()
     it.user = mItem->user;
     it.sn = mDt->sn;
 
-    mItem->cnt.all += 1;
+    mItem->cnts.all += 1;
     if(mPro->result != Test_Fail) {
         it.result = tr("通过");
-        mItem->cnt.ok += 1;
-        mItem->cnt.cnt--;
-        if(!mItem->cnt.cnt)  {
+        mItem->cnts.ok += 1;
+        mItem->cnts.cnt--;
+        if(!mItem->cnts.cnt)  {
             mItem->user.clear();
             Cfg::bulid()->write("user", mItem->user, "User");
         }
     } else {
-        mItem->cnt.err += 1;
+        mItem->cnts.err += 1;
         it.result = tr("失败");
     }
 

@@ -20,8 +20,6 @@ protected:
     void initSerial();
     void initLogCount();
     void writeLogCount();
-    void initPcNum();
-    void writePcNum();
     void updateMac();
     void initMac();
 
