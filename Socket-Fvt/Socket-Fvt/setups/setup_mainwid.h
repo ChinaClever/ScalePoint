@@ -20,21 +20,15 @@ protected:
     void initSerial();
     void initLogCount();
     void writeLogCount();
-    void updateMac();
-    void initMac();
 
 protected slots:
     void initFunSlot();
     void checkPcNumSlot();
     void on_pcBtn_clicked();
     void on_verBtn_clicked();
-    void updateSlot(int,int);
-    void timeoutDone();
 
 private:
     Ui::Setup_MainWid *ui;
-
-    QTimer *timer;
     sCfgItem *mItem;
     UserMainWid *mUserWid;
     SerialStatusWid *mDeWid;

@@ -12,7 +12,6 @@ Cfg::Cfg()
     item = new sCfgItem();
     item->coms.sp = nullptr;
 
-    initMac();
     initCnt();
     initCfgDev();
 }
@@ -41,7 +40,6 @@ bool Cfg::getDate()
 
 void Cfg::initCfgDev()
 {
-    item->addr = read("addr", 1,"Sys").toInt();
     item->user = read("user", "", "User").toString();
     item->pcNum = read("pc_num", 0, "Sys").toInt();
 }
@@ -49,7 +47,6 @@ void Cfg::initCfgDev()
 void Cfg::writeCfgDev()
 {
     writeCnt();
-    write("addr", item->addr, "Sys");
     write("user", item->user, "User");
     write("pc_num", item->pcNum, "Sys");
 }
@@ -75,27 +72,6 @@ void Cfg::writeCnt()
     write("date", value, "Cnts");
     write("user", item->user, "User");
 }
-
-
-void Cfg::wirteMac()
-{
-    sMac *it = &(item->macs);
-    write("mac", it->mac, "Mac");
-    write("cnt", it->cntMac, "Mac");
-    write("start", it->startMac, "Mac");
-    write("end", it->endMac, "Mac");
-}
-
-void Cfg::initMac()
-{
-    sMac *it = &(item->macs);
-    QString str = "2C:26:5F:38:00:00";
-    it->mac = read("mac", str, "Mac").toString();
-    it->cntMac = read("cnt", 5*1000, "Mac").toInt();
-    it->startMac = read("start", str, "Mac").toString();
-    it->endMac = read("end", str, "Mac").toString();
-}
-
 
 /**
  * @brief 获取串口名称

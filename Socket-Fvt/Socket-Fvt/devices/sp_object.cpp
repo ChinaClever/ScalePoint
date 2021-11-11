@@ -86,7 +86,7 @@ std::tuple<int, uchar *> SP_Object::masterRequest(uchar fc)
 {
     sFrameFormat it;
     it.fc = fc;
-    it.addr = mItem->addr;
+    it.addr = mDt->addr;
     it.msb = 0;
     it.lsb = 0;
 

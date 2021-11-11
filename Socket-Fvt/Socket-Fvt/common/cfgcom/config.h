@@ -30,15 +30,6 @@ struct sCount
     uint currentNum;
 };
 
-struct sMac
-{
-    sMac() {cntMac=0;}
-    uint cntMac;
-    QString mac;
-    QString user;
-    QString startMac;
-    QString endMac;
-};
 
 struct sSerial
 {
@@ -50,10 +41,7 @@ struct sSerial
 
 struct sCfgItem
 {
-    uchar addr;
-    sMac macs;
     QString user;
-
     sCount cnts;
     sSerial coms;
     int logCount;
@@ -77,15 +65,12 @@ public:
     QString getLoginName();
     void setLoginName(const QString &name);
 
-    void wirteMac();
     void writeCnt();
     void writeCfgDev();
 
     void write(const QString &key, const QVariant& v, const QString &g="cfg");
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
-
 protected:
-    void initMac();
     void initCnt();
     bool getDate();
     void initCfgDev();

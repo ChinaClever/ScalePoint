@@ -18,7 +18,6 @@ Setup_MainWid::Setup_MainWid(QWidget *parent) :
     QTimer::singleShot(rand()%13,this,SLOT(initFunSlot()));
     mItem = Cfg::bulid()->item;
     initSerial();
-    ui->groupBox_4->setHidden(true);
 }
 
 Setup_MainWid::~Setup_MainWid()
@@ -33,14 +32,6 @@ void Setup_MainWid::initFunSlot()
     mUserWid = new UserMainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mUserWid);
     QTimer::singleShot(2*1000,this,SLOT(checkPcNumSlot()));
-
-    initMac();
-    timer = new QTimer(this);
-    timer->start(3*1000);
-    connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
-    DbLogs *db = DbLogs::bulid();
-    connect(db, SIGNAL(itemChanged(int, int)),this, SLOT(updateSlot(int,int)));
-
     QDate buildDate = QLocale(QLocale::English ).toDate( QString(__DATE__).replace("  ", " 0"), "MMM dd yyyy");
     ui->label_date->setText(buildDate.toString("yyyy-MM-dd"));
 }
@@ -116,30 +107,3 @@ void Setup_MainWid::on_verBtn_clicked()
     dlg.exec();
 }
 
-
-void Setup_MainWid::updateMac()
-{
-    sMac *it = &(mItem->macs);
-    int ret =  MacAddr::bulid()->macCnt(it->mac, it->endMac);
-    ui->cntMacLab->setNum(ret);
-}
-
-
-void Setup_MainWid::initMac()
-{
-    updateMac();
-    sMac *it = &(mItem->macs);
-    //ui->spinBox->setValue(it->cntMac);
-    ui->startMacLab->setText(it->startMac);
-    ui->endMacLab->setText(it->endMac);
-}
-
-void Setup_MainWid::updateSlot(int,int)
-{
-    initMac();
-}
-
-void Setup_MainWid::timeoutDone()
-{
-    updateMac();
-}
