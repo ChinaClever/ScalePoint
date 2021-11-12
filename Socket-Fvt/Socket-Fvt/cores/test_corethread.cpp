@@ -44,9 +44,15 @@ bool Test_CoreThread::readDev()
     updatePro(str, ret);
 
     if(ret) {
-        str = tr("Modbus-RTU通讯 版本读取 ");
         ret = mRtu->readVersion();
+        str = tr("Modbus-RTU通讯 版本读取 ");
         if(ret) str += tr("正常"); else str += tr("错误");
+        updatePro(str, ret);
+    }
+
+    if(ret) {
+        ret = mRtu->readSn(); str = tr("设备SN码读取 ");
+        if(ret) str += tr("正常：%1").arg(mDt->sn); else str += tr("错误");
         updatePro(str, ret);
     }
 
@@ -123,10 +129,33 @@ bool Test_CoreThread::initFun()
     return ret;
 }
 
+bool Test_CoreThread::zeroMeasRot()
+{
+    uint value = 0;
+    bool ret = true;  delay(2);
+    for(int i=1; i<=mDt->outputs; ++i) {
+        bool res = mRtu->measRot(i, value);
+        QString str = tr("输出位%1 ").arg(i);
+        if(res) str += tr("继电器工作时间"); else str += tr("过零操作错误");
+        updatePro(str+tr(" %1ms").arg(value/100.0), res, 1); if(!res) ret = res;
+    }
+
+    if(ret) {
+        QString str = tr("将值存储到闪存中");
+        QString res = mRtu->storeValue(); ret = res.contains("OK");
+        if(ret) str += tr("正常 "); else str += tr("错误 ");
+        updatePro(str+res, ret);
+    }
+
+    return ret;
+}
+
 void Test_CoreThread::workDown()
 {
-    bool ret = mRtu->openOutput(1);
-    //bool ret = mRtu->openAll();
+   bool ret = mRtu->openOutput(1);
+   // bool ret = mRtu->openAll();
+
+
     QString str = tr("打开输出位 1 ");
     if(ret) str += tr("正常"); else str += tr("错误");
     updatePro(str, ret);
@@ -146,7 +175,7 @@ void Test_CoreThread::run()
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Ctrl: outputCtrl(); break;
-            // case Test_Zero: mFab->secure_boot_prov(); break;
+        case Test_Zero: zeroMeasRot(); break;
         }
     } else mPro->result = Test_Fail;
 

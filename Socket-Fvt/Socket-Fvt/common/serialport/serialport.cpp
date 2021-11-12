@@ -127,13 +127,9 @@ void SerialPort::timeoutDone()
 int SerialPort::send(const QByteArray &array)
 {
     int len=0;
-
     if(isOpen) {
         len = mSerial->write(array);
-        if(len > 0) {
-            mSerial->flush();
-            // qDebug() << cm_ByteArrayToHexStr(array);
-        }
+        if(len > 0) mSerial->flush();
     }
 
     return len;
@@ -149,7 +145,6 @@ int SerialPort::write(const QByteArray &array)
 {
     int ret = array.size();
     if(isOpen) {
-        //QWriteLocker locker(&mRwLock);
         mWriteArrays.append(array);
     } else {
         ret = 0;
@@ -163,7 +158,6 @@ int SerialPort::write(uchar *sent, int len)
 {
     QByteArray witeArray;
     witeArray.append((char *)sent, len);
-
     return write(witeArray);
 }
 
@@ -220,13 +214,13 @@ int SerialPort::read(QByteArray &array, int secs)
         for(int i=0; i<10*secs; ++i) {
             int rtn = mSerialData.size();
             if(rtn && i) {
-                msleep(50);
+                msleep(70);
                 QWriteLocker locker(&mRwLock);
                 array += mSerialData;
                 mSerialData.clear();
                 break;
             } else {
-                if(i) msleep(SERIAL_TIMEOUT); else msleep(250);
+                if(i) msleep(SERIAL_TIMEOUT); else msleep(275);
             }
         }
     }

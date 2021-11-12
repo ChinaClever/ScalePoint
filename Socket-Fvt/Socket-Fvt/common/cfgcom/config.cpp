@@ -26,11 +26,13 @@ void Cfg::initCfgDev()
 {
     item->user = read("user", "", "User").toString();
     item->pcNum = read("pc_num", 0, "Sys").toInt();
+    item->hw = read("HW", "", "Sys").toString();
 }
 
 void Cfg::writeCfgDev()
 {
     writeCnt();
+    write("HW", item->hw, "Sys");
     write("user", item->user, "User");
     write("pc_num", item->pcNum, "Sys");
 }

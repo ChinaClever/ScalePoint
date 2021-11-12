@@ -22,6 +22,7 @@ class SP_Object : public BaseThread
 public:
     explicit SP_Object(QObject *parent = nullptr);
 
+    bool readSn();
     bool readVersion();
     bool enumDeviceType();
     bool requestAddr(int addr=1);

@@ -40,6 +40,7 @@ struct sSerial
 
 struct sCfgItem
 {
+    QString hw;
     QString user;
     sCount cnts;
     sSerial coms;

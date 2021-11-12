@@ -31,9 +31,7 @@ void sDataPacket::init()
 
     dev->dt.pn.clear();
     dev->dt.sn.clear();
-    dev->dt.hw.clear();
     dev->dt.fw.clear();
-
     pro->result = Test_Info;
     pro->startTime = QTime::currentTime();
 }

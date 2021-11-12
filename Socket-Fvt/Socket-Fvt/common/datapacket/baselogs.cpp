@@ -60,7 +60,7 @@ bool BaseLogs::writeLog()
     sLogItem it;
 
     it.fw = mDt->fw;
-    it.hw = mDt->hw;;
+    it.hw = mItem->hw;;
     it.user = mItem->user;
     it.sn = mDt->sn;
 
@@ -78,7 +78,7 @@ bool BaseLogs::writeLog()
         it.result = tr("失败");
     }
 
-    Cfg::bulid()->writeCnt();
+    Cfg::bulid()->writeCfgDev();
     if(it.sn.isEmpty()) {
         emit DbLogs::bulid()->itemChanged(0, 1);
         return false;

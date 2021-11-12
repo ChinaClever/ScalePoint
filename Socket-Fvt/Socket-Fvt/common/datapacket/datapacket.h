@@ -13,7 +13,6 @@ struct sDevType
     uchar outputs;
 
     QString sn;
-    QString hw;
     QString fw;
     QString pn;
     QString dt;

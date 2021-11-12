@@ -16,8 +16,8 @@ public:
     bool closeOutput(uchar addr);
     int readOutput(uchar addr);
 
-    bool measRot(uchar addr);
-    bool storeValue(uchar addr);
+    bool measRot(uchar addr, uint &t);
+    QString storeValue();
 
 protected:
     bool ctrlOutput(uchar addr, uchar status);

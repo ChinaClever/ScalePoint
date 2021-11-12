@@ -42,6 +42,7 @@ void Home_WorkWid::initFunSlot()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
+    ui->hwEdit->setText(mItem->hw);
 }
 
 void Home_WorkWid::setTextColor()
@@ -185,9 +186,10 @@ bool Home_WorkWid::initUser()
         Cfg::bulid()->writeCnt();
     }
 
+    mItem->hw = ui->hwEdit->text();
     if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}
     if(mItem->cnts.cnt < 1){MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;}
-    if(!mDt->hw.size()){MsgBox::critical(this, tr("请填写设备硬件版本(HW)")); return false;}
+    if(!mItem->hw.size()){MsgBox::critical(this, tr("请填写设备硬件版本(HW)")); return false;}
     return true;
 }
 
@@ -196,12 +198,10 @@ void Home_WorkWid::initData()
     mId = 1;
     mPacket->init();
     ui->textEdit->clear();
-    mDt->hw = ui->hwEdit->text();
 }
 
 bool Home_WorkWid::inputCheck()
 {
-    initData();
     bool ret = initSerial();
     if(ret) ret = initUser();
     if(ret) {
@@ -216,6 +216,7 @@ bool Home_WorkWid::inputCheck()
         }
     }
 
+    if(ret) initData();
     return ret;
 }
 

@@ -17,6 +17,7 @@ protected:
     bool enumDeviceType();
     void outputCtrl();
 
+    bool zeroMeasRot();
     void workDown();
     void workResult();
 

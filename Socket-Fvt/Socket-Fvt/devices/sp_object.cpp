@@ -31,7 +31,7 @@ int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
     it.crc = mModbus->CRC16(cmd, 4);
     cmd[i++] = (uint8_t) (it.crc >> 8);
     cmd[i++] = (uint8_t) (it.crc & 0xFF);
-    // qDebug () << cm_ByteArrayToHexString(QByteArray((char *)cmd, 6));
+    //qDebug () << cm_ByteArrayToHexString(QByteArray((char *)cmd, 6));
     return i;
 }
 
@@ -173,6 +173,21 @@ bool SP_Object::requestAddr(int addr)
     mDt->addr = addr;
     writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
     return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
+}
+
+bool SP_Object::readSn()
+{
+    bool ret = true;
+    QByteArray res = masterRequest(FC_SERIAL_NUMBER, mDt->addr, 0, 0);
+    if(res.size() && (res.at(0) == FC_SERIAL_NUMBER)) {
+        QByteArray array = res.mid(2,4);
+        QDataStream stream(&array, QIODevice::ReadOnly);
+        mDt->sn = cm_ByteArrayToHexString(array);
+    } else {
+        ret = false;
+    }
+
+    return ret;
 }
 
 bool SP_Object::readVersion()
