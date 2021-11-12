@@ -52,7 +52,7 @@ bool Test_CoreThread::readDev()
 
     if(ret) {
         ret = mRtu->readSn(); str = tr("设备SN码读取 ");
-        if(ret) str += tr("正常：%1").arg(mDt->sn); else str += tr("错误");
+        if(ret) str += tr("正常：SN %1").arg(mDt->sn); else str += tr("错误");
         updatePro(str, ret);
     }
 

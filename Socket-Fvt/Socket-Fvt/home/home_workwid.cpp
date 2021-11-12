@@ -204,6 +204,7 @@ bool Home_WorkWid::inputCheck()
 {
     bool ret = initSerial();
     if(ret) ret = initUser();
+    if(ret) initData();
     if(ret) {
         int index = ui->specBox->currentIndex();
         switch (index) {
@@ -216,7 +217,6 @@ bool Home_WorkWid::inputCheck()
         }
     }
 
-    if(ret) initData();
     return ret;
 }
 
