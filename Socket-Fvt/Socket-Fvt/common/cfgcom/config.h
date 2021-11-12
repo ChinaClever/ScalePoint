@@ -48,11 +48,11 @@ struct sCfgItem
 };
 
 
-class Cfg
+class Cfg : public CfgCom
 {
-    Cfg();
+    Cfg(QObject *parent = nullptr);
 public:
-    static Cfg *bulid();
+    static Cfg *bulid(QObject *parent = nullptr);
     sCfgItem *item;
 
     QString getSerialBr(const QString &com);
@@ -66,14 +66,9 @@ public:
     void writeCnt();
     void writeCfgDev();
 
-    void write(const QString &key, const QVariant& v, const QString &g="cfg");
-    QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
 protected:
     void initCnt();
     void initCfgDev();
-
-private:
-    CfgCom *mCfg;
 };
 
 #endif // CONFIGBASH

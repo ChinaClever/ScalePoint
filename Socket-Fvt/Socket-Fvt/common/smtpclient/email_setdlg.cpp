@@ -40,7 +40,7 @@ Email_SetDlg::~Email_SetDlg()
  */
 void Email_SetDlg::initData(void)
 {
-    CfgCom *cfg = CfgCom::bulid();
+    Cfg *cfg = Cfg::bulid();
     mSet->server = cfg->read("Server", Email_Server, "Email").toString();
     mSet->usr = cfg->read("UsrName", Email_UsrName, "Email").toString();
     mSet->pwd = cfg->read("Password", Email_Password, "Email").toString();
@@ -81,7 +81,7 @@ bool Email_SetDlg::dataCheck(void)
  */
 void Email_SetDlg::saveData(void)
 {
-    CfgCom *cfg = CfgCom::bulid();
+    Cfg *cfg = Cfg::bulid();
     mSet->usr =  ui->usrEdit->text();
     cfg->write("UsrName", mSet->usr, "Email");
 

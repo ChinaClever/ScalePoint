@@ -7,22 +7,12 @@
 
 CfgCom::CfgCom(QObject *parent)
 {
-    mCfgIni = nullptr;
     QCoreApplication::setOrganizationName("CLEVER");
     QCoreApplication::setOrganizationDomain("clever.com");
     QCoreApplication::setApplicationName("Socket-Fvt");
-
+    mCfgIni = nullptr;
     cfgOpen(parent);
 }
-
-CfgCom *CfgCom::bulid(QObject *parent)
-{
-    static CfgCom* sington = nullptr;
-    if(sington == nullptr)
-        sington = new CfgCom(parent);
-    return sington;
-}
-
 
 /***
   * 获取程序数据目录

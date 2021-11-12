@@ -6,9 +6,8 @@
  */
 #include "config.h"
 
-Cfg::Cfg()
+Cfg::Cfg(QObject *parent) : CfgCom(parent)
 {
-    mCfg = CfgCom::bulid();
     item = new sCfgItem();
     item->coms.sp = nullptr;
 
@@ -16,13 +15,12 @@ Cfg::Cfg()
     initCfgDev();
 }
 
-Cfg *Cfg::bulid()
+Cfg *Cfg::bulid(QObject *parent)
 {
     static Cfg* sington = nullptr;
-    if(!sington) sington = new Cfg();
+    if(!sington) sington = new Cfg(parent);
     return sington;
 }
-
 
 void Cfg::initCfgDev()
 {
@@ -60,7 +58,7 @@ void Cfg::writeCnt()
  */
 QString Cfg::getSerialName(const QString &key)
 {
-    return mCfg->read(key, "", "Serial").toString();
+    return read(key, "", "Serial").toString();
 }
 
 /**
@@ -69,39 +67,19 @@ QString Cfg::getSerialName(const QString &key)
  */
 void Cfg::setSerialName(const QString &key, const QString &v)
 {
-    mCfg->write(key, v, "Serial");
+    write(key, v, "Serial");
 }
 
 QString Cfg::getSerialBr(const QString &com)
 {
     QString key = QString("BR_%1").arg(com);
-    return mCfg->read(key, "", "Serial").toString();
+    return read(key, "", "Serial").toString();
 }
 
 void Cfg::setSerialBr(const QString &com, const QString &br)
 {
     QString key = QString("BR_%1").arg(com);
-    mCfg->write(key, br, "Serial");
-}
-
-
-/**
- * @brief 根据名称获取配置文件数值
- * @return 对应的配置文件数值
- */
-QVariant Cfg::read(const QString &key, const QVariant &v, const QString &g)
-{
-    return mCfg->read(key, v, g);
-}
-
-/**
- * @brief 设置对应名称的配置文件数值
- * @param value
- * @param name
- */
-void Cfg::write(const QString &key, const QVariant& v, const QString &g)
-{
-    mCfg->write(key, v, g);
+    write(key, br, "Serial");
 }
 
 /**
@@ -110,7 +88,7 @@ void Cfg::write(const QString &key, const QVariant& v, const QString &g)
  */
 QString Cfg::getLoginName()
 {
-    return mCfg->read("name", "admin", "Login").toString();
+    return read("name", "admin", "Login").toString();
 }
 
 /**
@@ -119,5 +97,5 @@ QString Cfg::getLoginName()
  */
 void Cfg::setLoginName(const QString &name)
 {
-    mCfg->write("name", name, "Login");
+    write("name", name, "Login");
 }
