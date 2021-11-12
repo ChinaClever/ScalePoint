@@ -20,12 +20,18 @@ enum eDevTypes {
  */
 struct sCount
 {
-    sCount() {all=ok=err=cnt=0;}
-
     int cnt;
     int all;
     int ok;
     int err;
+};
+
+struct sErrData
+{
+    ushort vol;
+    ushort volErr;
+    ushort curErr;
+    ushort powErr; // 电流误差
 };
 
 struct sSerial
@@ -37,21 +43,18 @@ struct sSerial
 };
 
 struct sCfgItem
-{    
-    uchar modeId;
+{
     uchar addr;
 
-    ushort vol;
-    ushort volErr, curErr, powErr; // 电流误差   
-
     QString user;
-    sCount cnt;
+    sErrData errs;
+    sSerial coms;
+    sCount cnts;
+
     int logCount;
     uchar aiMode;
     uchar pcNum;
     ushort currentNum;
-
-    sSerial coms;
 };
 
 

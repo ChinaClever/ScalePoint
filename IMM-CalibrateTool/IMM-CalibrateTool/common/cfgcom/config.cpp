@@ -10,7 +10,7 @@ Cfg::Cfg()
 {
     mCfg = CfgCom::bulid();
     item = new sCfgItem();
-    item->vol = 200;
+    item->errs.vol = 200;
 
     initCnt();
     initCfgDev();
@@ -21,8 +21,7 @@ Cfg::Cfg()
 Cfg *Cfg::bulid()
 {
     static Cfg* sington = nullptr;
-    if(sington == nullptr)
-        sington = new Cfg();
+    if(!sington) sington = new Cfg();
     return sington;
 }
 
@@ -70,49 +69,51 @@ void Cfg::initCurrentNum()
 void Cfg::initCfgDev()
 {
     item->addr = read("addr", 1,"Sys").toInt();
-    item->modeId = read("modeId", 0,"Sys").toInt();
     item->user = read("user", "", "User").toString();
     item->aiMode = read("ai_mode", 0, "Sys").toInt();
+    item->pcNum = read("pc_num", 0, "Sys").toInt();
 }
 
 void Cfg::writeCfgDev()
 {
     writeCnt();
     write("addr", item->addr, "Sys");
-    write("modeId", item->modeId, "Sys");
     write("ai_mode", item->aiMode, "Sys");
     write("user", item->user, "User");
+    write("pc_num", item->pcNum, "Sys");
 }
 
 void Cfg::initCnt()
 {
-    item->cnt.cnt = read("cnt", 0, "Count").toInt();
-    item->cnt.all = read("all", 0, "Count").toInt();
-    item->cnt.ok = read("ok", 0, "Count").toInt();
-    item->cnt.err = read("err", 0, "Count").toInt();
+    item->cnts.cnt = read("cnt", 0, "Cnts").toInt();
+    item->cnts.all = read("all", 0, "Cnts").toInt();
+    item->cnts.ok = read("ok", 0, "Cnts").toInt();
+    item->cnts.err = read("err", 0, "Cnts").toInt();
 }
 
 void Cfg::writeCnt()
 {
-    write("cnt", item->cnt.cnt, "Count");
-    write("all", item->cnt.all, "Count");
-    write("ok", item->cnt.ok, "Count");
-    write("err", item->cnt.err, "Count");
+    write("cnt", item->cnts.cnt, "Cnts");
+    write("all", item->cnts.all, "Cnts");
+    write("ok", item->cnts.ok, "Cnts");
+    write("err", item->cnts.err, "Cnts");
     write("user", item->user, "User");
 }
 
 void Cfg::initErrData()
 {
-    item->volErr = read("vol", 1,"Err").toInt();
-    item->curErr = read("cur", 1,"Err").toInt();
-    item->powErr = read("pow", 15,"Err").toInt();
+    sErrData *errs = &(item->errs);
+    errs->volErr = read("vol", 1,"Errs").toInt();
+    errs->curErr = read("cur", 1,"Errs").toInt();
+    errs->powErr = read("pow", 15,"Errs").toInt();
 }
 
 void Cfg::writeErrData()
 {
-    write("vol", item->volErr, "Err");
-    write("cur", item->curErr, "Err");
-    write("pow", item->powErr, "Err");
+    sErrData *errs = &(item->errs);
+    write("vol", errs->volErr, "Errs");
+    write("cur", errs->curErr, "Errs");
+    write("pow", errs->powErr, "Errs");
 }
 
 /**

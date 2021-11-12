@@ -38,12 +38,8 @@ bool cm_isDigitStr(const QString &src)
 {
     QByteArray ba = src.toLatin1();//QString 转换为 char*
     const char *s = ba.data();
-
     while(*s && *s>='0' && *s<='9') s++;
-
-    if (*s) //不是纯数字
-        return false;
-
+    if (*s) return false; //不是纯数字
     return true;
 }
 
@@ -69,10 +65,11 @@ bool cm_isIPaddress(const QString& ip)
  */
 QString cm_ByteArrayToHexStr(const QByteArray &array)
 {
-    QString strArray = array.toHex().toUpper(); // 十六进制
-    for(int i=0; i<array.size(); ++i)
-        strArray.insert(2+3*i, " "); // 插入空格
-    return strArray;
+    QString strArray; // 十六进制
+    for(int i=0; i<array.size(); ++i) {
+        strArray.append(QString("%1 ").arg((uchar)array.at(i), 2, 16, (QChar)'0'));
+    }
+    return strArray.toUpper().simplified();
 }
 
 /**

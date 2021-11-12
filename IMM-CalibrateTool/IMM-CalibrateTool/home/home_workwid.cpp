@@ -72,13 +72,13 @@ void Home_WorkWid::insertText()
 
 void Home_WorkWid::updateCntSlot()
 {
-    sCount *cnt = &(mItem->cnt);
+    sCount *cnt = &(mItem->cnts);
     ui->okLcd->display(cnt->ok);
     ui->allLcd->display(cnt->all);
     ui->errLcd->display(cnt->err);
 
-    ui->cntSpin->setValue(mItem->cnt.cnt);
-    if(mItem->cnt.cnt < 1)mItem->user.clear();
+    ui->cntSpin->setValue(mItem->cnts.cnt);
+    if(mItem->cnts.cnt < 1)mItem->user.clear();
     ui->userEdit->setText(mItem->user);
 
     QString str = "0";
@@ -174,13 +174,13 @@ void Home_WorkWid::initUser()
 {
     if(mItem->user != ui->userEdit->text()) {
         mItem->user = ui->userEdit->text();
-        sCount *cnt = &(mItem->cnt);
+        sCount *cnt = &(mItem->cnts);
         cnt->all = cnt->ok = cnt->err = 0;
         Cfg::bulid()->writeCnt();
     }
 
-    if(mItem->cnt.cnt != ui->cntSpin->value()) {
-        mItem->cnt.cnt = ui->cntSpin->value();
+    if(mItem->cnts.cnt != ui->cntSpin->value()) {
+        mItem->cnts.cnt = ui->cntSpin->value();
         Cfg::bulid()->writeCnt();
     }
 }
@@ -193,7 +193,7 @@ bool Home_WorkWid::initWid()
         if(mItem->user.isEmpty()) {
             MsgBox::critical(this, tr("请先填写客户名称！")); return false;
         }
-        if(mItem->cnt.cnt < 1) {
+        if(mItem->cnts.cnt < 1) {
             MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;
         }
 

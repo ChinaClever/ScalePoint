@@ -21,8 +21,6 @@ protected:
 
     void initLogCount();
     void writeLogCount();
-    void initPcNum();
-    void writePcNum();
     void initErrData();
     void updateErrData();
 

@@ -26,13 +26,12 @@ Setup_MainWid::~Setup_MainWid()
 
 void Setup_MainWid::initFunSlot()
 {
-    initPcNum();
     initErrData();
     initLogCount();
+    ui->pcNumSpin->setValue(mItem->pcNum);
     mUserWid = new UserMainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mUserWid);
     QTimer::singleShot(2*1000,this,SLOT(checkPcNumSlot()));
-
     QDate buildDate = QLocale(QLocale::English ).toDate( QString(__DATE__).replace("  ", " 0"), "MMM dd yyyy");
     ui->label_date->setText(buildDate.toString("yyyy-MM-dd"));
 }
@@ -78,27 +77,10 @@ void Setup_MainWid::writeLogCount()
 }
 
 
-void Setup_MainWid::initPcNum()
-{
-    Cfg *con = Cfg::bulid();
-    int value = con->read("pc_num", 0, "Sys").toInt();
-
-    mItem->pcNum = value;
-    ui->pcNumSpin->setValue(value);
-}
-
-void Setup_MainWid::writePcNum()
-{
-    int arg1 = ui->pcNumSpin->value();
-    mItem->pcNum = arg1;
-    Cfg::bulid()->write("pc_num", arg1, "Sys");
-}
-
 void Setup_MainWid::on_pcBtn_clicked()
 {
     static int flg = 0;
     QString str = tr("修改");
-
     bool ret = usr_land_jur();
     if(!ret) {
         MsgBox::critical(this, tr("你无权进行此操作"));
@@ -107,9 +89,9 @@ void Setup_MainWid::on_pcBtn_clicked()
 
     if(flg++ %2) {
         ret = false;
-        writePcNum();
         writeLogCount();
-        Cfg::bulid()->writeCnt();
+        mItem->pcNum = ui->pcNumSpin->value();
+        Cfg::bulid()->writeCfgDev();
     } else {
         str = tr("保存");
     }
@@ -129,19 +111,19 @@ void Setup_MainWid::on_verBtn_clicked()
 
 void Setup_MainWid::updateErrData()
 {
-    sCfgItem *item = mItem;
-    item->volErr = ui->volErrBox->value();
-    item->curErr = ui->curErrBox->value() * 10;
-    item->powErr = ui->powErrBox->value() * 10;
+    sErrData *errs = &(mItem->errs);
+    errs->volErr = ui->volErrBox->value();
+    errs->curErr = ui->curErrBox->value() * 10;
+    errs->powErr = ui->powErrBox->value() * 10;
     Cfg::bulid()->writeErrData();
 }
 
 void Setup_MainWid::initErrData()
 {
-    sCfgItem *item = mItem;
-    ui->volErrBox->setValue(item->volErr);
-    ui->curErrBox->setValue(item->curErr / 10.0);
-    ui->powErrBox->setValue(item->powErr / 10.0);
+    sErrData *errs = &(mItem->errs);
+    ui->volErrBox->setValue(errs->volErr);
+    ui->curErrBox->setValue(errs->curErr / 10.0);
+    ui->powErrBox->setValue(errs->powErr / 10.0);
 }
 
 

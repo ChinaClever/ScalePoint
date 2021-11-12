@@ -12,8 +12,7 @@ public:
     static Ad_Resulting *bulid(QObject *parent = nullptr);
 
     bool resEnter();
-    bool initRtuThread();
-
+    bool initRtuThread(){return mCollect->readPduData();}
 protected:
     bool powErrRange(int exValue, int cur);
     bool curErrRange(int exValue, int cur);

@@ -22,8 +22,8 @@ Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
 bool Ad_Resulting::curErrRange(int exValue, int cur)
 {
     bool ret = false;
-    int min = exValue - mItem->curErr * 10;
-    int max = exValue + mItem->curErr * 10;
+    int min = exValue - mItem->errs.curErr * 10;
+    int max = exValue + mItem->errs.curErr * 10;
 
     if((cur >= min) && (cur <= max )) {
         ret =  true;
@@ -35,7 +35,7 @@ bool Ad_Resulting::curErrRange(int exValue, int cur)
 bool Ad_Resulting::powErrRange(int exValue, int pow)
 {
     bool ret = false;
-    int err = exValue * mItem->powErr;  // /1000.0
+    int err = exValue * mItem->errs.powErr;  // /1000.0
     int min = exValue - err;
     int max = exValue + err;
 
@@ -50,7 +50,7 @@ bool Ad_Resulting::powErrRange(int exValue, int pow)
 
 bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 {
-    exValue = mItem->vol * exValue/AD_CUR_RATE; exValue *= 0.5;//mData->cur.value[i]/COM_RATE_CUR;
+    exValue = mItem->errs.vol * exValue/AD_CUR_RATE; exValue *= 0.5;//mData->cur.value[i]/COM_RATE_CUR;
     QString str = tr("期望功率%1kW 第%2位 功率 ").arg(exValue/1000.0).arg(i+1);
 
     sLineData *line = &(mData->lines[i]);
@@ -98,10 +98,11 @@ bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
 bool Ad_Resulting::volErrRangeByID(int i)
 {
     bool ret = true;
+    sErrData *errs = &(mItem->errs);
     sLineData *line = &(mData->lines[i]);
     int vol = line->vol_rms;
-    int min = mItem->vol - mItem->volErr;
-    int max = mItem->vol + mItem->volErr;
+    int min = errs->vol - errs->volErr;
+    int max = errs->vol + errs->volErr;
     QString str = tr("期望电压200V，实际电压%1V 第%2位 电压 ").arg(vol).arg(i+1);
     if((vol >= min) && (vol <= max)) {
         str += tr("正常");
@@ -139,7 +140,7 @@ bool Ad_Resulting::volErrRange()
 bool Ad_Resulting::eachCurCheck(int k, int exValue)
 {
     bool ret = true;
-    double value = mItem->vol*exValue/AD_CUR_RATE/1000.0; value *= 0.5;
+    double value = mItem->errs.vol*exValue/AD_CUR_RATE/1000.0; value *= 0.5;
     QString str = tr("校验数据: 期望电流%1A 功率%2kW").arg(exValue/AD_CUR_RATE).arg(value);
     updatePro(str);
     for(int i=0; i<5; ++i) {
@@ -162,16 +163,6 @@ bool Ad_Resulting::eachCurEnter(int exValue)
     }
 
     return res;
-}
-
-bool Ad_Resulting::initRtuThread()
-{
-    switch (mItem->modeId) {
-    case IMM: mCollect = SP_ImmRtu::bulid(this); break;
-    default: mCollect = nullptr; break;
-    }
-
-    return mCollect->readPduData();
 }
 
 bool Ad_Resulting::workDown(int exValue)
