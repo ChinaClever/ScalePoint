@@ -21,7 +21,7 @@ void DbStates::createTable()
             "id             INTEGER primary key autoincrement not null,"
             "date           VCHAR,"
             "time           VCHAR,"
-            "dev            VCHAR,"
+            "pn             VCHAR,"
             "user           VCHAR,"
             "sn             VCHAR not null,"
             "result         VCHAR,"
@@ -43,8 +43,8 @@ DbStates *DbStates::bulid()
 
 bool DbStates::insertItem(const sStateItem &item)
 {
-    QString cmd = "insert into %1 (date,time,dev,user,sn,result,memo) "
-                  "values(:date,:time,:dev,:user,:sn,:result,:memo)";
+    QString cmd = "insert into %1 (date,time,pn,user,sn,result,memo) "
+                  "values(:date,:time,:pn,:user,:sn,:result,:memo)";
     bool ret = modifyItem(item,cmd.arg(tableName()));
     //if(ret) emit itemChanged(item.id,Insert);
     return ret;
@@ -58,7 +58,7 @@ bool DbStates::modifyItem(const sStateItem &item, const QString &cmd)
 
     query.bindValue(":date",item.date);
     query.bindValue(":time",item.time);
-    query.bindValue(":dev",item.dev);
+    query.bindValue(":pn",item.pn);
     query.bindValue(":user",item.user);
     query.bindValue(":sn",item.sn);
     query.bindValue(":result",item.result);

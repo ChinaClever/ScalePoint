@@ -3,8 +3,7 @@
 #include "basicsql.h"
 
 struct sLogItem : public DbBasicItem{
-    sLogItem(){}
-    QString dev, user, op, result, sn;
+    QString pn, user, fw, result, sn;
 };
 
 class DbLogs : public SqlBasic<sLogItem>

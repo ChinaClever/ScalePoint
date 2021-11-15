@@ -51,13 +51,8 @@ int SP_Object::transmit(sFrameFormat &it, uchar *recv)
     uchar sent[10] = {0};
     int len = toArray(it, sent); reflush();
     len = mModbus->transmit(sent, len, recv, 2);
-    if((it.fc == FC_READ_IMM) || (it.fc ==  FC_FW_VERSION)){
-        QByteArray array = mModbus->readSerial(1450);
-        for(auto byte : array) recv[len++] = byte;
-    }
-
     if(len < 6 || len > 2048) len = mModbus->transmit(sent, len, recv, 2);
-    if(len < 6) { qDebug() << " Dev_ScalePoint read Data err" << len; return 0; }
+    if(len < 6) { qDebug() << "Err: Dev_ScalePoint read Data err" << len; return 0; }
     return len;
 }
 
@@ -65,12 +60,12 @@ int SP_Object::filterUpolData(sFrameFormat &it)
 {
     static uchar recv[4096] = {0};
     int len = transmit(it, recv);
-    uchar *ptr = recv + 6;
+    uchar *ptr = recv + 6; if(recv[0] == 0x9F) len -=6; else
     if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
     if(((ptr[1]&ERROR_MASK_BIT) == it.addr) && (len > 5)) {
         if(checkCrc(ptr, len)) it.reply = ptr; else len = 0;
     } else {
-        qDebug() << " Dev_ScalePoint filter UPOL Data err" << it.fc << ptr[0] << it.addr << len;
+        qDebug() << "Err: Dev_ScalePoint filter UPOL Data err" << it.fc << ptr[0] << it.addr << len;
         len = 0;
     }
 
@@ -88,7 +83,7 @@ std::tuple<int, uchar *> SP_Object::masterRequest(uchar fc)
 {
     sFrameFormat it;
     it.fc = fc;
-    it.addr = mItem->addr;
+    it.addr = mDt->addr;
     it.msb = 0;
     it.lsb = 0;
 
@@ -153,14 +148,17 @@ bool SP_Object::enumDeviceType()
                     mDt->devType = array.at(k+2) >> 1;
                     mDt->lines = array.at(k+3);
                     switch (mDt->devType) {
-                    case DEVICE_TYPE_A: mDt->dt = "Standard Socket"; break;
-                    case DEVICE_TYPE_B: mDt->dt = "Socket with Relay"; break;
-                    case DEVICE_TYPE_C: mDt->dt = "Socket Metered"; break;
-                    case DEVICE_TYPE_D: mDt->dt = "Socket Metered with Relay"; break;
-                    case DEVICE_TYPE_IMM_1L: mDt->lines = 1; mDt->outputs = 3; mDt->dt = "IMM single line with 3 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L: mDt->lines = 3; mDt->outputs = 6; mDt->dt = "IMM three lines with 6 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L_N: mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
-                    default: qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->lines; continue;
+                    case DEVICE_TYPE_IMM_1L:
+                        mDt->lines = 1; mDt->outputs = 3; mDt->pn = "A024388AA";
+                        mDt->dt = "IMM single line with 3 branch current"; break;
+                    case DEVICE_TYPE_IMM_3L:
+                        mDt->lines = 3; mDt->outputs = 6; mDt->pn = "A024390AA";
+                        mDt->dt = "IMM three lines with 6 branch current"; break;
+                    case DEVICE_TYPE_IMM_3L_N:
+                         mDt->lines = 3; mDt->outputs = 6;
+                        mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
+                    default:
+                        qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->lines; continue;
                     } return true;
                 } else if(((array.at(k)&ERROR_MASK_BIT)) == 3 /*FC_RESET*/) return false;
             }
@@ -183,6 +181,22 @@ bool SP_Object::readVersion()
     QByteArray res = masterRequest(FC_FW_VERSION, mDt->addr, 0, 0);
     if(res.size() && (res.at(0) == FC_FW_VERSION)) {
         mDt->fw = tr("%1.%2").arg((uchar)res[2]).arg((uchar)res[3]);
+    } else {
+        ret = false;
+    }
+
+    return ret;
+}
+
+
+bool SP_Object::readSn()
+{
+    bool ret = true;
+    QByteArray res = masterRequest(FC_SERIAL_NUMBER, mDt->addr, 0, 0);
+    if(res.size() && (res.at(0) == FC_SERIAL_NUMBER)) {
+        QByteArray array = res.mid(2,4);
+        QDataStream stream(&array, QIODevice::ReadOnly);
+        mDt->sn = cm_ByteArrayToHexStr(array);
     } else {
         ret = false;
     }

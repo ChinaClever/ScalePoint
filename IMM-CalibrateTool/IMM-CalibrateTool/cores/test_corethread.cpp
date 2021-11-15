@@ -16,7 +16,6 @@ void Test_CoreThread::initFunSlot()
     BaseLogs::bulid(this);
     mYc = Yc_Obj::bulid(this);
     mDev = SP_ImmRtu::bulid(this);
-    mSn = Sn_SerialNum::bulid(this);
     mAd = Ad_CoreThread::bulid(this);
     mExe = Test_Execute::bulid(this);
 }
@@ -26,7 +25,7 @@ bool Test_CoreThread::enumDeviceType()
     bool ret = mDev->enumDeviceType();
     if(!ret) {
         ret = mExe->startProcess();
-        ret = mDev->enumDeviceType();
+        if(ret) ret = mDev->enumDeviceType();
     }
 
     QString str = tr("获取设备类型：");
@@ -44,10 +43,16 @@ bool Test_CoreThread::readDev()
     updatePro(str, ret, 1);
 
     if(ret) {
-        str = tr("Modbus-RTU通讯 版本读取 ");
         ret = mDev->readVersion();
+        str = tr("Modbus-RTU通讯 版本读取 ");
         if(ret) str += tr("正常"); else str += tr("错误");
-        updatePro(str, ret, 1);
+        updatePro(str, ret);
+    }
+
+    if(ret) {
+        ret = mDev->readSn(); str = tr("设备SN码读取 ");
+        if(ret) str += tr("正常：SN %1").arg(mDt->sn); else str += tr("错误");
+        updatePro(str, ret);
     }
 
     return ret;
@@ -89,8 +94,8 @@ void Test_CoreThread::workDown()
     Ad_Resulting::bulid(this)->initRtuThread();
     for(int i=0; i<mData->size; ++i) {
         sLineData *line = &(mData->lines[i]);
-        if(line->ele.active) {
-            QString e = QString::number(line->ele.active/COM_RATE_ELE)+"Wh";
+        if(line->ele) {
+            QString e = QString::number(line->ele/COM_RATE_ELE)+"Wh";
             QString str = tr("L%1 存在电能 %2").arg(i+1).arg(e);
             updatePro(str, false);
         }
@@ -105,11 +110,9 @@ void Test_CoreThread::collectData()
         if(ret && (++cnt%30)) continue;
         QString str = tr("正在读取设备数据 %1").arg(cnt);
         if(!ret) str= tr("读取设备数据错误！");
-        updatePro(str, ret, 1);
+        updatePro(str, ret, 2);
     }
-
-    QString str = tr("读取设备数据停止！");
-    updatePro(str);
+    updatePro(tr("读取设备数据停止！"));
 }
 
 

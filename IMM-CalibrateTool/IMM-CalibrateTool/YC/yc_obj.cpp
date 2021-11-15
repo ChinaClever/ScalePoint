@@ -18,13 +18,6 @@ Yc_Obj *Yc_Obj::bulid(QObject *parent)
 YC_StandSource *Yc_Obj::get()
 {
     YC_StandSource *yc = mAc;
-#if 0
-    if(mItem->modeId) {
-        if(mCfg->ip_ac == DC) yc = mDc;
-    } else {
-        if(mCfg->si_ac == DC) yc = mDc;
-    }
-#endif
     return yc;
 }
 
@@ -43,13 +36,6 @@ bool Yc_Obj::powerOn()
     str = tr("标准源上电");
     if(ret) ret = yc->powerOn();
     if(ret) str += tr("成功"); else str += tr("失败");
-#if 0
-    if(mItem->modeId) {
-        if(mCfg->ip_ac == DC) yc->setCur(0);
-    } else {
-        if(mCfg->si_ac == DC) yc->setCur(0);
-    }
-#endif
     return updatePro(str, ret, 5);
 }
 

@@ -12,7 +12,7 @@
 #define COM_RATE_CUR	1000.0    // 电流
 #define COM_RATE_POW	1000.0  // 功率
 #define COM_RATE_ELE	1000.0    // 电能
-#define COM_RATE_PF     10.0   // 功率因数
+#define COM_RATE_PF     100.0   // 功率因数
 #define COM_RATE_TEM	1.0    // 温度
 #define COM_RATE_HUM	1.0    // 湿度
 
@@ -33,9 +33,9 @@ struct sLineData
     uint cur_peak;    
     uchar status;
 
+    uint ele;
     uint powed;
     sItData pow;
-    sItData ele;
     ushort angle; //电流与电压的线角
 };
 

@@ -13,7 +13,7 @@ public:
     bool readPduData();
 
 protected:
-    int recvLine(int len);
+    bool recvLen(int len);
     bool recvPacket(uchar *ptr, int len, sDevObj *obj);
 };
 

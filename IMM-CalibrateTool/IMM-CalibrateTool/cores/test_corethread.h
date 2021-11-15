@@ -24,7 +24,6 @@ protected slots:
 private:
     Yc_Obj *mYc;
     SP_ImmRtu *mDev;
-    Sn_SerialNum *mSn;
     Ad_CoreThread *mAd;
     Test_Execute *mExe;
 };

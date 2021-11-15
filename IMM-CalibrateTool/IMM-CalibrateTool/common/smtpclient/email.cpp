@@ -35,20 +35,20 @@ int Email::sendMail(const QString &from, const QStringList &to, const QString &s
     message.addPart(&text);
 
     if (!smtp->connectToHost()) {
-        qDebug() << "Failed to connect to host!" << endl;
+        qDebug() << "Failed to connect to host!";
         return -1;
     }
 
     if (!smtp->login()) {
-        qDebug() << "Failed to login!" << endl;
+        qDebug() << "Failed to login!";
         return -2;
     }
 
     if (!smtp->sendMail(message)) {
-        qDebug() << "Failed to send mail!" << endl;
+        qDebug() << "Failed to send mail!";
         return -3;
     } else {
-        qDebug() << "send mail!" << endl;
+        qDebug() << "send mail!";
     }
 
     smtp->quit();

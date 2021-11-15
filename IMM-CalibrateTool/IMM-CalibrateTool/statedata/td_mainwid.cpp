@@ -30,11 +30,11 @@ void Td_MainWid::initWid()
     mPowTabWid = new Td_PowTabWid(ui->tabWidget);
     ui->tabWidget->addTab(mPowTabWid, tr("功率读数列表"));
 
-    mEleTabWid = new Td_EleTabWid(ui->tabWidget);
-    ui->tabWidget->addTab(mEleTabWid, tr("电能读数列表"));
-
     mBranchWid = new Td_BranchTabWid(ui->tabWidget);
     ui->tabWidget->addTab(mBranchWid, tr("支路读数列表"));
+
+    mEleTabWid = new Td_EleTabWid(ui->tabWidget);
+    ui->tabWidget->addTab(mEleTabWid, tr("电能读数列表"));
 
     mAngleWid = new Td_AngleTabWid(ui->tabWidget);
     ui->tabWidget->addTab(mAngleWid, tr("相位角状态"));

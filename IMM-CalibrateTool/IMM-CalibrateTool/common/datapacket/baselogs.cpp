@@ -50,10 +50,10 @@ bool BaseLogs::writeLog()
     Db_Tran db;
     sLogItem it;
 
-    it.dev = mDt->dt.split("_").first();
-    it.op = user_land_name();
-    it.user = mItem->user;
+    it.pn = mDt->pn;
+    it.fw = mDt->fw;
     it.sn = mDt->sn;
+    it.user = mItem->user;
 
     mItem->cnts.all += 1;
     if(mPro->result != Test_Fail) {
@@ -80,10 +80,10 @@ bool BaseLogs::writeLog()
 
 bool BaseLogs::initItem(sStateItem &it)
 {
-    it.dev = mDt->dt.split("_").first();
-    it.user = mItem->user;
+    it.pn = mDt->pn;
     it.sn = mDt->sn;
-
+    it.fw = mDt->fw;
+    it.user = mItem->user;
     return it.sn.size();
 }
 

@@ -40,8 +40,7 @@ bool SerialPort::open(const QString &name,qint32 baudRate)
     {
         mSerial = new QSerialPort(name);       //串口号，一定要对应好，大写！！！
         ret = mSerial->open(QIODevice::ReadWrite);      //读写打开
-        if(ret)
-        {
+        if(ret) {
             mSerial->setBaudRate(baudRate);  //波特率
             mSerial->setDataBits(QSerialPort::Data8); //数据位
             mSerial->setParity(QSerialPort::NoParity);    //无奇偶校验
@@ -49,9 +48,7 @@ bool SerialPort::open(const QString &name,qint32 baudRate)
             mSerial->setFlowControl(QSerialPort::NoFlowControl);  //无控制
             // connect(mSerial,SIGNAL(readyRead()),this,SLOT(serialReadSlot()));    //连接槽
             isOpen = true;
-        }
-        else
-            qDebug() << "open Serial:" << name << "Err";
+        }  else qDebug() << "open Serial:" << name << "Err";
     }
 
     return ret;
@@ -64,8 +61,7 @@ bool SerialPort::open(const QString &name,qint32 baudRate)
  */
 bool SerialPort::close(void)
 {
-    if(isOpen)
-    {
+    if(isOpen) {
         QWriteLocker locker(&mRwLock); // 正在操作时不允许关闭
         isOpen = false;
         mSerial->close();
@@ -82,10 +78,7 @@ bool SerialPort::close(void)
 QString SerialPort::getSerialName()
 {
     QString com;
-
-    if(mSerial)
-        com =  mSerial->portName();
-
+    if(mSerial) com = mSerial->portName();
     return com;
 }
 
@@ -98,8 +91,7 @@ QStringList SerialPort::getList()
 {
     QStringList list;
     QList<QSerialPortInfo>  infos = QSerialPortInfo::availablePorts();
-    if(!infos.isEmpty())
-    {
+    if(!infos.isEmpty()) {
         foreach (QSerialPortInfo info, infos) {
             list <<  info.portName();
         }
@@ -126,14 +118,10 @@ void SerialPort::timeoutDone()
 
 int SerialPort::send(const QByteArray &array)
 {
-    int len=0;
-
+    int len = 0;
     if(isOpen) {
         len = mSerial->write(array);
-        if(len > 0) {
-            mSerial->flush();
-            // qDebug() << cm_ByteArrayToHexStr(array);
-        }
+        if(len > 0) mSerial->flush();
     }
 
     return len;
@@ -149,7 +137,6 @@ int SerialPort::write(const QByteArray &array)
 {
     int ret = array.size();
     if(isOpen) {
-        //QWriteLocker locker(&mRwLock);
         mWriteArrays.append(array);
     } else {
         ret = 0;
@@ -163,7 +150,6 @@ int SerialPort::write(uchar *sent, int len)
 {
     QByteArray witeArray;
     witeArray.append((char *)sent, len);
-
     return write(witeArray);
 }
 
@@ -220,13 +206,13 @@ int SerialPort::read(QByteArray &array, int secs)
         for(int i=0; i<10*secs; ++i) {
             int rtn = mSerialData.size();
             if(rtn && i) {
-                msleep(150);
+                msleep(175);
                 QWriteLocker locker(&mRwLock);
                 array += mSerialData;
                 mSerialData.clear();
                 break;
             } else {
-                if(i) msleep(SERIAL_TIMEOUT); else msleep(350);
+                if(i) msleep(SERIAL_TIMEOUT); else msleep(365);
             }
         }
     }

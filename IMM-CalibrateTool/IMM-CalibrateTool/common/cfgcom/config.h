@@ -1,7 +1,7 @@
 #ifndef CONFIGBASH
 #define CONFIGBASH
-#include "cfgcom.h"
-#include "serialstatuswid.h"
+#include "cfgserial.h"
+
 
 enum eDevTypes {
     IMM=0,
@@ -34,18 +34,8 @@ struct sErrData
     ushort powErr; // 电流误差
 };
 
-struct sSerial
-{
-    sSerial() {sp=src=ser=nullptr;}
-    SerialPort *sp; // 标准源
-    SerialPort *src; // 串口对象
-    SerialPort *ser; // 串口对象
-};
-
 struct sCfgItem
 {
-    uchar addr;
-
     QString user;
     sErrData errs;
     sSerial coms;
@@ -54,44 +44,24 @@ struct sCfgItem
     int logCount;
     uchar aiMode;
     uchar pcNum;
-    ushort currentNum;
 };
 
 
-class Cfg
+class Cfg : public CfgSerial
 {
-    Cfg();
+    Cfg(QObject *parent = nullptr);
 public:
-    static Cfg *bulid();
+    static Cfg *bulid(QObject *parent = nullptr);
 
     sCfgItem *item;
-
-    QString getSerialBr(const QString &com);
-    QString getSerialName(const QString &key);
-    void setSerialBr(const QString &com, const QString &br);
-    void setSerialName(const QString &key, const QString &v);
-
-    QString getLoginName();
-    void setLoginName(const QString &name);
-
     void writeCnt();
     void writeCfgDev();
-
     void writeErrData();
-    void setCurrentNum();
-    void write(const QString &key, const QVariant& v, const QString &g="cfg");
-    QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="cfg");
 
 protected:
     void initCnt();
-    bool getDate();
-    void setDate();
     void initCfgDev();
     void initErrData();
-    void initCurrentNum();
-
-private:
-    CfgCom *mCfg;
 };
 
 #endif // CONFIGBASH

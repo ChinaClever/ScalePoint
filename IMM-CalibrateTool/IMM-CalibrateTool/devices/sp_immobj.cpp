@@ -15,7 +15,6 @@ uchar *SP_ImmObj::toInt(uchar *ptr, uint &value)
     value =  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电能高8位
     value <<= 16; // 左移8位
     value +=  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电能底8位
-
     return ptr;
 }
 
@@ -30,7 +29,6 @@ uchar *SP_ImmObj::toItem(uchar *ptr, sItData &it)
     ptr = toInt(ptr, it.active);
     ptr = toInt(ptr, it.reactive);
     ptr = toInt(ptr, it.apparen);
-
     return ptr;
 }
 
@@ -40,8 +38,7 @@ uchar *SP_ImmObj::toLine(uchar *ptr, sLineData &line)
     ptr = toInt(ptr, line.cur_rms);
     ptr = toInt(ptr, line.cur_peak);
     ptr = toItem(ptr, line.pow);
-    ptr = toItem(ptr, line.ele);
-    ptr = toShort(ptr, line.angle);
+    ptr = toInt(ptr, line.ele);
     return ptr;
 }
 
@@ -72,8 +69,9 @@ uchar *SP_ImmObj::toBranchIt(uchar *ptr, sBranchIt &it)
 
 uchar *SP_ImmObj::getBranchs(uchar *ptr, sDevObj *obj)
 {
-    for(int i=0; i<4; ++i) { // OpSize
+    for(int i=0; i<6; ++i) { // OpSize
         ptr = toBranchIt(ptr, obj->branchs[i]);
     }
+
     return ptr;
 }

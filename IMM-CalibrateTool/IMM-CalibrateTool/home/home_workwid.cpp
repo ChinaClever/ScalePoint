@@ -142,11 +142,15 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
 
+    str = mDt->pn;
+    if(str.isEmpty()) str = "--- ---";
+    ui->pnLab->setText(str);
+
     str = mDt->fw;
     if(str.isEmpty()) str = "--- ---";
     ui->verLab->setText(str);
 
-    if(mData->hz) str = QString::number(mData->hz);
+    if(mData->hz) str = QString::number(mData->hz/COM_RATE_PF);
     else str = "--- ---"; ui->hzLab->setText(str);
     if(mPro->step < Test_Over) {
         updateTime();

@@ -60,7 +60,7 @@ void Setup_MainWid::initSerial()
 
 void Setup_MainWid::initLogCount()
 {
-    Cfg *con = Cfg::bulid();
+    Cfg *con = Cfg::bulid(this);
     int value = con->read("log_count", 10, "Sys").toInt();
 
     sCfgItem *item = con->item;

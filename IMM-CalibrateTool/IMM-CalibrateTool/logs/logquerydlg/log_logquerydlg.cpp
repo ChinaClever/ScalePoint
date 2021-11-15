@@ -28,7 +28,7 @@ QString Log_LogQueryDlg::getCmd()
     if(!str.isEmpty()) cmd += QString(" and user like '%%1%'").arg(str);
 
     str = ui->devtypeEdit->text();
-    if(!str.isEmpty()) cmd += QString(" and dev like '%%1%'").arg(str);
+    if(!str.isEmpty()) cmd += QString(" and pn like '%%1%'").arg(str);
 
     str = ui->snEdit->text();
     if(!str.isEmpty()) cmd += QString(" and sn like '%%1%'").arg(str);

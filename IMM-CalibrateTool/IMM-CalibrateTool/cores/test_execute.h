@@ -1,7 +1,6 @@
 #ifndef TEST_EXECUTE_H
 #define TEST_EXECUTE_H
 #include "yc_obj.h"
-#include "sn_serialnum.h"
 #include "ad_corethread.h"
 
 class Test_Execute : public BaseThread
