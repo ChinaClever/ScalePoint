@@ -26,10 +26,9 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QString str = "PN,HW,FW,Date,SN,QR\n";
     str += it.pn + ","; str += it.hw + ","; str += it.fw + ",";
     QString date = QDate::currentDate().toString("yy") + "W";
-    date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0')); str += date+",";
-    QByteArray array; QDataStream stream(&array, QIODevice::WriteOnly); stream << it.sn;
-    QString sn = cm_ByteArrayToHexString(array); str += sn + ","; sn = sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(sn).arg(date).arg(it.hw).arg(it.fw);
+    date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
+    str += date+","; str += it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
+    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 
@@ -71,7 +70,6 @@ void Printer_BarTender::recvSlot()
 {
     while (mSocket->hasPendingDatagrams()) {
         QNetworkDatagram datagram = mSocket->receiveDatagram();
-        // qDebug() << datagram.destinationPort() <<  datagram.data();
         if(datagram.data().size()) mRes = true;
     }
 }
