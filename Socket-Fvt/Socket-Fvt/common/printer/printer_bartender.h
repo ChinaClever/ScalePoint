@@ -8,7 +8,7 @@ struct sBarTend {
     QString pn;
     QString hw;
     QString fw;
-    uint sn;
+    QString sn;
 };
 
 class Printer_BarTender : public QObject

@@ -59,10 +59,11 @@ bool BaseLogs::writeLog()
     Db_Tran db;
     sLogItem it;
 
-    it.fw = mDt->fw;
-    it.hw = mItem->hw;;
-    it.user = mItem->user;
+    it.pn = mDt->pn;
     it.sn = mDt->sn;
+    it.fw = mDt->fw;
+    it.hw = mItem->hw;
+    it.user = mItem->user;    
 
     mItem->cnts.all += 1;
     if(mPro->result != Test_Fail) {

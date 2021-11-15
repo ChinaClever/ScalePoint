@@ -25,18 +25,6 @@ MainWindow::~MainWindow()
 void MainWindow::initFunSlot()
 {
     initWid();
-
-    sBarTend it;
-    it.pn = "AG13095AA";
-    it.hw = "0.1";
-    it.fw = "1.0";
-    it.sn = 0x78;
-    Printer_BarTender::bulid(this)->printer(it);
-    qDebug() << "AAAAAAAAA" << QDate::currentDate().toString("yy") + "W" << QDate::currentDate().weekNumber();
-
-
-
-
 }
 
 void MainWindow::initWid()
