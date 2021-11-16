@@ -22,11 +22,11 @@ void DbLogs::createTable()
             "date           VCHAR,"
             "time           VCHAR,"
             "pn             VCHAR,"
+            "sn             VCHAR not nullR,"
             "user           VCHAR,"
             "fw             VCHAR,"
             "hw             VCHAR,"
-            "result         VCHAR,"
-            "sn             VCHAR not null);";
+            "result         VCHAR);";
     QSqlQuery query(mDb);
     if(!query.exec(cmd.arg(tableName()))) {
         throwError(query.lastError());
@@ -44,8 +44,8 @@ DbLogs *DbLogs::bulid()
 
 bool DbLogs::insertItem(const sLogItem &item)
 {
-    QString cmd = "insert into %1 (date,time,pn,user,fw,hw,result,sn) "
-                  "values(:date,:time,:pn,:user,:fw,:hw,:result,:sn)";
+    QString cmd = "insert into %1 (date,time,pn,sn,user,fw,hw,result) "
+                  "values(:date,:time,:pn,:sn,:user,:fw,:hw,:result)";
     bool ret = modifyItem(item,cmd.arg(tableName()));
     if(ret) emit itemChanged(item.id, Insert);
     return ret;
@@ -58,11 +58,11 @@ bool DbLogs::modifyItem(const sLogItem &item, const QString &cmd)
     query.bindValue(":date",item.date);
     query.bindValue(":time",item.time);
     query.bindValue(":pn",item.pn);
+    query.bindValue(":sn",item.sn);
     query.bindValue(":user",item.user);
     query.bindValue(":fw",item.fw);
     query.bindValue(":hw",item.hw);
     query.bindValue(":result",item.result);
-    query.bindValue(":sn",item.sn);
     bool ret = query.exec();
     if(!ret) throwError(query.lastError());
     return ret;

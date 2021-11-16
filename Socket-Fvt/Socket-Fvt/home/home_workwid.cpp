@@ -205,8 +205,7 @@ bool Home_WorkWid::inputCheck()
     bool ret = initSerial();
     if(ret) ret = initUser();
     if(ret) {
-        int index = ui->specBox->currentIndex();
-        switch (index) {
+        switch (ui->specBox->currentIndex()) {
         case 1: mDt->pn = "AG13093AA"; break;
         case 2: mDt->pn = "AG13094AA"; break;
         case 3: mDt->pn = "AG13095AA"; break;
