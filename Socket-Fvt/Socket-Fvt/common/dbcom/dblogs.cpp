@@ -11,7 +11,7 @@ DbLogs::DbLogs()
     createTable();
     tableTile = tr("状态日志");
     //hiddens <<  9;
-    headList << tr("设备型号") << tr("客户名称") << tr("软件版本") << tr("硬件版本") << tr("结果") << tr("设备序列号");
+    headList << tr("设备型号") << tr("设备序列号") << tr("客户名称") << tr("软件版本") << tr("硬件版本") << tr("结果");
 }
 
 void DbLogs::createTable()
