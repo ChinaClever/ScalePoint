@@ -22,7 +22,7 @@ void Test_CoreThread::initFunSlot()
 
 bool Test_CoreThread::enumDeviceType()
 {
-    QString str = tr("获取设备类型：");
+    QString str = tr("设备类型：");
     bool ret = mRtu->enumDeviceType();
     if(!ret) {
         ret = mExe->startProcess();
