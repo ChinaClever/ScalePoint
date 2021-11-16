@@ -27,9 +27,11 @@ protected:
     void updateTime();
     void updateResult();
 
+    void setWidEnabled(bool en);
+    bool inputCheck();
     bool initSerial();
+    bool initUser();
     bool initWid();
-    void initUser();
 
 private slots:
     void timeoutDone();

@@ -51,8 +51,8 @@ bool BaseLogs::writeLog()
     sLogItem it;
 
     it.pn = mDt->pn;
-    it.fw = mDt->fw;
     it.sn = mDt->sn;
+    it.fw = mDt->fw;
     it.user = mItem->user;
 
     mItem->cnts.all += 1;
@@ -81,8 +81,8 @@ bool BaseLogs::writeLog()
 bool BaseLogs::initItem(sStateItem &it)
 {
     it.pn = mDt->pn;
-    it.sn = mDt->sn;
     it.fw = mDt->fw;
+    it.sn = mDt->sn;
     it.user = mItem->user;
     return it.sn.size();
 }

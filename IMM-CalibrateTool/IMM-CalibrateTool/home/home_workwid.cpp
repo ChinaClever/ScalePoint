@@ -121,10 +121,9 @@ void Home_WorkWid::updateResult()
     }
     style += "font:100 34pt \"微软雅黑\";";
 
+    setWidEnabled(true);
     mPro->step = Test_End;
     ui->timeLab->setText(str);
-    ui->modeBox->setEnabled(true);
-    ui->groupBox_4->setEnabled(true);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
@@ -142,16 +141,13 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->devLab->setText(str);
 
-    str = mDt->pn;
-    if(str.isEmpty()) str = "--- ---";
-    ui->pnLab->setText(str);
-
     str = mDt->fw;
     if(str.isEmpty()) str = "--- ---";
     ui->verLab->setText(str);
 
+    str = "--- ---";
     if(mData->hz) str = QString::number(mData->hz/COM_RATE_PF);
-    else str = "--- ---"; ui->hzLab->setText(str);
+    ui->hzLab->setText(str);
     if(mPro->step < Test_Over) {
         updateTime();
     } else if(mPro->step < Test_End){
@@ -174,7 +170,7 @@ bool Home_WorkWid::initSerial()
     return ret;
 }
 
-void Home_WorkWid::initUser()
+bool Home_WorkWid::initUser()
 {
     if(mItem->user != ui->userEdit->text()) {
         mItem->user = ui->userEdit->text();
@@ -183,29 +179,56 @@ void Home_WorkWid::initUser()
         Cfg::bulid()->writeCnt();
     }
 
+    if(mItem->user.isEmpty()) {
+        MsgBox::critical(this, tr("请先填写客户名称！")); return false;
+    }
+
     if(mItem->cnts.cnt != ui->cntSpin->value()) {
         mItem->cnts.cnt = ui->cntSpin->value();
         Cfg::bulid()->writeCnt();
     }
+
+    if(mItem->cnts.cnt < 1) {
+        MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;
+    }
+
+    return true;
+}
+
+bool Home_WorkWid::inputCheck()
+{
+    bool ret = initSerial();
+    if(ret) ret = initUser();
+    if(ret) {
+        switch (ui->pnBox->currentIndex()) {
+        case 1: mDt->pn = "A024388AA"; break;
+        case 2: mDt->pn = "A024389AA"; break;
+        case 3: mDt->pn = "A024390AA"; break;
+        case 4: mDt->pn = "A024391AA"; break;
+        default: MsgBox::critical(this, tr("请选择设备规格")); ret = false; break;
+        }
+    }
+
+    if(ret) setWidEnabled(false);
+    return ret;
+}
+
+void Home_WorkWid::setWidEnabled(bool en)
+{
+    ui->modeBox->setEnabled(en);
+    ui->groupBox_4->setEnabled(en);
+    ui->userEdit->setEnabled(en);
+    ui->cntSpin->setEnabled(en);
+    ui->pnBox->setEnabled(en);
 }
 
 bool Home_WorkWid::initWid()
 {
-    bool ret = initSerial();
+    bool ret = inputCheck();
     if(ret) {
-        initUser();
-        if(mItem->user.isEmpty()) {
-            MsgBox::critical(this, tr("请先填写客户名称！")); return false;
-        }
-        if(mItem->cnts.cnt < 1) {
-            MsgBox::critical(this, tr("请先填写订单剩余数量！")); return false;
-        }
-
         mId = 1;
         mPacket->init();
         ui->textEdit->clear();
-        ui->modeBox->setEnabled(false);
-        ui->groupBox_4->setEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start;
         if(mPro->step == Test_Start) isCheck = true; else isCheck = false;

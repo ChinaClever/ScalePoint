@@ -204,7 +204,6 @@ bool Home_WorkWid::inputCheck()
 {
     bool ret = initSerial();
     if(ret) ret = initUser();
-    if(ret) initData();
     if(ret) {
         int index = ui->specBox->currentIndex();
         switch (index) {
@@ -224,6 +223,7 @@ bool Home_WorkWid::initWid()
 {
     bool ret = inputCheck();
     if(ret) {
+        initData();
         setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();

@@ -11,7 +11,7 @@ DbStates::DbStates()
     createTable();
     tableTile = tr("过程日志");
     //hiddens <<  9;
-    headList << tr("设备类型") << tr("客户名称") << tr("设备序列号") << tr("状态") << tr("内容");
+    headList << tr("设备类型") << tr("设备序列号") << tr("客户名称") << tr("状态") << tr("内容");
 }
 
 void DbStates::createTable()
@@ -22,8 +22,8 @@ void DbStates::createTable()
             "date           VCHAR,"
             "time           VCHAR,"
             "pn             VCHAR,"
-            "user           VCHAR,"
             "sn             VCHAR not null,"
+            "user           VCHAR,"
             "result         VCHAR,"
             "memo           VCHAR);";
     QSqlQuery query(mDb);
@@ -43,8 +43,8 @@ DbStates *DbStates::bulid()
 
 bool DbStates::insertItem(const sStateItem &item)
 {
-    QString cmd = "insert into %1 (date,time,pn,user,sn,result,memo) "
-                  "values(:date,:time,:pn,:user,:sn,:result,:memo)";
+    QString cmd = "insert into %1 (date,time,pn,sn,user,result,memo) "
+                  "values(:date,:time,:pn,:sn,:user,:result,:memo)";
     bool ret = modifyItem(item,cmd.arg(tableName()));
     //if(ret) emit itemChanged(item.id,Insert);
     return ret;
@@ -59,8 +59,8 @@ bool DbStates::modifyItem(const sStateItem &item, const QString &cmd)
     query.bindValue(":date",item.date);
     query.bindValue(":time",item.time);
     query.bindValue(":pn",item.pn);
-    query.bindValue(":user",item.user);
     query.bindValue(":sn",item.sn);
+    query.bindValue(":user",item.user);
     query.bindValue(":result",item.result);
     query.bindValue(":memo",item.memo);
     bool ret = query.exec();

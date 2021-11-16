@@ -149,10 +149,10 @@ bool SP_Object::enumDeviceType()
                     mDt->lines = array.at(k+3);
                     switch (mDt->devType) {
                     case DEVICE_TYPE_IMM_1L:
-                        mDt->lines = 1; mDt->outputs = 3; mDt->pn = "A024388AA";
+                        mDt->lines = 1; mDt->outputs = 3;
                         mDt->dt = "IMM single line with 3 branch current"; break;
                     case DEVICE_TYPE_IMM_3L:
-                        mDt->lines = 3; mDt->outputs = 6; mDt->pn = "A024390AA";
+                        mDt->lines = 3; mDt->outputs = 6;
                         mDt->dt = "IMM three lines with 6 branch current"; break;
                     case DEVICE_TYPE_IMM_3L_N:
                          mDt->lines = 3; mDt->outputs = 6;
