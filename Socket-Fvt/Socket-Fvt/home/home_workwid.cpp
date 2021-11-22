@@ -118,13 +118,10 @@ void Home_WorkWid::updateResult()
     QString str = tr("---");
     if(isCheck){ if(mId < 20) mPro->result = Test_Fail; }
     if(Test_Fail == mPro->result) {
-        str = tr("失败");
-        style = "background-color:red; color:rgb(255, 255, 255);";
+        str = tr("失败"); style = "background-color:red; color:rgb(255, 255, 255);";
     } else {
-        str = tr("成功");
-        style = "background-color:green; color:rgb(255, 255, 255);";
-    }
-    style += "font:100 34pt \"微软雅黑\";";
+        str = tr("成功"); style = "background-color:green; color:rgb(255, 255, 255);";
+    } style += "font:100 34pt \"微软雅黑\";";
 
     setWidEnabled(true);
     mPro->step = Test_End;
