@@ -92,7 +92,8 @@ bool Test_CoreThread::btCurCheck()
     sBtIt bt; mBt->init(1);
     bool ret = mBt->readPacket(bt);
     if(ret) {
-         ///////////==============
+        qDebug() << bt.vol << bt.cur;
+        ///////////==============
     }
 
     return ret;
@@ -152,8 +153,8 @@ bool Test_CoreThread::zeroMeasRot()
 
 void Test_CoreThread::workDown()
 {
-   bool ret = mRtu->openOutput(1);
-   // bool ret = mRtu->openAll();
+    bool ret = mRtu->openOutput(1);
+    // bool ret = mRtu->openAll();
 
 
     QString str = tr("打开输出位 1 ");

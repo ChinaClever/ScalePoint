@@ -8,6 +8,7 @@ struct sBtIt
     sBtIt() {vol=cur=0;}
     ushort vol;// 电压
     ushort cur; //电流
+    ushort tem;
 };
 
 class Bt_Serial : public QThread

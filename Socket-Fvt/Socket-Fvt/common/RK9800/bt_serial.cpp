@@ -37,8 +37,8 @@ bool Bt_Serial::readPacket(sBtIt &bt)
     if(len > 0) {
         QByteArray array((char *)recv, len);
         QDataStream rxStream(array);
-        rxStream.setByteOrder(QDataStream::LittleEndian);
-        rxStream >> bt.vol >> bt.cur;
+        rxStream.setByteOrder(QDataStream::BigEndian);
+        rxStream >> bt.vol >> bt.cur >> bt.tem;
     } else ret = false;
     return ret;
 }

@@ -22,7 +22,7 @@ void DbLogs::createTable()
             "date           VCHAR,"
             "time           VCHAR,"
             "pn             VCHAR,"
-            "sn             VCHAR not nullR,"
+            "sn             VCHAR not null,"
             "user           VCHAR,"
             "fw             VCHAR,"
             "hw             VCHAR,"
