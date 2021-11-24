@@ -92,9 +92,16 @@ bool Test_CoreThread::btCurCheck()
     sBtIt bt; mBt->init(1);
     bool ret = mBt->readPacket(bt);
     if(ret) {
-        qDebug() << bt.vol << bt.cur;
-        ///////////==============
-    }
+        QString str = tr("检测供电电压=%1V ").arg(bt.vol/100.0);
+        if((bt.vol > 1100) && (bt.vol < 1300)) ret = true; else ret = false;
+        if(ret) str += tr("正确"); else  str += tr("错误");
+        updatePro(str, ret);
+
+        str = tr("检测消耗电流=%1A ").arg(bt.cur/100.0);
+        if((bt.cur > 1100) && (bt.cur < 1300)) ret = true; else ret = false;
+        if(ret) str += tr("正确"); else  str += tr("错误");
+        updatePro(str, ret);
+    } else updatePro(tr("外网计量板数据读取错误"), ret);
 
     return ret;
 }
