@@ -36,7 +36,6 @@ bool Test_CoreThread::enumDeviceType()
     return updatePro(str, ret);
 }
 
-
 bool Test_CoreThread::readDev()
 {
     QString str = tr("请求地址 ");
@@ -66,14 +65,12 @@ bool Test_CoreThread::printer()
     QString str = tr("标签打印 ");
     if(mPro->result != Test_Fail) {
         sBarTend it;
-        it.pn = mDt->pn;
-        it.sn = mDt->sn;
-        it.fw = mDt->fw;
-        it.hw = mItem->hw;
+        it.pn = mDt->pn; it.sn = mDt->sn;
+        it.fw = mDt->fw; it.hw = mItem->hw;
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(ret) str += tr("正常"); else str += tr("错误");
-    }
+    } else str = tr("因测试未通过，标签未打印");
 
     return updatePro(str, ret);
 }
@@ -134,27 +131,24 @@ bool Test_CoreThread::relayCheck(int id)
 
     bool ret = mRtu->closeOutput(id+1);
     QString str = tr("Socket 输出位%1 断开 ").arg(id+1);
-    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 1);
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret);
 
     mPdu->readPduData(); str = tr("PDU执行板 输出位 %1 打开 ").arg(id+1);
     if(1 == pduData->sw[id]) ret = true; else ret = false;
-    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 1);
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 3);
 
     str = tr("Socket 输出位%1 空载电流 ").arg(id+1); mPdu->readPduData();
     if(pduData->cur.value[id]) ret = false; else ret = true;
     if(ret) str += tr("正常"); else str += tr("错误：%1").arg(pduData->cur.value[id]);
-    updatePro(str, ret, 1);
+    updatePro(str, ret);
 
-    mRtu->openOutput(id+1);
-    str = tr("Socket 输出位%1 闭合 ").arg(id+1);
+    mRtu->openOutput(id+1); str = tr("Socket 输出位%1 闭合 ").arg(id+1);
     if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 4);
 
     str = tr("Socket 输出位%1 带载电流 ").arg(id+1); mPdu->readPduData();
     if(pduData->cur.value[id]) ret = true; else ret = false;
     if(ret) str += tr("正常：%1").arg(pduData->cur.value[id]); else str += tr("异常");
-    updatePro(str, ret, 1);
-
-    return ret;
+    return updatePro(str, ret);
 }
 
 
@@ -164,14 +158,14 @@ bool Test_CoreThread::outputCheck()
     bool ret = mPdu->readPduData();
     if(ret) {
         for(int i=0; i<mDt->outputs; ++i) relayCheck(i);
-    } else updatePro(tr("PDU执行板通讯错误"), ret);
+    } else updatePro(tr("PDU执行板 通讯错误"), ret);
 
     return ret;
 }
 
 bool Test_CoreThread::initFun()
 {    
-    bool ret = updatePro(tr("即将开始"));
+    bool ret = updatePro(tr("即将开始，正在复位串口板"));
     if(ret) ret = mExe->startProcess();
     if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
