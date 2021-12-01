@@ -34,6 +34,7 @@ enum {
     Test_Start, // 开始
     Test_Addr,
     Test_Ctrl,
+    Test_Relay,
     Test_Zero, // 验证
     Test_Over, // 终止
     Test_End, // 完成

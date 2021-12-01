@@ -4,6 +4,7 @@
  *      Author: Lzy
  */
 #include "test_corethread.h"
+#include "printer_bartender.h"
 
 Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 {
@@ -13,11 +14,11 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
+    Printer_BarTender::bulid(this);
     mExe = Test_Execute::bulid(this);
     mRtu = SP_SocketRtu::bulid(this);
     mPdu = Pdu_ZRtu::bulid(this);
     mBt = new Bt_Serial(this);
-
 }
 
 bool Test_CoreThread::enumDeviceType()
@@ -59,9 +60,27 @@ bool Test_CoreThread::readDev()
     return ret;
 }
 
+bool Test_CoreThread::printer()
+{
+    bool ret = true;
+    QString str = tr("标签打印 ");
+    if(mPro->result != Test_Fail) {
+        sBarTend it;
+        it.pn = mDt->pn;
+        it.sn = mDt->sn;
+        it.fw = mDt->fw;
+        it.hw = mItem->hw;
+        ret = Printer_BarTender::bulid(this)->printer(it);
+        if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
+        if(ret) str += tr("正常"); else str += tr("错误");
+    }
+
+    return updatePro(str, ret);
+}
+
 void Test_CoreThread::workResult()
 {
-    bool res = true;
+    bool res = true; printer();
     BaseLogs::bulid()->start();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
@@ -92,37 +111,60 @@ bool Test_CoreThread::btCurCheck()
     sBtIt bt; mBt->init(1);
     bool ret = mBt->readPacket(bt);
     if(ret) {
-        QString str = tr("检测供电电压=%1V ").arg(bt.vol/100.0);
+        QString str = tr("检测供电电压：%1V ").arg(bt.vol/100.0);
         if((bt.vol > 1100) && (bt.vol < 1300)) ret = true; else ret = false;
         if(ret) str += tr("正确"); else  str += tr("错误");
         updatePro(str, ret);
 
-        str = tr("检测消耗电流=%1A ").arg(bt.cur/100.0);
-        if((bt.cur > 1100) && (bt.cur < 1300)) ret = true; else ret = false;
+        str = tr("检测消耗电流：%1A ").arg(bt.cur/1000.0);
+        if((bt.cur > 100) && (bt.cur < 1400)) ret = true; else ret = false;
         if(ret) str += tr("正确"); else  str += tr("错误");
         updatePro(str, ret);
-    } else updatePro(tr("外网计量板数据读取错误"), ret);
+    } else updatePro(tr("外购计量板通讯错误"), ret);
 
     return ret;
 }
 
-bool Test_CoreThread::outputCheck()
+bool Test_CoreThread::relayCheck(int id)
 {
+    sPduData *pduData = mPdu->getPduData();
+    mPdu->openOutputSwitch(id); mdelay(1);
+    mPdu->openOnlySwitch(id); mdelay(1);
+    mPdu->closeOtherSwitch(id); mdelay(1);
+
+    bool ret = mRtu->closeOutput(id+1);
+    QString str = tr("Socket 输出位%1 断开 ").arg(id+1);
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 1);
+
+    mPdu->readPduData(); str = tr("PDU执行板 输出位 %1 打开 ").arg(id+1);
+    if(1 == pduData->sw[id]) ret = true; else ret = false;
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 1);
+
+    str = tr("Socket 输出位%1 空载电流 ").arg(id+1); mPdu->readPduData();
+    if(pduData->cur.value[id]) ret = false; else ret = true;
+    if(ret) str += tr("正常"); else str += tr("错误：%1").arg(pduData->cur.value[id]);
+    updatePro(str, ret, 1);
+
+    mRtu->openOutput(id+1);
+    str = tr("Socket 输出位%1 闭合 ").arg(id+1);
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 4);
+
+    str = tr("Socket 输出位%1 带载电流 ").arg(id+1); mPdu->readPduData();
+    if(pduData->cur.value[id]) ret = true; else ret = false;
+    if(ret) str += tr("正常：%1").arg(pduData->cur.value[id]); else str += tr("异常");
+    updatePro(str, ret, 1);
+
+    return ret;
+}
+
+
+bool Test_CoreThread::outputCheck()
+{        
     mPdu->initData(3);
     bool ret = mPdu->readPduData();
     if(ret) {
-        sPduData *data = mPdu->getPduData();
-        for(int i=0; i<mDt->outputs; ++i) {
-
-            ///////////==============
-
-
-
-
-
-        }
-    }
-
+        for(int i=0; i<mDt->outputs; ++i) relayCheck(i);
+    } else updatePro(tr("PDU执行板通讯错误"), ret);
 
     return ret;
 }
@@ -133,17 +175,16 @@ bool Test_CoreThread::initFun()
     if(ret) ret = mExe->startProcess();
     if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
-
     return ret;
 }
 
 bool Test_CoreThread::zeroMeasRot()
 {
     uint value = 0;
-    bool ret = true;  delay(2);
+    bool ret = true;  mPdu->closeAllSwitch(); delay(4);
     for(int i=1; i<=mDt->outputs; ++i) {
         bool res = mRtu->measRot(i, value);
-        QString str = tr("输出位%1 ").arg(i);
+        QString str = tr("Socket 输出位%1 ").arg(i);
         if(res) str += tr("继电器工作时间"); else str += tr("过零操作错误");
         updatePro(str+tr(" %1ms").arg(value/100.0), res, 1); if(!res) ret = res;
     }
@@ -160,19 +201,9 @@ bool Test_CoreThread::zeroMeasRot()
 
 void Test_CoreThread::workDown()
 {
-    bool ret = mRtu->openOutput(1);
-    // bool ret = mRtu->openAll();
-
-
-    QString str = tr("打开输出位 1 ");
-    if(ret) str += tr("正常"); else str += tr("错误");
-    updatePro(str, ret);
-
-    ret = mRtu->closeOutput(1);
-    // ret = mRtu->closeAll();
-    str = tr("关闭输出位 1 ");
-    if(ret) str += tr("正常"); else str += tr("错误");
-    updatePro(str, ret);
+    btCurCheck();
+    outputCheck();
+    zeroMeasRot();
 }
 
 void Test_CoreThread::run()
@@ -183,6 +214,7 @@ void Test_CoreThread::run()
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Ctrl: outputCtrl(); break;
+        case Test_Relay: outputCheck(); break;
         case Test_Zero: zeroMeasRot(); break;
         }
     } else mPro->result = Test_Fail;

@@ -309,6 +309,11 @@
       </item>
       <item>
        <property name="text">
+        <string>继电器测试</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>过零测试</string>
        </property>
       </item>

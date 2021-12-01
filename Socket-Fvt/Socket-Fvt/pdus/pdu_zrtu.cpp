@@ -84,7 +84,7 @@ bool Pdu_ZRtu::getZpduVolCur()
     if(ret > 0) {
         res = recvZpduVolCur(recv, ret);
     } else {
-        qDebug() << "Col_ZPduThread getZpduVolCur err!" << res;
+        qDebug() << "Col_ZPduThread getZpduVolCur err!" << ret;
     }
 
     return res;

@@ -165,6 +165,8 @@ bool Home_WorkWid::initSerial()
     bool ret = mItem->coms.sp->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开Socket串口")); return ret;}
 
+    ret = mItem->coms.pdu->isOpened();
+    if(!ret) {MsgBox::critical(this, tr("请先打开治具串口")); return ret;}
 
     return ret;
 }

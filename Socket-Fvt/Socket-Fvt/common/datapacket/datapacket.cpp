@@ -29,7 +29,7 @@ void sDataPacket::init()
     pro->status.clear();
     dev->dt.sn.clear();
 
-    dev->dt.pn.clear();
+    //dev->dt.pn.clear();
     dev->dt.sn.clear();
     dev->dt.fw.clear();
     pro->result = Test_Info;

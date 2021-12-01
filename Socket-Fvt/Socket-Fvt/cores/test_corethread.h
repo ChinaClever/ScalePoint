@@ -21,6 +21,8 @@ protected:
     void workDown();
     void workResult();
 
+    bool printer();
+    bool relayCheck(int id);
     bool btCurCheck();
     bool outputCheck();
 
