@@ -63,7 +63,7 @@ bool Test_CoreThread::printer()
 {
     bool ret = true;
     QString str = tr("标签打印 ");
-    if(mPro->result != Test_Fail) {
+    if((mPro->result != Test_Fail) && (Test_Start == mPro->step)){
         sBarTend it;
         it.pn = mDt->pn; it.sn = mDt->sn;
         it.fw = mDt->fw; it.hw = mItem->hw;
@@ -150,7 +150,6 @@ bool Test_CoreThread::relayCheck(int id)
     if(ret) str += tr("正常：%1").arg(pduData->cur.value[id]); else str += tr("异常");
     return updatePro(str, ret);
 }
-
 
 bool Test_CoreThread::outputCheck()
 {        
