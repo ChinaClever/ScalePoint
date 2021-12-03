@@ -22,6 +22,8 @@ protected:
     void workResult();
 
     bool printer();
+    bool noCurLoad();
+    bool hasCurLoad();
     bool relayCheck(int id);
     bool btCurCheck();
     bool outputCheck();

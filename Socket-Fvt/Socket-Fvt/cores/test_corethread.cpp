@@ -122,32 +122,48 @@ bool Test_CoreThread::btCurCheck()
     return ret;
 }
 
+bool Test_CoreThread::hasCurLoad()
+{
+    bool ret = false;
+    sPduData *pduData = mPdu->getPduData();
+    for(int i=0; i<pduData->size; ++i) {
+        if(pduData->cur.value[i]) ret = true;
+    }
+    return ret;
+}
+
+bool Test_CoreThread::noCurLoad()
+{
+    bool ret = true;
+    sPduData *pduData = mPdu->getPduData();
+    for(int i=0; i<pduData->size; ++i) {
+        if(pduData->cur.value[i]) ret = false;
+    }
+    return ret;
+}
+
 bool Test_CoreThread::relayCheck(int id)
 {
     sPduData *pduData = mPdu->getPduData();
-    mPdu->openOutputSwitch(id); mdelay(1);
-    mPdu->openOnlySwitch(id); mdelay(1);
-    mPdu->closeOtherSwitch(id); mdelay(1);
+    mPdu->openAllSwitch(); mdelay(1);
 
-    bool ret = mRtu->closeOutput(id+1);
-    QString str = tr("Socket 输出位%1 断开 ").arg(id+1);
-    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret);
-
-    mPdu->readPduData(); str = tr("PDU执行板 输出位 %1 打开 ").arg(id+1);
+    bool ret = mPdu->readPduData(); QString str = tr("PDU执行板 输出位 %1 打开 ").arg(id+1);
     if(1 == pduData->sw[id]) ret = true; else ret = false;
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 1);
+
+    ret = mRtu->closeOutput(id+1); str = tr("Socket 输出位%1 闭合 ").arg(id+1);
+    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 5);
+
+    str = tr("Socket 输出位%1 带载电流 ").arg(id+1); mPdu->readPduData();
+    if(hasCurLoad()) ret = true; else ret = false;
+    if(ret) str += tr("正常"); else str += tr("异常"); updatePro(str, ret);
+
+    ret = mRtu->openOutput(id+1); str = tr("Socket 输出位%1 断开 ").arg(id+1);
     if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 3);
 
     str = tr("Socket 输出位%1 空载电流 ").arg(id+1); mPdu->readPduData();
-    if(pduData->cur.value[id]) ret = false; else ret = true;
-    if(ret) str += tr("正常"); else str += tr("错误：%1").arg(pduData->cur.value[id]);
-    updatePro(str, ret);
-
-    mRtu->openOutput(id+1); str = tr("Socket 输出位%1 闭合 ").arg(id+1);
-    if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret, 4);
-
-    str = tr("Socket 输出位%1 带载电流 ").arg(id+1); mPdu->readPduData();
-    if(pduData->cur.value[id]) ret = true; else ret = false;
-    if(ret) str += tr("正常：%1").arg(pduData->cur.value[id]); else str += tr("异常");
+    if(noCurLoad()) ret = true; else ret = false;
+    if(ret) str += tr("正常"); else str += tr("错误");
     return updatePro(str, ret);
 }
 
@@ -174,7 +190,7 @@ bool Test_CoreThread::initFun()
 bool Test_CoreThread::zeroMeasRot()
 {
     uint value = 0;
-    bool ret = true;  mPdu->closeAllSwitch(); delay(4);
+    bool ret = true; delay(5);
     for(int i=1; i<=mDt->outputs; ++i) {
         bool res = mRtu->measRot(i, value);
         QString str = tr("Socket 输出位%1 ").arg(i);
