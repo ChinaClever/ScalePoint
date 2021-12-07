@@ -206,13 +206,13 @@ int SerialPort::read(QByteArray &array, int secs)
         for(int i=0; i<10*secs; ++i) {
             int rtn = mSerialData.size();
             if(rtn && i) {
-                msleep(175);
+                if(rtn>5)msleep(375);
                 QWriteLocker locker(&mRwLock);
                 array += mSerialData;
                 mSerialData.clear();
                 break;
             } else {
-                if(i) msleep(SERIAL_TIMEOUT); else msleep(365);
+                if(i) msleep(SERIAL_TIMEOUT); else msleep(265);
             }
         }
     }

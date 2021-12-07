@@ -87,7 +87,6 @@ void Home_WorkWid::updateCntSlot()
         str = QString::number(value,'f',0) +"%";
     }
     ui->passLcd->display(str);
-    //ui->typeComboBox->setCurrentIndex(mItem->modeId); ////////==========
 }
 
 QString Home_WorkWid::getTime()
@@ -164,9 +163,10 @@ void Home_WorkWid::timeoutDone()
 bool Home_WorkWid::initSerial()
 {
     bool ret = mItem->coms.sp->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开PDU串口")); return ret;}
-    // ret = mItem->source->isOpened();  ///////===========
-    // if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
+    if(!ret) {MsgBox::critical(this, tr("请先打开IMM串口")); return ret;}
+
+    ret = mItem->coms.src->isOpened();
+    if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
     return ret;
 }
 

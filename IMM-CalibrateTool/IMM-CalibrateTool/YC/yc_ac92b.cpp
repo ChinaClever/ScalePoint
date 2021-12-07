@@ -88,7 +88,7 @@ bool YC_Ac92b::handShake()
     bool ret = setBaudRate(9600);
     if(ret && setRange()) {
         QByteArray res;
-        int rtn = mSerial->transmit(array, res, 4);
+        int rtn = mSerial->transmit(array, res, 3);
         if(rtn > 0)  {
             acOrDc = 1;
         } else {

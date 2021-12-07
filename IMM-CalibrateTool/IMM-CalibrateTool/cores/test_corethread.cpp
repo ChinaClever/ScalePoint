@@ -60,8 +60,7 @@ bool Test_CoreThread::readDev()
 void Test_CoreThread::workResult()
 {
     BaseLogs::bulid()->start();
-    //bool res = mYc->powerDown(); /////=========
-    bool res = true;
+    bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         str += tr("通过");
@@ -77,12 +76,10 @@ void Test_CoreThread::workResult()
 bool Test_CoreThread::initFun()
 {
     updatePro(tr("即将开始"));
-    //bool ret = mYc->powerOn(); /////=========
-    bool ret = true;
+    bool ret = mYc->powerOn();
     if(ret) ret = mExe->startProcess();
     if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
-    //if(ret) ret = mSn->snEnter(); /////=========
 
     return ret;
 }
