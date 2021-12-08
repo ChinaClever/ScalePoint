@@ -29,7 +29,7 @@ bool Test_CoreThread::enumDeviceType()
     }
 
     QString str = tr("设备类型：");
-    if(ret) str += mDt->dt; else str += tr("读取错误");
+    if(ret) str += mDt->dt; else str += tr("识别错误");
     return updatePro(str, ret);
 }
 

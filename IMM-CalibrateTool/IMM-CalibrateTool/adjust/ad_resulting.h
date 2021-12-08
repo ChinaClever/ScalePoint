@@ -28,7 +28,7 @@ protected:
 
     bool noLoadEnter();
     bool noLoadCurFun();
-    bool noLoadCurCheck(int cnt);
+    bool noLoadCurCheck(int k, int cnt);
     bool powerOn();
 
 private:

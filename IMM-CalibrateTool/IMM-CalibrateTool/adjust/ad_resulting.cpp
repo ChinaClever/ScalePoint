@@ -128,7 +128,7 @@ bool Ad_Resulting::eachCurCheck(int k, int exValue)
     QString str = tr("L%1校验数据: 期望电流%2A 功率%3W").arg(k+1).arg(exValue/AD_CUR_RATE).arg(value);
     updatePro(str); for(int i=0; i<5; ++i) {
         if(i) str += tr(" 第%1次").arg(i+1); else delay(4);
-        ret = curRangeByID(k, exValue, i);        
+        ret = curRangeByID(k, exValue, i);
         if(ret) break; else if(!delay(i+5)) break;
     }
 
@@ -151,26 +151,26 @@ bool Ad_Resulting::workDown(int exValue)
     return eachCurEnter(exValue);
 }
 
-bool Ad_Resulting::noLoadCurCheck(int cnt)
+bool Ad_Resulting::noLoadCurCheck(int k, int cnt)
 {
     bool res = true;
-    for(int k=0; k<mData->size; ++k) {
-        sLineData *line = &(mData->lines[k]);
-        line->powed = line->pow.active;
-        line->cur_ed = line->cur_rms;
+    sLineData *line = &(mData->lines[k]);
+    line->powed = line->pow.active;
+    line->cur_ed = line->cur_rms;
 
-        QString str = tr("空载校验: 第%1相 ").arg(k+1);
-        if(line->cur_rms || line->pow.active) {
-            res = false;
-            if(cnt > 3) {                
-                if(line->cur_rms) str += tr("电流有底数");
-                if(line->pow.active) str += tr("功率有底数");
-                updatePro(str, res); line->status = Test_Fail;
-            }
-        } else {
-            line->status = Test_Pass;
-            str += tr("通过"); updatePro(str);
+    ushort pow = line->pow.active / 10;
+    ushort cur = line->cur_rms / 10;
+    QString str = tr("L%1相 空载校验 ").arg(k+1);
+    if(cur || pow) {
+        res = false;
+        if(cnt > 3) {
+            if(cur) str += tr("电流有底数");
+            if(pow) str += tr("功率有底数");
+            updatePro(str, res); line->status = Test_Fail;
         }
+    } else {
+        line->status = Test_Pass;
+        str += tr("通过"); updatePro(str);
     }
 
     return res;
@@ -179,11 +179,12 @@ bool Ad_Resulting::noLoadCurCheck(int cnt)
 bool Ad_Resulting::noLoadCurFun()
 {
     bool ret = true;
-    for(int i=0; i<5; ++i) {
-        QString str = tr("空载校验: 第%1次检查").arg(i+1);
-        if(i)updatePro(str); else delay(5);
-        mCollect->readPduData(); ret = noLoadCurCheck(i);
-        if(ret) break; else if(!delay(i+4)) break;
+    for(int k=0; k<mData->size; ++k) {
+        for(int i=0; i<5; ++i) {
+            mCollect->readPduData(); ret = noLoadCurCheck(k, i);
+            if(ret) break; else if(!delay(i+4)) break;
+            // if(i) updatePro(tr("L%1相 空载校验: 第%2次检查").arg(k+1).arg(i+1));
+        }
     }
 
     return ret;
@@ -196,6 +197,7 @@ bool Ad_Resulting::noLoadEnter()
     QString str = tr("空载验证：设置空载电流");
     updatePro(str, ret, 5);
     if(ret) ret = noLoadCurFun();
+
     return ret;
 }
 
