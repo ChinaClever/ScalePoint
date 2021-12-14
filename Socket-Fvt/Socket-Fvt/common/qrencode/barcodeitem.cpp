@@ -4,7 +4,7 @@
 BarcodeItem::BarcodeItem(QGraphicsItem *parent)
         : QGraphicsItem(parent)
 {
-    //setRect(QRectF(0,0,200,200));
+    setRect(QRectF(0,0,140,140));
     barcodeItemPara.m_symbol = BARCODE_QRCODE;
     barcodeItemPara.m_hidetext = false;
     barcodeItemPara.m_text = "6922162891569";

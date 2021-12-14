@@ -7,6 +7,7 @@
 #include "ui_mainwindow.h"
 #include "printer_bartender.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)

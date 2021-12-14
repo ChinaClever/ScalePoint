@@ -6,18 +6,18 @@
 ZcodeWid::ZcodeWid(QWidget *parent) : QWidget(parent)
 {
     m_symbol = BARCODE_QRCODE;
-    mBarcode = new BarcodeItem;
+    mBarcode = new BarcodeItem();
     mView = new QGraphicsView(this);
     QGraphicsScene *scene = new QGraphicsScene(this);
 
     scene->addItem(mBarcode);
     mView->setScene(scene);
 
+    mBarcode->setBoundingRect(QSize(100, 100)); //parent->size()
     QGridLayout *gridLayout = new QGridLayout(parent);
-    gridLayout->setContentsMargins(0, 0, 0, 0);
+    gridLayout->setContentsMargins(9, 9, 9, 9);
     gridLayout->addWidget(mView);
     mView->adjustSize();
-    mBarcode->setBoundingRect(parent->size());
 }
 
 void ZcodeWid::setSymbol(int sym)
