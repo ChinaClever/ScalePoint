@@ -25,6 +25,7 @@ public:
     bool readSn();
     bool readVersion();
     bool enumDeviceType();
+    bool onewireBus(int addr=1);
     bool requestAddr(int addr=1);
     int masterRequest(sFrameFormat &it);
     std::tuple<int, uchar *> masterRequest(uchar fc);

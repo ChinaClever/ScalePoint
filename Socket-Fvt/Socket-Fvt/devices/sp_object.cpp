@@ -168,10 +168,24 @@ bool SP_Object::enumDeviceType()
     return ret;
 }
 
+
+bool SP_Object::onewireBus(int addr)
+{
+    bool ret = false; mDt->addr = addr;
+    writeSerial(FC_RESET, BROADCAST_ADDR, 0, 0);
+    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr); reflush();
+    QByteArray array = mModbus->readSerial(350);
+    for(int k=0; k<=array.size()-6; ++k) {
+        if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR) && (array.at(k+2) == 0x0A)) {
+            ret = writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 0x0A, array.at(k+3)); break;
+        }
+    }
+
+    return ret;
+}
+
 bool SP_Object::requestAddr(int addr)
 {
-    mDt->addr = addr;
-    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
     return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
 }
 
