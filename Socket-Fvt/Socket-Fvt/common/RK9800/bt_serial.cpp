@@ -16,13 +16,12 @@ void Bt_Serial::init(int id)
     mModbus->setBaudRate(9600);
 }
 
-
 sRtuItem Bt_Serial::initRtuItem()
 {
     sRtuItem it;
     it.addr = 1;
     it.fn = 0x03;
-    it.reg = 0;
+    it.reg = 0x0B;
     it.num = 3;
     return it;
 }
@@ -38,7 +37,7 @@ bool Bt_Serial::readPacket(sBtIt &bt)
         QByteArray array((char *)recv, len);
         QDataStream rxStream(array);
         rxStream.setByteOrder(QDataStream::BigEndian);
-        rxStream >> bt.vol >> bt.cur >> bt.tem;
+        rxStream >> bt.vol >> bt.cur >> bt.pow;
     } else ret = false;
     return ret;
 }

@@ -118,13 +118,15 @@ bool Test_CoreThread::btCurCheck()
     if(ret) {
         QString str = tr("检测供电电压：%1V ").arg(bt.vol/100.0);
         if((bt.vol > 1100) && (bt.vol < 1300)) ret = true; else ret = false;
-        if(ret) str += tr("正确"); else  str += tr("错误");
-        updatePro(str, ret);
+        if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret);
 
         str = tr("检测消耗电流：%1A ").arg(bt.cur/1000.0);
         if((bt.cur > 100) && (bt.cur < 1400)) ret = true; else ret = false;
-        if(ret) str += tr("正确"); else  str += tr("错误");
-        updatePro(str, ret);
+        if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
+
+        str = tr("检测消耗功率：%1W ").arg(bt.pow/100.0);
+        if((bt.pow > 10) && (bt.pow < 140)) ret = true; else ret = false;
+        if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
     } else updatePro(tr("外购计量板通讯错误"), ret);
 
     return ret;
