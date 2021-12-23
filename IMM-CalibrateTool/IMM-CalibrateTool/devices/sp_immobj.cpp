@@ -69,7 +69,7 @@ uchar *SP_ImmObj::toBranchIt(uchar *ptr, sBranchIt &it)
 
 uchar *SP_ImmObj::getBranchs(uchar *ptr, sDevObj *obj)
 {
-    for(int i=0; i<6; ++i) { // OpSize
+    for(int i=0; i<mDt->outputs; ++i) { // OpSize
         ptr = toBranchIt(ptr, obj->branchs[i]);
     }
 

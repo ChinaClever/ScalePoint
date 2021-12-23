@@ -25,9 +25,9 @@ bool SP_ImmRtu::recvPacket(uchar *ptr, int len, sDevObj *obj)
     ptr = getLines(ptr, obj);
     ptr = toShort(ptr, obj->hz);
 
-    ptr = toAngles(ptr, obj);
+    if(mDt->lines>1) ptr = toAngles(ptr, obj);
     ptr = getBranchs(ptr, obj);
-    ptr = toBranchIt(ptr, obj->neutral);
+    if(mDt->neutral) ptr = toBranchIt(ptr, obj->neutral);
     if((start+len-2) == ptr) ret = true;
     else qDebug() << "Err: SP_ImmRtu recvPacket Data  err" << len << ptr-start;
 

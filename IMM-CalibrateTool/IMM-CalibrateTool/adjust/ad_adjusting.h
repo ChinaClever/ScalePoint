@@ -13,7 +13,7 @@ public:
 
 protected:
     bool sentCmd();
-    bool writeCmd(uchar fn, uchar line);
+    bool writeCmd(uchar fn);
     bool transmit(uchar *buf, int len);
 
     bool readData();
