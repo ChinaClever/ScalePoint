@@ -85,7 +85,7 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    bool res = true; printer();
+    bool res = true; if(mPr)printer();
     BaseLogs::bulid()->start();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
@@ -188,6 +188,7 @@ bool Test_CoreThread::outputCheck()
 
 bool Test_CoreThread::initFun()
 {    
+    mPr = false;
     bool ret = updatePro(tr("即将开始，正在复位串口板"));
     if(ret) ret = mExe->startProcess();
     if(ret) ret = enumDeviceType();
@@ -218,6 +219,7 @@ bool Test_CoreThread::zeroMeasRot()
 
 void Test_CoreThread::workDown()
 {
+    mPr = true;
     btCurCheck();
     outputCheck();
     zeroMeasRot();

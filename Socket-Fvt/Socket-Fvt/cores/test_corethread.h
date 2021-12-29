@@ -36,6 +36,7 @@ private:
     SP_SocketRtu *mRtu;
     Bt_Serial *mBt;
     Pdu_ZRtu *mPdu;
+    bool mPr;
 };
 
 #endif // TEST_CORETHREAD_H
