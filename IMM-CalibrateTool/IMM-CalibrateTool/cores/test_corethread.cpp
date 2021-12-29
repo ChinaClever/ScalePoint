@@ -78,12 +78,13 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    if(mPr) printer();
+
     BaseLogs::bulid()->start();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         str += tr("通过");
+        if(mPr) printer();
     } else {
         res = false;
         str += tr("失败");
