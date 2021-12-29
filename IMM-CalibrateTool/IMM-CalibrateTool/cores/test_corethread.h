@@ -12,6 +12,7 @@ protected:
     void run();
     bool initFun();
     bool readDev();
+    bool printer();
     bool enumDeviceType();
 
     void workDown();
@@ -23,6 +24,7 @@ protected slots:
 
 private:
     Yc_Obj *mYc;
+    bool mPr;
     SP_ImmRtu *mDev;
     Ad_CoreThread *mAd;
     Test_Execute *mExe;

@@ -29,14 +29,13 @@ bool Ad_Adjusting::transmit(uchar *buf, int len)
     return ret;
 }
 
-bool Ad_Adjusting::writeCmd(uchar fn, uchar line)
+bool Ad_Adjusting::writeCmd(uchar fn)
 {
-    uchar cmd[] = {0x7B, 0x00, 0xA0, 0x00, 0x66, 0xBB, 0xBB};
+    uchar cmd[] = {0x7B, 0x00, 0xA0, 0x66, 0xBB, 0xBB};
     int len = sizeof(cmd);
 
     cmd[1] = mDt->addr;
     cmd[2] = fn;
-    cmd[3] = line;
 
     ushort crc = mModbus->rtu_crc(cmd, len-2);
     cmd[len-2] = ((0xff) & crc);
@@ -65,14 +64,14 @@ bool Ad_Adjusting::waitDcRecv()
 bool Ad_Adjusting::sentCmd()
 {
     updatePro(tr("发送校准解锁命令！"));
-    bool ret = writeCmd(0xA0, 0);
+    bool ret = writeCmd(0xA0);
     if(!ret){
-        delay(5); ret = writeCmd(0xA0, 0);  // 重复发一次命令
+        delay(5); ret = writeCmd(0xA0);  // 重复发一次命令
         if(!ret) return ret;
     }
 
     updatePro(tr("发送启动校准命令！"),ret, 2);
-    ret = writeCmd(0xA2, 0);
+    ret = writeCmd(0xA2);
 
     return ret;
 }
@@ -128,12 +127,14 @@ bool Ad_Adjusting::updateStatus(ushort status)
 bool Ad_Adjusting::recvStatus(uchar *recv, int len)
 {
     bool ret = true;
+    //qDebug() << cm_ByteArrayToHexStr(recv, len);
+    if(recv[0] != 0x7B) {recv += 6; len -= 6;}
     if((len>0) && (len%8 == 0)) {
         for(int i = 0 ; i < len ; i+=8) {
             ushort status = recv[i+4]*256 + recv[i+5];
             ret = updateStatus(status);
         }
-    } else {
+    } else if(len > 0){
         //ret = false;
         qDebug() << "Adjust res len err" << len;
     }

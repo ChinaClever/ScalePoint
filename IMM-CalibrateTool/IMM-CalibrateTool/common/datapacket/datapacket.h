@@ -71,6 +71,7 @@ struct sDevType
     uchar lines;
     uchar outputs;
     uchar devType; // 0 SI-PDU  1 IP-PDU
+    uchar neutral;
 
     QString dt;
     QString sn;    
