@@ -5,6 +5,7 @@
  */
 #include "test_corethread.h"
 #include "baselogs.h"
+#include "printer_bartender.h"
 
 Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 {
@@ -57,8 +58,27 @@ bool Test_CoreThread::readDev()
     return ret;
 }
 
+
+bool Test_CoreThread::printer()
+{
+    bool ret = true;
+    QString str = tr("标签打印 ");
+    if((mPro->result != Test_Fail) && (Test_Start == mPro->step)){
+        sBarTend it;
+        it.pn = mDt->pn; it.sn = mDt->sn;
+        it.fw = mDt->fw; it.hw = mDt->hw;
+        ret = Printer_BarTender::bulid(this)->printer(it);
+        if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
+        if(ret) str += tr("正常"); else str += tr("错误");
+    } else str = tr("因测试未通过，标签未打印");
+
+    return updatePro(str, ret);
+}
+
+
 void Test_CoreThread::workResult()
 {
+    if(mPr) printer();
     BaseLogs::bulid()->start();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
@@ -75,6 +95,7 @@ void Test_CoreThread::workResult()
 
 bool Test_CoreThread::initFun()
 {
+    mPr = false;
     updatePro(tr("即将开始"));
     bool ret = mYc->powerOn();
     if(ret) ret = mExe->startProcess();
@@ -86,7 +107,7 @@ bool Test_CoreThread::initFun()
 
 void Test_CoreThread::workDown()
 {
-    bool ret = mAd->startAdjust(); if(!ret) return;
+    bool ret = mPr = mAd->startAdjust(); if(!ret) return;
     Ad_Resulting::bulid(this)->initRtuThread();
     for(int i=0; i<mData->size; ++i) {
         sLineData *line = &(mData->lines[i]);
