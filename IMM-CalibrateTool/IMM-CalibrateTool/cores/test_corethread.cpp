@@ -78,7 +78,7 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    if(mPr) printer();
+    // if(mPr) printer(); ///===========
     BaseLogs::bulid()->start();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
