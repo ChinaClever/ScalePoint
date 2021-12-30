@@ -152,7 +152,7 @@ bool SP_Object::enumDeviceType()
                         mDt->lines = 1; mDt->outputs = 3; mDt->neutral = 0;
                         mDt->dt = "IMM single line with 3 branch current"; break;
                     case DEVICE_TYPE_IMM_3L:
-                        mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 0;
+                        mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 1; /////======
                         mDt->dt = "IMM three lines with 6 branch current"; break;
                     case DEVICE_TYPE_IMM_3L_N:
                          mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 1;

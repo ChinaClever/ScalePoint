@@ -127,10 +127,10 @@ bool Ad_Adjusting::updateStatus(ushort status)
 bool Ad_Adjusting::recvStatus(uchar *recv, int len)
 {
     bool ret = true;
-    //qDebug() << cm_ByteArrayToHexStr(recv, len);
+    // qDebug() << cm_ByteArrayToHexStr(recv, len);
     if(recv[0] != 0x7B) {recv += 6; len -= 6;}
     if((len>0) && (len%8 == 0)) {
-        for(int i = 0 ; i < len ; i+=8) {
+        for(int i = 0; i < len; i+=8) {
             ushort status = recv[i+4]*256 + recv[i+5];
             ret = updateStatus(status);
         }

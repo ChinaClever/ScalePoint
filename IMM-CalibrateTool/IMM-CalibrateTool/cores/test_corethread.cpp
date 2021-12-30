@@ -63,7 +63,7 @@ bool Test_CoreThread::printer()
 {
     bool ret = true;
     QString str = tr("标签打印 ");
-    if((mPro->result != Test_Fail) && (Test_Start == mPro->step)){
+    if(mPro->result != Test_Fail){
         sBarTend it;
         it.pn = mDt->pn; it.sn = mDt->sn;
         it.fw = mDt->fw; it.hw = mDt->hw;
