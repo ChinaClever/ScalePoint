@@ -108,26 +108,16 @@
           <property name="rightMargin">
            <number>70</number>
           </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="blEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="fnBtn">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
             <property name="maximumSize">
              <size>
-              <width>60</width>
+              <width>70</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="text">
-             <string>选择</string>
+             <string>引导文件</string>
             </property>
            </widget>
           </item>
@@ -144,29 +134,16 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="fnEdit">
+            <property name="enabled">
+             <bool>true</bool>
             </property>
-            <property name="text">
-             <string>设备固件</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>烧录软件</string>
+            <property name="font">
+             <font>
+              <family>思源宋体 CN Light</family>
+              <pointsize>10</pointsize>
+             </font>
             </property>
            </widget>
           </item>
@@ -175,25 +152,11 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="fnEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="maximumSize">
-             <size>
-              <width>70</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>引导文件</string>
+            <property name="font">
+             <font>
+              <family>思源宋体 CN Light</family>
+              <pointsize>10</pointsize>
+             </font>
             </property>
            </widget>
           </item>
@@ -210,23 +173,55 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>20</height>
-             </size>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="blEdit">
+            <property name="enabled">
+             <bool>true</bool>
             </property>
-            <property name="text">
-             <string>列表清单</string>
+            <property name="font">
+             <font>
+              <family>思源宋体 CN Light</family>
+              <pointsize>10</pointsize>
+             </font>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLabel" name="filesLab">
+          <item row="2" column="2">
+           <widget class="QPushButton" name="fnBtn">
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
-             <string/>
+             <string>选择</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>烧录软件</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>设备固件</string>
             </property>
            </widget>
           </item>
@@ -245,7 +240,7 @@
           <property name="geometry">
            <rect>
             <x>20</x>
-            <y>80</y>
+            <y>70</y>
             <width>171</width>
             <height>141</height>
            </rect>
@@ -265,8 +260,8 @@
           <property name="geometry">
            <rect>
             <x>80</x>
-            <y>40</y>
-            <width>91</width>
+            <y>30</y>
+            <width>101</width>
             <height>25</height>
            </rect>
           </property>
@@ -290,7 +285,7 @@
           <property name="geometry">
            <rect>
             <x>33</x>
-            <y>42</y>
+            <y>32</y>
             <width>41</width>
             <height>20</height>
            </rect>
@@ -305,7 +300,11 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QPlainTextEdit" name="plainTextEdit"/>
+     <widget class="QPlainTextEdit" name="textEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
