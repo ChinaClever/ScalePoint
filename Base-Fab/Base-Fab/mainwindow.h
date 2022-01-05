@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include "cfgcom.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,18 +19,24 @@ public:
 
 protected:
     QString selectFile(const QString &filter);
+    bool execute(const QStringList &arguments);
     void insertText(const QString &str);
     bool readOutput(QProcess &pro);
-    bool execute(const QStringList &arguments);
+    void argumentsWrite();
     bool fabBootloader();
+    bool inputCheck();
     bool fabFile();
+    bool workDown();
 
 private slots:
+    void initFunSlot();
     void on_cmdBtn_clicked();
     void on_dlBtn_clicked();
     void on_fnBtn_clicked();
+    void on_startBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
+    CfgCom *mCfg;
 };
 #endif // MAINWINDOW_H
