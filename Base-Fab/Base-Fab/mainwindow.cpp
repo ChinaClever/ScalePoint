@@ -5,9 +5,7 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "backcolourcom.h"
-#include <QFileDialog>
-#include <QMessageBox>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,7 +24,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::initFunSlot()
 {
-    mCfg = new CfgCom(this);
+    mCfg = CfgCom::bulid(this);
+    mTokens = new BaseTokens(this);
     QString str = mCfg->read("commander").toString();
     ui->cmdEdit->setText(str);
 
@@ -36,6 +35,8 @@ void MainWindow::initFunSlot()
     str = mCfg->read("BaseFile").toString();
     ui->fnEdit->setText(str);
 }
+
+
 
 
 void MainWindow::argumentsWrite()
@@ -96,10 +97,22 @@ bool MainWindow::fabFile()
     return execute(ls);
 }
 
-
-QString MainWindow::selectFile(const QString &filter)
+bool MainWindow::fabTokens()
 {
-    QString dir = QCoreApplication::applicationDirPath();
+    sToken *token = mTokens->bulidTokens();
+    ui->euiLab->setText("TOKEN_MFG_CUSTOM_EUI_64: " + token->custom_eui);
+    ui->codeLab->setText("Install Code: " + token->install_code);
+
+    QStringList ls{"flash"};
+    ls << "--device" << "EFR32MG12P332F1024GM48";
+    ls << "--tokengroup" << "znet" << "--tokenfile" << TOKEN_FN;
+    return execute(ls);
+}
+
+
+QString MainWindow::selectFile(const QString &filter, QString dir)
+{
+    if(dir.isEmpty()) dir = QCoreApplication::applicationDirPath();
     QString fn = QFileDialog::getOpenFileName(this, tr("选择文件"), dir, filter);
     if(fn.contains(".exe") || fn.contains(".s37")) {
 
@@ -110,26 +123,20 @@ QString MainWindow::selectFile(const QString &filter)
 
 void MainWindow::on_cmdBtn_clicked()
 {
-    QString fn = selectFile("执行文件(*.exe)");
-    if(fn.contains(".exe")){
-        ui->cmdEdit->setText(fn);
-    }
+    QString fn = selectFile("执行文件(*.exe)", ui->cmdEdit->text());
+    if(fn.contains(".exe"))  ui->cmdEdit->setText(fn);
 }
 
 void MainWindow::on_dlBtn_clicked()
 {
-    QString fn = selectFile("引导文件(*.s37)");
-    if(fn.contains(".s37")) {
-        ui->blEdit->setText(fn);
-    }
+    QString fn = selectFile("引导文件(*.s37)", ui->blEdit->text());
+    if(fn.contains(".s37")) ui->blEdit->setText(fn);
 }
 
 void MainWindow::on_fnBtn_clicked()
 {
-    QString fn = selectFile("设备固件(*.s37)");
-    if(fn.contains(".s37")) {
-        ui->fnEdit->setText(fn);
-    }
+    QString fn = selectFile("设备固件(*.s37)", ui->fnEdit->text());
+    if(fn.contains(".s37")) ui->fnEdit->setText(fn);
 }
 
 bool MainWindow::inputCheck()
@@ -154,6 +161,8 @@ bool MainWindow::inputCheck()
 
     ui->textEdit->clear();
     ui->widget->setEnabled(false);
+    ui->codeLab->setText("Install Code:");
+    ui->euiLab->setText("TOKEN_MFG_CUSTOM_EUI_64:");
     return true;
 }
 
@@ -162,9 +171,8 @@ bool MainWindow::workDown()
     bool ret = fabBootloader();
     if(ret) {
         ret = fabFile();
+        if(ret) fabTokens();
         argumentsWrite();
-    } else {
-        QMessageBox::critical(this, tr("错误提示"),tr("烧录错误！"));
     }
 
     return ret;
@@ -176,11 +184,15 @@ void MainWindow::on_startBtn_clicked()
     if(ret) {
         int index = ui->modelBox->currentIndex();
         switch (index) {
-        case 0: workDown(); break;
-        case 1: fabBootloader(); break;
-        case 2: fabFile(); break;
+        case 0: ret = workDown(); break;
+        case 1: ret = fabBootloader(); break;
+        case 2: ret = fabFile(); break;
+        case 3: ret = fabTokens(); break;
         }
     }
+
     ui->widget->setEnabled(true);
+    if(ret) QMessageBox::information(this, tr("信息提示"),tr("烧录完成！"));
+    else QMessageBox::critical(this, tr("错误提示"),tr("烧录错误！"));
 }
 

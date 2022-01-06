@@ -14,6 +14,13 @@ CfgCom::CfgCom(QObject *parent)
     cfgOpen(parent);
 }
 
+CfgCom *CfgCom::bulid(QObject *parent)
+{
+    static CfgCom* sington = nullptr;
+    if(!sington) sington = new CfgCom(parent);
+    return sington;
+}
+
 /***
   * 获取程序数据目录
   */

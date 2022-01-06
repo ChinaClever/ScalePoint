@@ -4,8 +4,9 @@
 
 class CfgCom
 {
-public:
     CfgCom(QObject *parent = nullptr);
+public:
+    static CfgCom *bulid(QObject *parent = nullptr);
     QString pathOfData(const QString& name);
     void write(const QString &key, const QVariant& v, const QString &g="Cfg");
     QVariant read(const QString &key, const QVariant &v = QVariant(), const QString &g="Cfg");
