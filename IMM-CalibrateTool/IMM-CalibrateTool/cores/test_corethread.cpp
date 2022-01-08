@@ -19,28 +19,31 @@ void Test_CoreThread::initFunSlot()
     mDev = SP_ImmRtu::bulid(this);
     mAd = Ad_CoreThread::bulid(this);
     mExe = Test_Execute::bulid(this);
+    mSocket = SP_SocketRtu::bulid(this);
+}
+
+bool Test_CoreThread::resDev()
+{
+    mDev->resDev(); msleep(120);
+    return mExe->startProcess();
 }
 
 bool Test_CoreThread::enumDeviceType()
-{    
-    bool ret = mDev->enumDeviceType();
-    if(!ret) {
-        ret = mExe->startProcess();
-        if(ret) ret = mDev->enumDeviceType();
-    }
+{
+    bool ret = resDev();
+    if(ret) ret = mDev->enumDeviceType();
 
     QString str = tr("设备类型：");
     if(ret) str += mDt->dt; else str += tr("识别错误");
     return updatePro(str, ret);
 }
 
-
 bool Test_CoreThread::readDev()
 {
     QString str = tr("请求地址 ");
     bool ret = mDev->requestAddr();
     if(ret) str += tr("正常：Addr=%1").arg(mDt->addr); else str += tr("错误");
-    updatePro(str, ret, 1);
+    updatePro(str, ret);
 
     if(ret) {
         ret = mDev->readVersion();
@@ -58,7 +61,6 @@ bool Test_CoreThread::readDev()
     return ret;
 }
 
-
 bool Test_CoreThread::printer()
 {
     bool ret = true;
@@ -71,13 +73,12 @@ bool Test_CoreThread::printer()
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(ret) str += tr("正常"); else str += tr("错误");
     } else str = tr("因测试未通过，标签未打印");
-
     return updatePro(str, ret);
 }
 
-
 void Test_CoreThread::workResult()
 {
+    mSocket->closeOutput(3);
     // if(mPr) printer(); ///===========
     BaseLogs::bulid()->start();
     bool res = mYc->powerDown();
@@ -89,16 +90,40 @@ void Test_CoreThread::workResult()
         str += tr("失败");
     }
 
-    updatePro(str, res, 1);
+    updatePro(str, res, 2);
+    mSocket->closeOutput(2);
     mPro->step = Test_Over;
+}
+
+bool Test_CoreThread::cylinderDown()
+{
+    bool ret = resDev();
+    QString str = tr("继电器初始化");
+    if(ret) ret = mSocket->enumDeviceType();
+    if(ret) str += tr("正常"); else str += tr("失败");
+    updatePro(str, ret);
+
+    str = tr("上气缸压下");
+    ret = mSocket->openOutput(2);
+    if(ret) str += tr("正常"); else str += tr("失败");
+    updatePro(str, ret, 3);
+
+    if(ret) {
+        str = tr("侧气缸压下");
+        ret = mSocket->openOutput(3);
+        if(ret) str += tr("正常"); else str += tr("失败");
+        updatePro(str, ret, 0);
+    }
+
+    return ret;
 }
 
 bool Test_CoreThread::initFun()
 {
     mPr = false;
     updatePro(tr("即将开始"));
-    bool ret = mYc->powerOn();
-    if(ret) ret = mExe->startProcess();
+    bool ret = cylinderDown();
+    if(ret) ret = mYc->powerOn();
     if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
 
@@ -131,7 +156,6 @@ void Test_CoreThread::collectData()
     }
     updatePro(tr("读取设备数据停止！"));
 }
-
 
 void Test_CoreThread::run()
 {

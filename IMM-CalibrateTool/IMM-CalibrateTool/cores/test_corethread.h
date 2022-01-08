@@ -1,6 +1,7 @@
 #ifndef TEST_CORETHREAD_H
 #define TEST_CORETHREAD_H
 #include "test_execute.h"
+#include "sp_socketrtu.h"
 
 class Test_CoreThread : public BaseThread
 {
@@ -10,9 +11,12 @@ public:
 
 protected:
     void run();
+    bool resDev();
     bool initFun();
     bool readDev();
     bool printer();
+
+    bool cylinderDown();
     bool enumDeviceType();
 
     void workDown();
@@ -23,11 +27,12 @@ protected slots:
     void initFunSlot();
 
 private:
-    Yc_Obj *mYc;
-    bool mPr;
-    SP_ImmRtu *mDev;
+    SP_SocketRtu *mSocket;
     Ad_CoreThread *mAd;
     Test_Execute *mExe;
+    SP_ImmRtu *mDev;
+    Yc_Obj *mYc;
+    bool mPr;
 };
 
 #endif // TEST_CORETHREAD_H

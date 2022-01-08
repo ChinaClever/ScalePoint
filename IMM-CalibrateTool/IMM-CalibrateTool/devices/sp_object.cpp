@@ -28,7 +28,7 @@ int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
     it.crc = mModbus->CRC16(cmd, 4);
     cmd[i++] = (uint8_t) (it.crc >> 8);
     cmd[i++] = (uint8_t) (it.crc & 0xFF);
-    // qDebug () << cm_ByteArrayToHexStr(QByteArray((char *)cmd, 6));
+    qDebug () << cm_ByteArrayToHexStr(QByteArray((char *)cmd, 6));
     return i;
 }
 
@@ -61,11 +61,12 @@ int SP_Object::filterUpolData(sFrameFormat &it)
     static uchar recv[4096] = {0};
     int len = transmit(it, recv);
     uchar *ptr = recv + 6; if(recv[0] == 0x9F) len -=6; else
-    if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
+        if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
     if(((ptr[1]&ERROR_MASK_BIT) == it.addr) && (len > 5)) {
         if(checkCrc(ptr, len)) it.reply = ptr; else len = 0;
     } else {
         qDebug() << "Err: Dev_ScalePoint filter UPOL Data err" << it.fc << ptr[0] << it.addr << len;
+        qDebug() << cm_ByteArrayToHexStr(QByteArray((char *)recv, 6+len));
         len = 0;
     }
 
@@ -116,9 +117,6 @@ bool SP_Object::writeSerial(uchar fc, uchar addr, uchar msb, uchar lsb)
 
     uchar sent[10] = {0};
     int len = toArray(it, sent);
-    bool ret = mModbus->writeSerial(sent, len);
-    if(ret) reflush();
-
     return mModbus->writeSerial(sent, len);
 }
 
@@ -137,41 +135,68 @@ bool SP_Object::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb, bool ack
     return ret;
 }
 
+bool SP_Object::enumSocketType()
+{
+    bool ret = true;
+    switch (mDt->devType) {
+    case DEVICE_TYPE_A: mDt->dt = "Standard Socket"; break;
+    case DEVICE_TYPE_B: mDt->dt = "Socket with Relay"; break;
+    case DEVICE_TYPE_C: mDt->dt = "Socket Metered"; break;
+    case DEVICE_TYPE_D: mDt->dt = "Socket Metered with Relay"; break;
+    default: ret = false; break;
+    }
+
+    if(ret) writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 2, 3); // mDt->outputs
+    return ret;
+}
+
+bool SP_Object::enumImmType()
+{
+    bool ret = true;
+    switch (mDt->devType) {
+    case DEVICE_TYPE_IMM_1L:
+        mDt->lines = 1; mDt->outputs = 3; mDt->neutral = 0;
+        mDt->dt = "IMM single line with 3 branch current"; break;
+    case DEVICE_TYPE_IMM_3L:
+        mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 1; /////======
+        mDt->dt = "IMM three lines with 6 branch current"; break;
+    case DEVICE_TYPE_IMM_3L_N:
+        mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 1;
+        mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
+    default: qDebug() << "Err: enumImmType " << mDt->devType << mDt->lines; ret = false;
+    }
+
+    if(ret) writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 1, 1);
+    return ret;
+}
+
 bool SP_Object::enumDeviceType()
 {
+    int cnt = 0;
     bool ret = false; reflush();
-    for(int i=0; i<9; ++i) {
-        QByteArray array = mModbus->readSerial(250);
-        if(array.size()) {
-            for(int k=0; k<=array.size()-6; ++k) {
-                if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR)) {
-                    mDt->devType = array.at(k+2) >> 1;
-                    mDt->lines = array.at(k+3);
-                    switch (mDt->devType) {
-                    case DEVICE_TYPE_IMM_1L:
-                        mDt->lines = 1; mDt->outputs = 3; mDt->neutral = 0;
-                        mDt->dt = "IMM single line with 3 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L:
-                        mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 1; /////======
-                        mDt->dt = "IMM three lines with 6 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L_N:
-                         mDt->lines = 3; mDt->outputs = 6; mDt->neutral = 1;
-                        mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
-                    default:
-                        qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->lines; continue;
-                    } return true;
-                } else if(((array.at(k)&ERROR_MASK_BIT)) == 3 /*FC_RESET*/) return false;
-            }
-        } else {writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2); msleep(150);}
+    for(int i=0; i<10; ++i) {
+        QByteArray array = mModbus->readSerial(130);
+        if(array.size() > 6) {
+            if((array.at(0) == FC_REQUEST_ADDR) && (array.at(1) == MASTER_ADDR)) {
+                mDt->devType = array.at(2) >> 1; mDt->outputs = array.at(3);
+                if(mDt->devType == DEVICE_TYPE_B) ret = enumSocketType();
+                else if(mDt->devType < 8) ret = enumImmType();
+            } reflush();
+        } else if(cnt++ > 4) break;
     }
 
     return ret;
 }
 
+void SP_Object::resDev()
+{
+    writeSerial(FC_RESET, BROADCAST_ADDR, 0, 0);
+}
+
 bool SP_Object::requestAddr(int addr)
 {
     mDt->addr = addr;
-    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 1, addr);
+    //writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 1, addr);
     return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, 1, addr);
 }
 
