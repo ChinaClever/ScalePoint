@@ -1,4 +1,9 @@
-﻿#include "serialportdlg.h"
+﻿/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
+#include "serialportdlg.h"
 #include "ui_serialportdlg.h"
 extern void groupBox_background_icon(QWidget *target);
 
