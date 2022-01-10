@@ -5,7 +5,7 @@
  */
 #include "td_mainwid.h"
 #include "ui_td_mainwid.h"
-//#include "test_execute.h"
+#include "test_execute.h"
 
 Td_MainWid::Td_MainWid(QWidget *parent) :
     QWidget(parent),
@@ -25,8 +25,8 @@ Td_MainWid::~Td_MainWid()
 
 void Td_MainWid::initFunSlot()
 {
-//     Test_Execute *net = Test_Execute::bulid(this);
-//     connect(net, SIGNAL(msgSig(QString)), this, SLOT(insertSlot(QString)));
+     Test_Execute *net = Test_Execute::bulid(this);
+     connect(net, SIGNAL(msgSig(QString)), this, SLOT(insertSlot(QString)));
 }
 
 
