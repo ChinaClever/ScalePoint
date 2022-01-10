@@ -104,12 +104,24 @@
        </property>
        <item row="0" column="0">
         <widget class="QWidget" name="widget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>500</width>
+           <height>0</height>
+          </size>
+         </property>
          <layout class="QGridLayout" name="gridLayout_2">
+          <property name="topMargin">
+           <number>20</number>
+          </property>
           <property name="rightMargin">
            <number>70</number>
           </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
             <property name="maximumSize">
              <size>
               <width>70</width>
@@ -117,33 +129,7 @@
              </size>
             </property>
             <property name="text">
-             <string>引导文件</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="dlBtn">
-            <property name="maximumSize">
-             <size>
-              <width>60</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>选择</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="fnEdit">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="font">
-             <font>
-              <family>思源宋体 CN Light</family>
-              <pointsize>10</pointsize>
-             </font>
+             <string>烧录软件</string>
             </property>
            </widget>
           </item>
@@ -154,7 +140,7 @@
             </property>
             <property name="font">
              <font>
-              <family>思源宋体 CN Light</family>
+              <family>微软雅黑 Light</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -173,6 +159,19 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>引导文件</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="blEdit">
             <property name="enabled">
@@ -180,7 +179,46 @@
             </property>
             <property name="font">
              <font>
-              <family>思源宋体 CN Light</family>
+              <family>微软雅黑 Light</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="dlBtn">
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>选择</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="maximumSize">
+             <size>
+              <width>70</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>设备固件</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="fnEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="font">
+             <font>
+              <family>微软雅黑 Light</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -199,29 +237,41 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
+          <item row="3" column="0" colspan="3">
+           <widget class="QLabel" name="euiLab">
             <property name="maximumSize">
              <size>
-              <width>70</width>
-              <height>16777215</height>
+              <width>16777215</width>
+              <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>微软雅黑 Light</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>烧录软件</string>
+             <string/>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+          <item row="4" column="0" colspan="3">
+           <widget class="QLabel" name="codeLab">
             <property name="maximumSize">
              <size>
-              <width>70</width>
-              <height>16777215</height>
+              <width>16777215</width>
+              <height>25</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>微软雅黑 Light</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="text">
-             <string>设备固件</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -247,6 +297,7 @@
           </property>
           <property name="font">
            <font>
+            <family>微软雅黑</family>
             <pointsize>20</pointsize>
             <weight>75</weight>
             <bold>true</bold>
@@ -280,6 +331,11 @@
             <string>应用文件</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>令牌写入</string>
+           </property>
+          </item>
          </widget>
          <widget class="QLabel" name="label">
           <property name="geometry">
@@ -301,6 +357,12 @@
     </item>
     <item row="2" column="0">
      <widget class="QPlainTextEdit" name="textEdit">
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="readOnly">
        <bool>true</bool>
       </property>

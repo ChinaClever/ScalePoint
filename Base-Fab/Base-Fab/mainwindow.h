@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QProcess>
+#include "basetokens.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,19 +17,27 @@ public:
     ~MainWindow();
 
 protected:
-    QString selectFile(const QString &filter);
+    QString selectFile(const QString &filter, QString dir);
+    bool execute(const QStringList &arguments);
     void insertText(const QString &str);
     bool readOutput(QProcess &pro);
-    bool execute(const QStringList &arguments);
+    void argumentsWrite();
     bool fabBootloader();
+    bool inputCheck();
     bool fabFile();
+    bool fabTokens();
+    bool workDown();
 
 private slots:
+    void initFunSlot();
     void on_cmdBtn_clicked();
     void on_dlBtn_clicked();
     void on_fnBtn_clicked();
+    void on_startBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
+    BaseTokens *mTokens;
+    CfgCom *mCfg;
 };
 #endif // MAINWINDOW_H

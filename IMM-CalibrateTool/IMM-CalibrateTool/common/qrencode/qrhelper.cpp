@@ -1,4 +1,9 @@
-﻿#include "qrhelper.h"
+﻿/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
+#include "qrhelper.h"
 #include <QPainter>
 
 QRHelper::QRHelper(QObject *parent) : QObject(parent)

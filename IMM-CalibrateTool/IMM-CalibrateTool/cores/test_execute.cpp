@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "test_execute.h"
 
 Test_Execute::Test_Execute(QObject *parent) : BaseThread(parent)

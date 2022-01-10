@@ -22,8 +22,11 @@ class SP_Object : public BaseThread
 public:
     explicit SP_Object(QObject *parent = nullptr);
 
+    void resDev();
     bool readSn();
     bool readVersion();
+    bool enumImmType();
+    bool enumSocketType();
     bool enumDeviceType();
     bool requestAddr(int addr=1);
     int masterRequest(sFrameFormat &it);

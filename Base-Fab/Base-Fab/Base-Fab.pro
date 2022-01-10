@@ -19,11 +19,15 @@ include(qtsingleapplication/qtsingleapplication.pri)
 
 SOURCES += \
     backcolourcom.cpp \
+    basetokens.cpp \
+    cfgcom.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     backcolourcom.h \
+    basetokens.h \
+    cfgcom.h \
     mainwindow.h
 
 FORMS += \

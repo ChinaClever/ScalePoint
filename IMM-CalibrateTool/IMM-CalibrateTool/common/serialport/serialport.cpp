@@ -182,9 +182,9 @@ void SerialPort::recvSlot()
             dataTemp += mSerial->readAll();     //因为串口是不稳定的，也许读到的是部分数据而已，但也可能是全部数据
         }
 
-        // 过滤单片机开机发出0xff无效数据
-        if(dataTemp.size() == 1)  {
-           if(dataTemp.at(0) == (char)0xFF) dataTemp.clear();
+        if(dataTemp.size()) {
+            //if(dataTemp.at(0) == (char)0x9F) dataTemp.clear();
+            //if(dataTemp.at(0) == (char)0xBF) dataTemp.clear();
         }
 
         mSerialData += dataTemp;
@@ -212,7 +212,7 @@ int SerialPort::read(QByteArray &array, int secs)
                 mSerialData.clear();
                 break;
             } else {
-                if(i) msleep(SERIAL_TIMEOUT); else msleep(265);
+                if(i) msleep(SERIAL_TIMEOUT); else msleep(365);
             }
         }
     }

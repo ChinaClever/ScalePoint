@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "mainwindow.h"
 #include "msgbox.h"
 #include <QApplication>
