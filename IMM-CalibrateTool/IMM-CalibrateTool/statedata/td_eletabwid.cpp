@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
 #include "td_eletabwid.h"
 
 Td_EleTabWid::Td_EleTabWid(QWidget *parent) : ComTableWid(parent)

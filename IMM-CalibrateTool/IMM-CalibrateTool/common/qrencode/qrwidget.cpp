@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
 #include "qrwidget.h"
 #include <QPainter>
 #include <QImage>

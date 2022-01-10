@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
 #include "yc_obj.h"
 
 Yc_Obj::Yc_Obj(QObject *parent) : BaseThread(parent)

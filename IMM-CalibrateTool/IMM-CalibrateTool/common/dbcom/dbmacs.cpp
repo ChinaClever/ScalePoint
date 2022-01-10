@@ -1,5 +1,9 @@
+/*
+ *
+ *  Created on: 2022年1月1日
+ *      Author: Lzy
+ */
 #include "dbmacs.h"
-
 
 DbMacs::DbMacs()
 {
