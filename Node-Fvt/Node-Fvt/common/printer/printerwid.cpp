@@ -1,3 +1,8 @@
+/*
+ *
+ *  Created on: 2021年1月1日
+ *      Author: Lzy
+ */
 #include "printerwid.h"
 #include "ui_printerwid.h"
 
