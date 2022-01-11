@@ -23,15 +23,15 @@ void Test_CoreThread::initFunSlot()
 }
 
 bool Test_CoreThread::resDev()
-{
+{    
     mDev->resDev(); msleep(120);
     return mExe->startProcess();
 }
 
 bool Test_CoreThread::enumDeviceType()
 {
-    bool ret = resDev();
-    if(ret) ret = mDev->enumDeviceType();
+    bool ret = mDev->enumDeviceType();
+    if(!ret) ret = mDev->enumDeviceType();
 
     QString str = tr("设备类型：");
     if(ret) str += mDt->dt; else str += tr("识别错误");
@@ -78,43 +78,30 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    mSocket->closeOutput(3);
     // if(mPr) printer(); ///===========
-    BaseLogs::bulid()->start();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         str += tr("通过");
     } else {
         res = false;
+        msleep(1650);
         str += tr("失败");
     }
 
-    updatePro(str, res, 2);
-    mSocket->closeOutput(2);
-    mPro->step = Test_Over;
+    updatePro(str, res, 1); mPro->step = Test_Over;
+    mSocket->closeOutput(3); BaseLogs::bulid()->start();
+    sleep(1); mSocket->closeOutput(2);
 }
 
 bool Test_CoreThread::cylinderDown()
 {
     bool ret = resDev();
-    QString str = tr("继电器初始化");
+    QString str = tr("气缸初始化");
+    YC_Ac92b::bulid()->setVol(220);
     if(ret) ret = mSocket->enumDeviceType();
-    if(ret) str += tr("正常"); else str += tr("失败");
-    updatePro(str, ret);
-
-    str = tr("上气缸压下");
-    ret = mSocket->openOutput(2);
-    if(ret) str += tr("正常"); else str += tr("失败");
-    updatePro(str, ret, 3);
-
-    if(ret) {
-        str = tr("侧气缸压下");
-        ret = mSocket->openOutput(3);
-        if(ret) str += tr("正常"); else str += tr("失败");
-        updatePro(str, ret, 0);
-    }
-
+    if(ret) str += tr("正常"); else str += tr("失败"); updatePro(str, ret);
+    if(ret) {mSocket->openOutput(2); mSocket->openOutput(3);}
     return ret;
 }
 
@@ -123,10 +110,9 @@ bool Test_CoreThread::initFun()
     mPr = false;
     updatePro(tr("即将开始"));
     bool ret = cylinderDown();
-    if(ret) ret = mYc->powerOn();
     if(ret) ret = enumDeviceType();
+    if(ret) ret = mYc->powerOn();
     if(ret) ret = readDev();
-
     return ret;
 }
 
@@ -138,8 +124,7 @@ void Test_CoreThread::workDown()
         sLineData *line = &(mData->lines[i]);
         if(line->ele) {
             QString e = QString::number(line->ele/COM_RATE_ELE)+"Wh";
-            QString str = tr("L%1 存在电能 %2").arg(i+1).arg(e);
-            updatePro(str, false);
+            QString str = tr("L%1 存在电能 %2").arg(i+1).arg(e); updatePro(str, false);
         }
     }
 }

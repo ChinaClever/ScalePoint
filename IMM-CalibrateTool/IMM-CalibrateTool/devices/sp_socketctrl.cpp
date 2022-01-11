@@ -27,8 +27,9 @@ int SP_SocketCtrl::readOutput(uchar addr)
 
 bool SP_SocketCtrl::ctrlOutput(uchar addr, uchar status)
 {
+    masterWrite(FC_WRITE_RELAY, addr, 0x00, status);
     bool ret = masterWrite(FC_WRITE_RELAY, addr, 0x00, status);
-    if(ret) if(status != readOutput(addr)) ret = false;
+    // if(ret) if(status != readOutput(addr)) ret = false;
     return ret;
 }
 

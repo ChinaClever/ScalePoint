@@ -15,7 +15,6 @@ Test_Execute *Test_Execute::bulid(QObject *parent)
 
 bool Test_Execute::readOutput(QProcess &pro)
 {
-    static int count = 0; count++;
     bool ret, res = false;
     do {
         ret = pro.waitForFinished(1000);
@@ -24,7 +23,7 @@ bool Test_Execute::readOutput(QProcess &pro)
         QString str = QString::fromLocal8Bit(bs); // emit msgSig(str);
         if(str.contains("CONNECTED")) res = true; //else str = str.simplified();
         QStringList ls = str.split("\n", QString::SkipEmptyParts);
-        for(int i=0; i<ls.size(); ++i)if(count%2)updatePro(ls.at(i).simplified());
+        for(int i=0; i<ls.size(); ++i) updatePro(ls.at(i).simplified());
     } while(!ret);
     pro.close();
 

@@ -28,7 +28,7 @@ int SP_Object::toArray(sFrameFormat &it, uchar *cmd)
     it.crc = mModbus->CRC16(cmd, 4);
     cmd[i++] = (uint8_t) (it.crc >> 8);
     cmd[i++] = (uint8_t) (it.crc & 0xFF);
-    qDebug () << cm_ByteArrayToHexStr(QByteArray((char *)cmd, 6));
+    // qDebug () << cm_ByteArrayToHexStr(QByteArray((char *)cmd, 6));
     return i;
 }
 
@@ -66,7 +66,7 @@ int SP_Object::filterUpolData(sFrameFormat &it)
         if(checkCrc(ptr, len)) it.reply = ptr; else len = 0;
     } else {
         qDebug() << "Err: Dev_ScalePoint filter UPOL Data err" << it.fc << ptr[0] << it.addr << len;
-        qDebug() << cm_ByteArrayToHexStr(QByteArray((char *)recv, 6+len));
+        //qDebug() << cm_ByteArrayToHexStr(QByteArray((char *)recv, 6+len));
         len = 0;
     }
 
@@ -175,14 +175,14 @@ bool SP_Object::enumDeviceType()
     int cnt = 0;
     bool ret = false; reflush();
     for(int i=0; i<10; ++i) {
-        QByteArray array = mModbus->readSerial(130);
+        QByteArray array = mModbus->readSerial(230);
         if(array.size() > 6) {
             if((array.at(0) == FC_REQUEST_ADDR) && (array.at(1) == MASTER_ADDR)) {
                 mDt->devType = array.at(2) >> 1; mDt->outputs = array.at(3);
                 if(mDt->devType == DEVICE_TYPE_B) ret = enumSocketType();
                 else if(mDt->devType < 8) ret = enumImmType();
             } reflush();
-        } else if(cnt++ > 4) break;
+        } else if(cnt++ > 5) break;
     }
 
     return ret;
