@@ -41,7 +41,7 @@ bool Yc_Obj::powerOn()
     str = tr("标准源上电");
     if(ret) ret = yc->powerOn();
     if(ret) str += tr("成功"); else str += tr("失败");
-    return updatePro(str, ret, 1);
+    return updatePro(str, ret);
 }
 
 bool Yc_Obj::powerDown()

@@ -125,7 +125,7 @@ void Home_WorkWid::updateResult()
     ui->timeLab->setText(str);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
-    QTimer::singleShot(450,this,SLOT(updateCntSlot()));
+    QTimer::singleShot(1450,this,SLOT(updateCntSlot()));
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
 }
@@ -184,7 +184,7 @@ bool Home_WorkWid::initUser()
     }
 
     if(mItem->cnts.cnt != ui->cntSpin->value()) {
-        mItem->cnts.cnt = ui->cntSpin->value();
+        mItem->cnts.cnt = ui->cntSpin->value();        
         Cfg::bulid()->writeCnt();
     }
 

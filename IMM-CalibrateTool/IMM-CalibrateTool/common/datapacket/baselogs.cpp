@@ -65,7 +65,7 @@ bool BaseLogs::writeLog()
         it.result = tr("通过");
         mItem->cnts.ok += 1;
         mItem->cnts.cnt--;
-        if(!mItem->cnts.cnt)  {
+        if(!mItem->cnts.cnt) {
             mItem->user.clear();
             Cfg::bulid()->write("user", mItem->user, "User");
         }
