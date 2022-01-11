@@ -178,7 +178,7 @@
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Socket 测试软件</string>
+    <string>Base 测试软件</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
