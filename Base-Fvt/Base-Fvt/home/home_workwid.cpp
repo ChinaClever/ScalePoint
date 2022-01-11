@@ -154,7 +154,6 @@ bool Home_WorkWid::initSerial()
         QString str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
         MsgBox::critical(this,str); return false;
     }
-    Cfg::bulid()->writeCfgDev();
 
     return true;
 }

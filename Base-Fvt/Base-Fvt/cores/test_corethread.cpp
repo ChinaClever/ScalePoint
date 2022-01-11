@@ -14,7 +14,7 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
-    Printer_BarTender::bulid(this);
+    //Printer_BarTender::bulid(this);
     mExe = Test_Execute::bulid(this);
     mTokens = new BaseTokens(this);
 }
