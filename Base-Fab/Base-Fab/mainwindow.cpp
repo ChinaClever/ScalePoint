@@ -32,18 +32,15 @@ void MainWindow::initFunSlot()
     str = mCfg->read("Bootloader").toString();
     ui->blEdit->setText(str);
 
-    str = mCfg->read("BaseFile").toString();
+    str = mCfg->read("firmware").toString();
     ui->fnEdit->setText(str);
 }
-
-
-
 
 void MainWindow::argumentsWrite()
 {
     mCfg->write("commander", ui->cmdEdit->text());
     mCfg->write("Bootloader", ui->blEdit->text());
-    mCfg->write("BaseFile", ui->fnEdit->text());
+    mCfg->write("firmware", ui->fnEdit->text());
 }
 
 void MainWindow::insertText(const QString &str)
@@ -69,7 +66,6 @@ bool MainWindow::readOutput(QProcess &pro)
 
     return res;
 }
-
 
 bool MainWindow::execute(const QStringList &arguments)
 {

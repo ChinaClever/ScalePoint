@@ -9,10 +9,9 @@ class Test_Execute : public BaseThread
     explicit Test_Execute(QObject *parent = nullptr);
 public:
     static Test_Execute *bulid(QObject *parent = nullptr);
-    bool startProcess() {return execute();}
-
+    bool startProcess(const QStringList &s) {return execute(s);}
 protected:
-    bool execute();
+    bool execute(const QStringList &arguments);
     bool readOutput(QProcess &pro);
 
 signals:

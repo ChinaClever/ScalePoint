@@ -1,20 +1,6 @@
 #ifndef CONFIGBASH
 #define CONFIGBASH
-#include "cfgcom.h"
-#include "serialstatuswid.h"
-
-enum eDevTypes {
-    IMM=0,
-    Node=1,
-    Socket,
-
-    AC = 1, // 交流
-    DC,     // 直流
-
-    Sum=0,
-    Transformer, // 互感器
-    Mn    // 锰铜
-};
+#include "cfgserial.h"
 
 
 /**
@@ -30,13 +16,6 @@ struct sCount
 };
 
 
-struct sSerial
-{
-    sSerial() {sp=pdu=ser2=nullptr;}
-    SerialPort *sp; // 标准源
-    SerialPort *pdu; // 串口对象
-    SerialPort *ser2; // 串口对象
-};
 
 struct sCfgItem
 {
@@ -55,14 +34,6 @@ class Cfg : public CfgCom
 public:
     static Cfg *bulid(QObject *parent = nullptr);
     sCfgItem *item;
-
-    QString getSerialBr(const QString &com);
-    QString getSerialName(const QString &key);
-    void setSerialBr(const QString &com, const QString &br);
-    void setSerialName(const QString &key, const QString &v);
-
-    QString getLoginName();
-    void setLoginName(const QString &name);
 
     void writeCnt();
     void writeCfgDev();

@@ -22,9 +22,6 @@ signals:
 
 protected:
     void initLayout();
-    void insertText();
-    void setTextColor();
-
     QString getTime();
     void updateWid();
     void updateTime();
@@ -35,19 +32,21 @@ protected:
     bool initSerial();
     bool initWid();
     bool initUser();
-    void initData();
+    void initData();    
+    QString selectFile(const QString &filter, QString dir);
 
 private slots:
     void timeoutDone();
     void initFunSlot();
     void updateCntSlot();
+    void on_cmdBtn_clicked();
+    void on_dlBtn_clicked();
+    void on_fnBtn_clicked();
     void on_startBtn_clicked();
 
 private:
     Ui::Home_WorkWid *ui;
 
-    int mId;
-    bool isCheck;
     QTimer *timer;
     Test_CoreThread *mCoreThread;
 };

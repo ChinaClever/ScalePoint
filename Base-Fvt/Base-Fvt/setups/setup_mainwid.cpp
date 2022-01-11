@@ -52,10 +52,7 @@ void Setup_MainWid::checkPcNumSlot()
 void Setup_MainWid::initSerial()
 {
     mComWid = new SerialStatusWid(ui->comWid);
-    mItem->coms.sp = mComWid->initSerialPort(tr("Socket"));
-
-    mDeWid = new SerialStatusWid(ui->devWid);
-    mItem->coms.pdu = mDeWid->initSerialPort(tr("治具"));
+    mItem->coms.sp = mComWid->initSerialPort(tr("Base"));
 }
 
 void Setup_MainWid::initLogCount()

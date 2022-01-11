@@ -3,7 +3,6 @@
 #include <QtCore>
 #include <QColor>
 
-
 struct sDevType
 {
     sDevType() {outputs=2;}
@@ -12,12 +11,12 @@ struct sDevType
     uchar devType;
     uchar outputs;
 
-    QString sn;
+    QString sn; // IEEE
     QString fw;
-    QString pn;
+    QString pn; // AG13098AA
     QString dt;
+    QString code;
 };
-
 
 
 /**
@@ -32,10 +31,9 @@ struct sDevData
 enum {
     Test_Fun, // 功能
     Test_Start, // 开始
-    Test_Addr,
-    Test_Ctrl,
-    Test_Relay,
-    Test_Zero, // 验证
+    Test_Bootloader,
+    Test_Firmware,
+    Test_Token,
     Test_Over, // 终止
     Test_End, // 完成
 

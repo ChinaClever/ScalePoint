@@ -22,15 +22,14 @@ Home_WorkWid::~Home_WorkWid()
 
 void Home_WorkWid::initLayout()
 {
-    QPalette pl = ui->textEdit->palette();
-    pl.setBrush(QPalette::Base,QBrush(QColor(255,0,0,0)));
-    ui->textEdit->setPalette(pl);
-    //ui->userEdit->setPalette(pl); //ui->cntSpin->setPalette(pl);
-    //ui->textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    //ui->textEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->addWidget(this);
+
+    ui->hwEdit->setText(mItem->hw);
+    ui->fnEdit->setText(mItem->firmware);
+    ui->cmdEdit->setText(mItem->commander);
+    ui->blEdit->setText(mItem->bootloader);
 }
 
 void Home_WorkWid::initFunSlot()
@@ -41,33 +40,7 @@ void Home_WorkWid::initFunSlot()
     timer->start(500);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
-    mCoreThread = new Test_CoreThread(this);
-    ui->hwEdit->setText(mItem->hw);
-}
-
-void Home_WorkWid::setTextColor()
-{
-    QColor color("black");
-    bool pass = mPro->pass.first();
-    if(!pass) color = QColor("red");
-    ui->textEdit->moveCursor(QTextCursor::Start);
-
-    QTextCharFormat fmt;//文本字符格式
-    fmt.setForeground(color);// 前景色(即字体色)设为color色
-    QTextCursor cursor = ui->textEdit->textCursor();//获取文本光标
-    cursor.mergeCharFormat(fmt);//光标后的文字就用该格式显示
-    ui->textEdit->mergeCurrentCharFormat(fmt);//textEdit使用当前的字符格式
-}
-
-void Home_WorkWid::insertText()
-{
-    while(mPro->status.size()) {
-        setTextColor();
-        QString str = QString::number(mId++) + "、"+ mPro->status.first() + "\n";
-        ui->textEdit->insertPlainText(str);
-        mPro->status.removeFirst();
-        mPro->pass.removeFirst();
-    }
+    mCoreThread = new Test_CoreThread(this);   
 }
 
 void Home_WorkWid::updateCntSlot()
@@ -110,13 +83,14 @@ void Home_WorkWid::setWidEnabled(bool en)
 {
     ui->modeBox->setEnabled(en);
     ui->groupBox_2->setEnabled(en);
+    ui->groupBox_4->setEnabled(en);
+    ui->groupBox_6->setEnabled(en);
 }
 
 void Home_WorkWid::updateResult()
 {
     QString style;
     QString str = tr("---");
-    if(isCheck){ if(mId < 20) mPro->result = Test_Fail; }
     if(Test_Fail == mPro->result) {
         str = tr("失败"); style = "background-color:red; color:rgb(255, 255, 255);";
     } else {
@@ -128,7 +102,7 @@ void Home_WorkWid::updateResult()
     ui->timeLab->setText(str);
     ui->timeLab->setStyleSheet(style);
     ui->startBtn->setText(tr("开 始"));
-    QTimer::singleShot(450,this,SLOT(updateCntSlot()));
+    QTimer::singleShot(1450,this,SLOT(updateCntSlot()));
     str = QTime::currentTime().toString("hh:mm:ss");
     ui->endLab->setText(str);
 }
@@ -139,13 +113,13 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->snLab->setText(str);
 
-    str = mDt->fw;
-    if(str.isEmpty()) str = "--- ---";
-    ui->fwLab->setText(str);
-
     str = mDt->pn;
     if(str.isEmpty()) str = "--- ---";
     ui->pnLab->setText(str);
+
+    str = mDt->code;
+    if(str.isEmpty()) str = "--- ---";
+    ui->codeLab->setText(str);
 
     if(mPro->step < Test_Over) {
         updateTime();
@@ -156,19 +130,33 @@ void Home_WorkWid::updateWid()
 
 void Home_WorkWid::timeoutDone()
 {
-    insertText();
     updateWid();
 }
 
 bool Home_WorkWid::initSerial()
 {
-    bool ret = mItem->coms.sp->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开Socket串口")); return ret;}
+//    bool ret = mItem->coms.sp->isOpened();
+//    if(!ret) {MsgBox::critical(this, tr("请先打开Socket串口")); return ret;}
+    QString str = ui->cmdEdit->text();
+    if(str.isEmpty()) {
+        QString str = tr(" commander.exe 烧录程序未指定\n 软件无法执行。。。");
+        MsgBox::critical(this, str); return false;
+    }
 
-    ret = mItem->coms.pdu->isOpened();
-    if(!ret) {MsgBox::critical(this, tr("请先打开治具串口")); return ret;}
+    str = ui->blEdit->text();
+    if(str.isEmpty()) {
+        QString str = tr(" Bootloader 文件未指定\n 软件无法执行。。。");
+        MsgBox::critical(this,str); return false;
+    }
 
-    return ret;
+    str = ui->fnEdit->text();
+    if(str.isEmpty()) {
+        QString str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
+        MsgBox::critical(this,str); return false;
+    }
+    Cfg::bulid()->writeCfgDev();
+
+    return true;
 }
 
 bool Home_WorkWid::initUser()
@@ -194,26 +182,14 @@ bool Home_WorkWid::initUser()
 
 void Home_WorkWid::initData()
 {
-    mId = 1;
     mPacket->init();
-    ui->textEdit->clear();
+    mDt->pn = "AG13098AA";
 }
 
 bool Home_WorkWid::inputCheck()
 {
     bool ret = initSerial();
     if(ret) ret = initUser();
-    if(ret) {
-        switch (ui->specBox->currentIndex()) {
-        case 1: mDt->pn = "AG13093AA"; break;
-        case 2: mDt->pn = "AG13094AA"; break;
-        case 3: mDt->pn = "AG13095AA"; break;
-        case 4: mDt->pn = "AG13096AA"; break;
-        case 5: mDt->pn = "AG13097AA"; break;
-        default: MsgBox::critical(this, tr("请选择设备规格")); ret = false; break;
-        }
-    }
-
     return ret;
 }
 
@@ -225,7 +201,6 @@ bool Home_WorkWid::initWid()
         setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();
-        if(mPro->step == Test_Start) isCheck = true; else isCheck = false;
         QString str = mPro->startTime.toString("hh:mm:ss");
         ui->startLab->setText(str);
         ui->endLab->setText("---");
@@ -247,4 +222,34 @@ void Home_WorkWid::on_startBtn_clicked()
     }
 }
 
+QString Home_WorkWid::selectFile(const QString &filter, QString dir)
+{
+    if(dir.isEmpty()) dir = QCoreApplication::applicationDirPath();
+    QString fn = QFileDialog::getOpenFileName(this, tr("选择文件"), dir, filter);
+    if(fn.contains(".exe") || fn.contains(".s37")) {
 
+    }
+
+    return fn;
+}
+
+void Home_WorkWid::on_cmdBtn_clicked()
+{
+    QString fn = selectFile("执行文件(*.exe)", ui->cmdEdit->text());
+    if(fn.contains(".exe"))  ui->cmdEdit->setText(fn);
+    mItem->commander = fn;
+}
+
+void Home_WorkWid::on_dlBtn_clicked()
+{
+    QString fn = selectFile("引导文件(*.s37)", ui->blEdit->text());
+    if(fn.contains(".s37")) ui->blEdit->setText(fn);
+    mItem->bootloader = fn;
+}
+
+void Home_WorkWid::on_fnBtn_clicked()
+{
+    QString fn = selectFile("设备固件(*.s37)", ui->fnEdit->text());
+    if(fn.contains(".s37")) ui->fnEdit->setText(fn);
+    mItem->firmware = fn;
+}
