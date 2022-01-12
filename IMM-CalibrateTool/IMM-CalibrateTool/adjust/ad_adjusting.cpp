@@ -31,15 +31,15 @@ bool Ad_Adjusting::transmit(uchar *buf, int len)
 
 bool Ad_Adjusting::writeCmd(uchar fn)
 {
-    uchar cmd[] = {0x7B, 0x00, 0xA0, 0x66, 0xBB, 0xBB};
+    uchar cmd[] = {0x5E, 0x01, 0x00, 0xA0, 0xBB, 0xBB};
     int len = sizeof(cmd);
 
     cmd[1] = mDt->addr;
-    cmd[2] = fn;
+    cmd[3] = fn;
 
-    ushort crc = mModbus->rtu_crc(cmd, len-2);
-    cmd[len-2] = ((0xff) & crc);
-    cmd[len-1] = (crc >> 8);
+    ushort crc = mModbus->CRC16(cmd, len-2);
+    cmd[len-1] = ((0xff) & crc);
+    cmd[len-2] = (crc >> 8);
 
     return transmit(cmd, len);
 }
@@ -127,11 +127,12 @@ bool Ad_Adjusting::updateStatus(ushort status)
 bool Ad_Adjusting::recvStatus(uchar *recv, int len)
 {
     bool ret = true;
-    // qDebug() << cm_ByteArrayToHexStr(recv, len);
-    if(recv[0] != 0x7B) {recv += 6; len -= 6;}
-    if((len>0) && (len%8 == 0)) {
-        for(int i = 0; i < len; i+=8) {
-            ushort status = recv[i+4]*256 + recv[i+5];
+    //qDebug() << cm_ByteArrayToHexStr(recv, len);
+    if((recv[0] == 0xFF) || (recv[3] == 0xA2)){recv += 6; len -= 6;}
+    else if(len > 6) {recv += 6; len -= 6;}
+    if((len>0) && (len%6 == 0)) {
+        for(int i = 0; i < len; i+=6) {
+            ushort status = recv[i+2]*256 + recv[i+3];
             ret = updateStatus(status);
         }
     } else if(len > 0){
