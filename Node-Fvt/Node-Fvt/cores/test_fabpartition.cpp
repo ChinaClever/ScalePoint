@@ -97,7 +97,7 @@ bool test_FabPartition::devExist()
 void test_FabPartition::secure_boot_prov()
 {
     QString cmd = "cd " + mDir +"secure_boot_prov-scalepoint-040000-48035/ \n"
-                                "sh secure_boot_permanent_scalepoint.sh";
+                  "echo \"123456\" | sudo -S sh secure_boot_permanent_scalepoint.sh";
     processOn(cmd.toLocal8Bit().data());
     updatePro(tr("启用完全引导"));
 }
