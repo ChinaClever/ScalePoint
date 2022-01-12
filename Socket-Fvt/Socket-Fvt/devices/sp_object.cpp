@@ -64,7 +64,8 @@ int SP_Object::filterUpolData(sFrameFormat &it)
     static uchar recv[4096] = {0};
     int len = transmit(it, recv);
     uchar *ptr = recv + 6;
-    if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
+    if(len > 11) len -= 6; else  ptr = recv;
+    //if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
     if(((ptr[1]&ERROR_MASK_BIT) == it.addr) && (len > 5)) {
         if(checkCrc(ptr, len)) it.reply = ptr; else len = 0;
     } else {
