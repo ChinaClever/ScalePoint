@@ -30,7 +30,8 @@ bool Test_CoreThread::resDev()
 
 bool Test_CoreThread::enumDeviceType()
 {
-    bool ret = mDev->enumDeviceType();
+    bool ret = true;
+    if(!mDt->dt.contains("IMM")) ret = mDev->enumDeviceType();
     if(!ret) ret = mDev->enumDeviceType();
 
     QString str = tr("设备类型：");

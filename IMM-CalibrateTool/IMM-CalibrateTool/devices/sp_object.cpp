@@ -41,6 +41,7 @@ bool SP_Object::checkCrc(uchar *recv, int len)
         ret = true;
     } else {
         qDebug() << " Dev_ScalePoint CRC err" << len << recv[0] << crc << res;
+        qDebug() << cm_ByteArrayToHexStr(QByteArray((char *)recv, len));
     }
 
     return ret;
@@ -60,8 +61,9 @@ int SP_Object::filterUpolData(sFrameFormat &it)
 {
     static uchar recv[4096] = {0};
     int len = transmit(it, recv);
-    uchar *ptr = recv + 6; if(recv[0] == 0x9F) len -=6; else
-        if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
+    uchar *ptr = recv + 6; //if(recv[0] == 0x9F) len -=6; else
+    //    if((recv[0]&ERROR_MASK_BIT) == it.fc) ptr = recv; else len -=6;
+    if(len > 11) len -= 6; else  ptr = recv;
     if(((ptr[1]&ERROR_MASK_BIT) == it.addr) && (len > 5)) {
         if(checkCrc(ptr, len)) it.reply = ptr; else len = 0;
     } else {
