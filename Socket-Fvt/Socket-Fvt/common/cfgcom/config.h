@@ -28,7 +28,7 @@ struct sCfgItem
 };
 
 
-class Cfg : public CfgCom
+class Cfg : public CfgSerial
 {
     Cfg(QObject *parent = nullptr);
 public:

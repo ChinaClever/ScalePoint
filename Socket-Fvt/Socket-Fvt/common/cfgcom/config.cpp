@@ -6,7 +6,7 @@
  */
 #include "config.h"
 
-Cfg::Cfg(QObject *parent) : CfgCom(parent)
+Cfg::Cfg(QObject *parent) : CfgSerial(parent)
 {
     item = new sCfgItem();
     item->coms.sp = nullptr;
