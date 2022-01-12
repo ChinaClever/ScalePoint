@@ -30,8 +30,8 @@ RtuRw *Rtu_Modbus::get(int id)
 
     switch (id) {
     case 0:  ser = com->sp; break;
-    case 1:  ser = com->pdu; break;
-    case 2:  ser = com->ser2; break;
+    case 1:  ser = com->src; break;
+    case 2:  ser = com->ser; break;
     }
 
     if(ser) {

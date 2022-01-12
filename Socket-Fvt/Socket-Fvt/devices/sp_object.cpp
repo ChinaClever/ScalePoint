@@ -186,7 +186,7 @@ bool SP_Object::onewireBus(int addr)
 
 bool SP_Object::requestAddr(int addr)
 {
-    return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr);
+    return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, addr, mDt->outputs);
 }
 
 bool SP_Object::readSn()

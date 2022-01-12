@@ -92,9 +92,9 @@
      <widget class="QLabel" name="startLab">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>90</x>
         <y>0</y>
-        <width>61</width>
+        <width>81</width>
         <height>23</height>
        </rect>
       </property>
@@ -108,9 +108,9 @@
      <widget class="QLabel" name="endLab">
       <property name="geometry">
        <rect>
-        <x>240</x>
+        <x>210</x>
         <y>0</y>
-        <width>61</width>
+        <width>81</width>
         <height>23</height>
        </rect>
       </property>
@@ -171,7 +171,7 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>210</x>
+        <x>190</x>
         <y>0</y>
         <width>21</width>
         <height>23</height>
