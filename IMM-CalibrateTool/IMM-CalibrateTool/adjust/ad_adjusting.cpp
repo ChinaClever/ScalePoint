@@ -127,7 +127,7 @@ bool Ad_Adjusting::updateStatus(ushort status)
 bool Ad_Adjusting::recvStatus(uchar *recv, int len)
 {
     bool ret = true;
-    qDebug() << cm_ByteArrayToHexStr(recv, len);
+    //qDebug() << cm_ByteArrayToHexStr(recv, len);
     if((recv[0] == 0xFF) || (recv[3] == 0xA2)){recv += 6; len -= 6;}
     else if(len > 6) {recv += 6; len -= 6;}
     if((len>0) && (len%6 == 0)) {
