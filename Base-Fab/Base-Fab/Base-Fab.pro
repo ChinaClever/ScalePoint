@@ -15,23 +15,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-include(qtsingleapplication/qtsingleapplication.pri)
+include(logs/logs.pri)
+include(home/home.pri)
+include(pdus/pdus.pri)
+include(cores/cores.pri)
+include(common/common.pri)
+include(setups/setups.pri)
+include(devices/devices.pri)
+include(statedata/statedata.pri)
 
 SOURCES += \
-    backcolourcom.cpp \
-    basetokens.cpp \
-    cfgcom.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    navbarwid.cpp
 
 HEADERS += \
-    backcolourcom.h \
-    basetokens.h \
-    cfgcom.h \
-    mainwindow.h
+    mainwindow.h \
+    navbarwid.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    navbarwid.ui
 
 TRANSLATIONS += \
     Base-Fab_en_AS.ts

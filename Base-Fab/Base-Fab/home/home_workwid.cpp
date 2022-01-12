@@ -139,19 +139,19 @@ bool Home_WorkWid::initSerial()
 //    if(!ret) {MsgBox::critical(this, tr("请先打开Socket串口")); return ret;}
     QString str = ui->cmdEdit->text();
     if(str.isEmpty()) {
-        QString str = tr(" commander.exe 烧录程序未指定\n 软件无法执行。。。");
+        str = tr(" commander.exe 烧录程序未指定\n 软件无法执行。。。");
         MsgBox::critical(this, str); return false;
     }
 
     str = ui->blEdit->text();
     if(str.isEmpty()) {
-        QString str = tr(" Bootloader 文件未指定\n 软件无法执行。。。");
+        str = tr(" Bootloader 文件未指定\n 软件无法执行。。。");
         MsgBox::critical(this,str); return false;
     }
 
     str = ui->fnEdit->text();
     if(str.isEmpty()) {
-        QString str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
+        str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
         MsgBox::critical(this,str); return false;
     }
 
@@ -225,8 +225,8 @@ QString Home_WorkWid::selectFile(const QString &filter, QString dir)
 {
     if(dir.isEmpty()) dir = QCoreApplication::applicationDirPath();
     QString fn = QFileDialog::getOpenFileName(this, tr("选择文件"), dir, filter);
-    if(fn.contains(".exe") || fn.contains(".s37")) {
-
+    if(fn.contains(" ")) {
+        MsgBox::critical(this, tr("目录存在空格，请重试")); fn.clear();
     }
 
     return fn;

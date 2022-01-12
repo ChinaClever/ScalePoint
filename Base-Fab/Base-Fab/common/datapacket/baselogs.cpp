@@ -51,7 +51,7 @@ void BaseLogs::saveLogs()
 {
     bool ret = writeLog();
     if(ret) {
-        writeLogs();
+        //writeLogs();
         //if(mMac.size()) writeMac();
     } else {
         // updatePro(tr("因未创建序列号，日志无法保存！"), false);
@@ -68,11 +68,11 @@ bool BaseLogs::writeLog()
     it.sn = mDt->sn;
     it.fw = mDt->fw;
     it.hw = mItem->hw;
-    it.user = mItem->user;    
+    it.user = mItem->user;
 
     mItem->cnts.all += 1;
     if(mPro->result != Test_Fail) {
-        it.result = tr("通过");
+        it.result = mDt->code;
         mItem->cnts.ok += 1;
         mItem->cnts.cnt--;
         if(!mItem->cnts.cnt)  {

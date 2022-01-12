@@ -23,15 +23,15 @@ LogMainWid::~LogMainWid()
 
 void LogMainWid::initFunSLot()
 {
-    QString str = tr("结果日志");
+    QString str = tr("日志记录");
     mLogWid = new LogComWid(ui->tabWidget);
     mLogWid->initWid(DbLogs::bulid(),new LogBtnBar(),  new Log_LogQueryDlg(this), str);
     ui->tabWidget->addTab(mLogWid, str);
 
-    str = tr("过程日志");
-    mStatusWid = new LogComWid(ui->tabWidget);
-    mStatusWid->initWid(DbStates::bulid(),new LogBtnBar(),  new Log_LogQueryDlg(this), str);
-    ui->tabWidget->addTab(mStatusWid, str);   
+    //str = tr("过程日志");
+    //mStatusWid = new LogComWid(ui->tabWidget);
+    //mStatusWid->initWid(DbStates::bulid(),new LogBtnBar(),  new Log_LogQueryDlg(this), str);
+    //ui->tabWidget->addTab(mStatusWid, str);
 
     // str = tr("设备Mac记录");
     // mMacWid = new LogComWid(ui->tabWidget);

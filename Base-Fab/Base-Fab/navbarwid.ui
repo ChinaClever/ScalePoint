@@ -33,7 +33,6 @@
      </property>
      <property name="font">
       <font>
-       <family>微软雅黑</family>
        <pointsize>20</pointsize>
       </font>
      </property>
@@ -41,7 +40,7 @@
       <string notr="true">color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>Base 测试软件</string>
+      <string>Base 烧录软件</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -58,7 +57,6 @@
      </property>
      <property name="font">
       <font>
-       <family>微软雅黑</family>
        <pointsize>14</pointsize>
       </font>
      </property>
@@ -105,7 +103,6 @@
      </property>
      <property name="font">
       <font>
-       <family>微软雅黑</family>
        <pointsize>12</pointsize>
       </font>
      </property>
@@ -130,7 +127,6 @@
      </property>
      <property name="font">
       <font>
-       <family>微软雅黑</family>
        <pointsize>12</pointsize>
       </font>
      </property>
@@ -155,7 +151,6 @@
      </property>
      <property name="font">
       <font>
-       <family>微软雅黑</family>
        <pointsize>12</pointsize>
       </font>
      </property>
@@ -180,7 +175,6 @@
      </property>
      <property name="font">
       <font>
-       <family>微软雅黑</family>
        <pointsize>12</pointsize>
       </font>
      </property>
