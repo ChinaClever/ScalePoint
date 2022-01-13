@@ -6,6 +6,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#define EXE_FN "scdump"
+#define USB_DEV "/dev/ttyUSB0"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,23 +26,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::initFunSlot()
 {
-    mCfg = CfgCom::bulid(this);
-    mTokens = new BaseTokens(this);
-    QString str = mCfg->read("commander").toString();
-    ui->cmdEdit->setText(str);
 
-    str = mCfg->read("Bootloader").toString();
-    ui->blEdit->setText(str);
-
-    str = mCfg->read("firmware").toString();
-    ui->fnEdit->setText(str);
 }
 
-void MainWindow::argumentsWrite()
+
+bool MainWindow::isFileExist(const QString &fn)
 {
-    mCfg->write("commander", ui->cmdEdit->text());
-    mCfg->write("Bootloader", ui->blEdit->text());
-    mCfg->write("firmware", ui->fnEdit->text());
+    bool ret = false; QFileInfo file(fn);
+    if (file.exists()) ret =  true;
+    return ret;
 }
 
 void MainWindow::insertText(const QString &str)
@@ -67,108 +61,94 @@ bool MainWindow::readOutput(QProcess &pro)
     return res;
 }
 
-bool MainWindow::execute(const QStringList &arguments)
+bool MainWindow::execute()
 {
     QProcess pro(this);
-    pro.start(ui->cmdEdit->text(), arguments);
+    QStringList ls{"-i", "/dev/ttyUSB0"};
+    pro.start(EXE_FN, ls);
     return readOutput(pro);
 }
 
-bool MainWindow::fabBootloader()
+void MainWindow::initWid()
 {
-    QStringList ls{"flash"};
-    ls << "--masserase" << "--device";
-    ls << "EFR32MG12P332F1024GM48";
-    ls << QString("%1").arg(ui->blEdit->text());
-
-    return execute(ls);
-}
-
-bool MainWindow::fabFile()
-{
-    QStringList ls{"flash"};
-    ls << "--device" << "EFR32MG12P332F1024GM48";
-    ls << QString("%1").arg(ui->fnEdit->text());
-
-    return execute(ls);
-}
-
-bool MainWindow::fabTokens()
-{
-    sToken *token = mTokens->bulidTokens();
-    ui->euiLab->setText("TOKEN_MFG_CUSTOM_EUI_64: " + token->custom_eui);
-    ui->codeLab->setText("Install Code: " + token->install_code);
-
-    QStringList ls{"flash"};
-    ls << "--device" << "EFR32MG12P332F1024GM48";
-    ls << "--tokengroup" << "znet" << "--tokenfile" << TOKEN_FN;
-    return execute(ls);
-}
-
-
-QString MainWindow::selectFile(const QString &filter, QString dir)
-{
-    if(dir.isEmpty()) dir = QCoreApplication::applicationDirPath();
-    QString fn = QFileDialog::getOpenFileName(this, tr("选择文件"), dir, filter);
-    if(fn.contains(".exe") || fn.contains(".s37")) {
-
-    }
-
-    return fn;
-}
-
-void MainWindow::on_cmdBtn_clicked()
-{
-    QString fn = selectFile("执行文件(*.exe)", ui->cmdEdit->text());
-    if(fn.contains(".exe"))  ui->cmdEdit->setText(fn);
-}
-
-void MainWindow::on_dlBtn_clicked()
-{
-    QString fn = selectFile("引导文件(*.s37)", ui->blEdit->text());
-    if(fn.contains(".s37")) ui->blEdit->setText(fn);
-}
-
-void MainWindow::on_fnBtn_clicked()
-{
-    QString fn = selectFile("设备固件(*.s37)", ui->fnEdit->text());
-    if(fn.contains(".s37")) ui->fnEdit->setText(fn);
-}
-
-bool MainWindow::inputCheck()
-{
-    QString str = ui->cmdEdit->text();
-    if(str.isEmpty()) {
-        QString str = tr(" commander.exe 烧录程序未指定\n 软件无法执行。。。");
-        QMessageBox::critical(this, tr("错误提示"),str); return false;
-    }
-
-    str = ui->blEdit->text();
-    if(str.isEmpty()) {
-        QString str = tr(" Bootloader 文件未指定\n 软件无法执行。。。");
-        QMessageBox::critical(this, tr("错误提示"),str); return false;
-    }
-
-    str = ui->fnEdit->text();
-    if(str.isEmpty()) {
-        QString str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
-        QMessageBox::critical(this, tr("错误提示"),str); return false;
-    }
-
+    QString str = "--- ---";
+    ui->idLab->setText(str);
+    ui->fwLab->setText(str);
+    ui->snLab->setText(str);
+    ui->bootLab->setText(str);
+    ui->zigbeeLab->setText(str);
+    ui->protocolLab->setText(str);
     ui->textEdit->clear();
-    ui->widget->setEnabled(false);
-    ui->codeLab->setText("Install Code:");
-    ui->euiLab->setText("TOKEN_MFG_CUSTOM_EUI_64:");
-    return true;
+}
+
+bool MainWindow::zigbeeCheck()
+{
+    bool ret = true; int id = 0;
+    QString str = ui->textEdit->toPlainText();
+    int index = str.indexOf("Dual Zigbee Sensor #0");
+    QStringList ls = str.remove(0, index).split("\n");
+    if(ls.size() > 6) {
+         QString str = ls.at(id+1).split(":").last().simplified();
+         if(str.toInt(nullptr, 16) > 0) ui->zigbeeLab->setText(str);
+         else {ret = false; mStr = tr("Zigbee设备信息错误");}
+    }
+    return ret;
+}
+
+bool MainWindow::updateWid()
+{
+    bool ret = false; int id = 0;
+    QStringList ls = ui->textEdit->toPlainText().split("\n");
+    if(ls.size() > 6) {
+        QString str = ls.at(id++).split(":").last().simplified();
+        ui->idLab->setText(str);
+
+        str = ls.at(id++).split(":").last();
+        ui->fwLab->setText(str);
+
+        str = ls.at(id++).split(":").last();
+        ui->bootLab->setText(str);
+
+        str = ls.at(id++).split(":").last();
+        ui->protocolLab->setText(str);
+
+        str = ls.at(id+1).split(":").last().simplified().remove(0,2);
+        str = QString::number(str.toInt(nullptr, 16)).rightJustified(16, '0');
+        ui->snLab->setText(str); ret = zigbeeCheck();
+    } else mStr = tr("获取设备信息不全");
+    return ret;
 }
 
 bool MainWindow::workDown()
 {
-    bool ret = fabBootloader();
+    initWid();
+    bool ret = execute();
+    if(ret) ret = updateWid();
+    return ret;
+}
+
+bool MainWindow::inputCheck()
+{
+    QString str = USB_DEV;
+    bool ret = isFileExist(str);
     if(ret) {
-        ret = fabFile();
-        if(ret) fabTokens();
-        argumentsWrite();
+        str = "echo \"123456\" | sudo -S chmod 777 " + str;
+        system(str.toLatin1().data());
+    } else {
+        str = tr(" 未接入设备，请连接Base");
+        QMessageBox::critical(this, tr("错误提示"),str);
+        return false;
+    }
+
+    str = EXE_FN;
+    ret = isFileExist(str);
+    if(ret) {
+        str = "echo \"123456\" | sudo -S chmod 777 " + str;
+        system(str.toLatin1().data());
+    } else {
+        str = tr(" 文件未接找到") + str;
+        QMessageBox::critical(this, tr("错误提示"),str);
+        return false;
     }
 
     return ret;
@@ -178,17 +158,10 @@ void MainWindow::on_startBtn_clicked()
 {
     bool ret = inputCheck();
     if(ret) {
-        int index = ui->modelBox->currentIndex();
-        switch (index) {
-        case 0: ret = workDown(); break;
-        case 1: ret = fabBootloader(); break;
-        case 2: ret = fabFile(); break;
-        case 3: ret = fabTokens(); break;
+        ret = workDown();
+        if(!ret) {
+            QMessageBox::critical(this, tr("错误提示"), mStr);
         }
     }
-
-    ui->widget->setEnabled(true);
-    if(ret) QMessageBox::information(this, tr("信息提示"),tr("烧录完成！"));
-    else QMessageBox::critical(this, tr("错误提示"),tr("烧录错误！"));
 }
 
