@@ -62,9 +62,9 @@ bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 
 bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
 {
-    mCollect->readPduData();
     sLineData *line = &(mData->lines[i]); int cur = line->cur_rms / 10;
-    QString str = tr("L%1电流 期望值%2A  电流").arg(i+1).arg(exValue/AD_CUR_RATE);
+    QString str = tr("L%1电流 电流%3  期望值%2A ").arg(i+1)
+            .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR);
     bool ret = curErrRange(exValue, cur);
     if(ret) {
         line->cur_ed = line->cur_rms;
@@ -72,8 +72,9 @@ bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
         if(ret){str += tr("正常"); updatePro(str);}
     } else {
         if(cnt > 3) {
-            str += tr("%1A 错误").arg(line->cur_rms/COM_RATE_CUR);
-            updatePro(str, ret); line->status = Test_Fail;
+            str += tr("错误");
+            updatePro(str, ret);
+            line->status = Test_Fail;
         }
     }
 
@@ -129,7 +130,8 @@ bool Ad_Resulting::eachCurCheck(int k, int exValue)
     updatePro(str); for(int i=0; i<5; ++i) {
         if(i) str += tr(" 第%1次").arg(i+1); else delay(4);
         ret = curRangeByID(k, exValue, i);
-        if(ret) break; else if(!delay(i+5)) break;
+        if(ret) break; else if(!delay(i+5)) break;        
+        mCollect->readPduData();
     }
 
     return ret;
@@ -146,9 +148,44 @@ bool Ad_Resulting::eachCurEnter(int exValue)
     return res;
 }
 
+bool Ad_Resulting::loopCurCheck(int exValue)
+{
+    bool res = mCollect->readPduData();
+    for(int i=0; i<mDt->outputs; ++i) {
+        sBranchIt *it = &(mData->branchs[i]); int cur = it->cur_rms / 10;
+        QString str = tr("C%1电流 电流%3A  期望值%2A ").arg(i+1)
+                .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR);
+        int err = (mItem->errs.curErr+3) * 10; bool ret = false;
+        int min = exValue - err; int max = exValue + err;
+        if((cur >= min) && (cur <= max )) {str += tr("正常"); ret = true;}
+        else {str += tr("错误").arg(cur/COM_RATE_CUR); res = false;}
+        updatePro(str, ret);
+    }
+
+    return res;
+}
+
+bool Ad_Resulting::neutralCheck(int exValue)
+{
+    bool ret = true;
+    if(mDt->neutral) {
+        sBranchIt *it = &(mData->neutral); int cur = it->cur_rms / 10;
+        QString str = tr("零线电流%1A  期望值%2A ")
+                .arg(it->cur_rms/COM_RATE_CUR).arg(exValue/AD_CUR_RATE);
+        ret = curErrRange(exValue, cur);
+        if(ret) str += tr("正常"); else str += tr("错误");
+        updatePro(str, ret);
+    }
+
+    return ret;
+}
+
 bool Ad_Resulting::workDown(int exValue)
 {
-    return eachCurEnter(exValue);
+    bool ret = eachCurEnter(exValue);
+    if(ret) ret = neutralCheck(exValue);
+    if(ret) ret = loopCurCheck(exValue);
+    return ret;
 }
 
 bool Ad_Resulting::noLoadCurCheck(int k, int cnt)
@@ -185,6 +222,13 @@ bool Ad_Resulting::noLoadCurFun()
             if(ret) break; else if(!delay(i+4)) break;
             // if(i) updatePro(tr("L%1相 空载校验: 第%2次检查").arg(k+1).arg(i+1));
         }
+    }
+
+    if(ret && mDt->neutral) {
+        QString str = tr("零线 空载校验 ");
+        int v = mData->neutral.cur_rms; if(!v) str += str += tr("通过");
+        else {str += tr("电流有底数 %1A").arg(v/COM_RATE_CUR); ret = false;}
+        updatePro(str, ret);
     }
 
     return ret;

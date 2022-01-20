@@ -23,6 +23,8 @@ protected:
     bool volErrRange();
     bool workDown(int exValue);
 
+    bool neutralCheck(int exValue);
+    bool loopCurCheck(int exValue);
     bool eachCurEnter(int exValue);
     bool eachCurCheck(int k, int exValue);
 

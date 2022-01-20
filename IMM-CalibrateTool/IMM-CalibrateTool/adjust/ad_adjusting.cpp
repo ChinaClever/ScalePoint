@@ -68,10 +68,10 @@ bool Ad_Adjusting::sentCmd()
     if(!ret){
         delay(5); ret = writeCmd(0xA0);  // 重复发一次命令
         if(!ret) return ret;
-    }
+    } else msleep(200);
 
-    updatePro(tr("发送启动校准命令！"),ret, 2);
-    ret = writeCmd(0xA2);
+    if(ret) {ret = writeCmd(0xA1); updatePro(tr("ADC校准启动！"),ret, 3);}
+    if(ret) {ret = writeCmd(0xA2); updatePro(tr("增益校准启动！"), ret);}
 
     return ret;
 }
@@ -128,7 +128,7 @@ bool Ad_Adjusting::recvStatus(uchar *recv, int len)
 {
     bool ret = true;
     //qDebug() << cm_ByteArrayToHexStr(recv, len);
-    if((recv[0] == 0xFF) || (recv[3] == 0xA2)){recv += 6; len -= 6;}
+    if((recv[0] == 0xFF) || (recv[3] > 0xA0)){return ret;} // recv += 6; len -= 6;
     else if(len > 6) {recv += 6; len -= 6;}
     if((len>0) && (len%6 == 0)) {
         for(int i = 0; i < len; i+=6) {
@@ -150,9 +150,9 @@ int Ad_Adjusting::readSerial(uchar *recv, int sec)
 
     int len = mModbus->readSerial(buf, sec);
     if(len > 0){
-        if(len > 8) {
-            ptr = &(buf[len-8]);
-            len = 8;
+        if(len > 6) {
+            ptr = &(buf[len-6]);
+            len = 6;
         } else {
             ptr = buf;
         }
@@ -195,7 +195,7 @@ bool Ad_Adjusting::startAdjust()
     mPro->step = Test_Ading;
     bool ret = sentCmd();
     if(ret && (mPro->step == Test_Ading)){
-        ret = readData();        
+        ret = readData();
         if(mPro->step == Test_vert) {
             //updatePro(tr("等待设备重启"), ret, 3);
             //Yc_Obj::bulid()->get()->setVol(0, 0);
