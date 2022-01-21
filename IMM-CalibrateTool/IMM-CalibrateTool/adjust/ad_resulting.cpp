@@ -101,9 +101,8 @@ bool Ad_Resulting::volErrRangeByID(int i)
 }
 
 bool Ad_Resulting::volErrRange()
-{
-    int k = 0;
-    bool ret = mCollect->readPduData();
+{    
+    bool ret = true; int k = 0;
     for(int i=0; i<mData->size; ++i) {
         ret = volErrRangeByID(i);
         if(!ret) {
@@ -150,7 +149,7 @@ bool Ad_Resulting::eachCurEnter(int exValue)
 
 bool Ad_Resulting::loopCurCheck(int exValue)
 {
-    bool res = mCollect->readPduData();
+    bool res = true;
     for(int i=0; i<mDt->outputs; ++i) {
         sBranchIt *it = &(mData->branchs[i]); int cur = it->cur_rms / 10;
         QString str = tr("C%1电流 电流%3A  期望值%2A ").arg(i+1)
