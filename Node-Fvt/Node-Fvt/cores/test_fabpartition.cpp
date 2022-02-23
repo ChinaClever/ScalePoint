@@ -72,8 +72,8 @@ QString test_FabPartition::processOn(const QString &cmd)
     emit fabSig("shexec, cmd: －－－－－－－－－－－－－－－－\n" + cmd);
     char *ptr = cmd.toLatin1().data();
     int cnt = shexec(ptr, res, 10);
-    for(int i=0; i<cnt; ++i) str.append(res[i]);
-    if(str.size()>2) emit fabSig("return results: －－－－－－－－－－－－－－－－\n" +str);
+    for(int i=0; i<cnt; ++i) if(strlen(res[i])>2) str.append(res[i]);
+    emit fabSig("return results: －－－－－－－－－－－－－－－－\n" +str);
 #else
     updatePro(tr("不支持Window系统"), false);
 #endif
