@@ -37,7 +37,7 @@ bool Test_CoreThread::enumDeviceType()
     if(ret) {
         bool res = mRtu->onewireBus();
         str = "OneWire Bus " + tr("检测 ");
-        if(ret) str += tr("正常"); else str += tr("错误");
+        if(res) str += tr("正常"); else str += tr("错误");
         updatePro(str, res);
     }
 
@@ -85,7 +85,7 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    bool res = true; if(mPr)printer();
+    bool res = true; // if(mPr)printer();  ///////============
     BaseLogs::bulid()->start();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
@@ -121,11 +121,11 @@ bool Test_CoreThread::btCurCheck()
         if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret);
 
         str = tr("检测消耗电流：%1A ").arg(bt.cur/1000.0);
-        if((bt.cur > 100) && (bt.cur < 1400)) ret = true; else ret = false;
+        if((bt.cur > 1) && (bt.cur < 90)) ret = true; else ret = false;
         if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
 
         str = tr("检测消耗功率：%1W ").arg(bt.pow/100.0);
-        if((bt.pow > 10) && (bt.pow < 140)) ret = true; else ret = false;
+        if((bt.pow > 1) && (bt.pow < 50)) ret = true; else ret = false;
         if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
     } else updatePro(tr("外购计量板通讯错误"), ret);
 
@@ -181,6 +181,7 @@ bool Test_CoreThread::outputCheck()
 {        
     mPdu->initData(3);
     bool ret = mPdu->readPduData();
+    if(!ret) ret = mPdu->readPduData();
     if(ret) {
         for(int i=0; i<mDt->outputs; ++i) relayCheck(i);
     } else updatePro(tr("PDU执行板 通讯错误"), ret);
@@ -200,17 +201,18 @@ bool Test_CoreThread::initFun()
 
 bool Test_CoreThread::zeroMeasRot()
 {
-    uint value = 0;
-    bool ret = true; delay(5);
+    mPdu->closeAllSwitch();
+    uint value = 0; bool ret = true;
+    updatePro(tr("过零检测即将开始"),ret, 7);
     for(int i=1; i<=mDt->outputs; ++i) {
         bool res = mRtu->measRot(i, value);
         QString str = tr("Socket 输出位%1 ").arg(i);
         if(res) str += tr("继电器工作时间"); else str += tr("过零操作错误");
-        updatePro(str+tr(" %1ms").arg(value/100.0), res, 1); if(!res) ret = res;
+        updatePro(str+tr(" %1ms").arg(value/100.0), res, 5); if(!res) ret = res;
     }
 
     if(ret) {
-        QString str = tr("将值存储到闪存中");
+        QString str = tr("将值存储到闪存中"); delay(2);
         QString res = mRtu->storeValue(); ret = res.contains("OK");
         if(ret) str += tr("正常 "); else str += tr("错误 ");
         updatePro(str+res, ret);
