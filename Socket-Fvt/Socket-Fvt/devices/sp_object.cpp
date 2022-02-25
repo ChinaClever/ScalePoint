@@ -40,7 +40,7 @@ bool SP_Object::checkCrc(uchar *recv, int len)
     bool ret = false;
     ushort crc = mModbus->CRC16(recv, len-2);
     ushort res = recv[len-2]*256 + recv[len-1];
-    if((crc == res) || (len%6 == 0)) {
+    if((crc == res) || (len >= 6)) {
         ret = true;
     } else {
         qDebug() << " Dev_ScalePoint CRC err" << len << recv[0] <<crc << res;
@@ -120,9 +120,7 @@ bool SP_Object::writeSerial(uchar fc, uchar addr, uchar msb, uchar lsb)
 
     uchar sent[10] = {0};
     int len = toArray(it, sent);
-    bool ret = mModbus->writeSerial(sent, len);
-    if(ret) reflush();
-
+    // bool ret = mModbus->writeSerial(sent, len); if(ret) reflush();
     return mModbus->writeSerial(sent, len);
 }
 
@@ -174,13 +172,13 @@ bool SP_Object::onewireBus(int addr)
 {
     bool ret = false; mDt->addr = addr;
     writeSerial(FC_RESET, BROADCAST_ADDR, 0, 0);
-    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, mDt->outputs, addr); reflush();
+    writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, addr, mDt->outputs); reflush();
     QByteArray array = mModbus->readSerial(350);
     for(int k=0; k<=array.size()-6; ++k) {
-        if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR) && (array.at(k+2) == 0x0A)) {
-            ret = writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 0x0A, array.at(k+3)); break;
+        if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR) && (array.at(k+2) == 0x0C)) {
+            ret = writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, array.at(k+2), array.at(k+3)); break;
         }
-    }
+    } msleep(300); reflush();
 
     return ret;
 }

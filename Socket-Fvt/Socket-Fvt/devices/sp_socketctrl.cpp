@@ -12,9 +12,10 @@ SP_SocketCtrl::SP_SocketCtrl(QObject *parent) : SP_Object(parent)
 
 bool SP_SocketCtrl::openAll()
 {
-    bool ret = true;
-    // return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
-    for(int i=0; i<mDt->outputs; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
+    //bool ret = true;
+    for(int i=0; i<mDt->outputs; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x00);
+     return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
+    //for(int i=0; i<mDt->outputs; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
 }
 
 int SP_SocketCtrl::readOutput(uchar addr)
@@ -39,9 +40,10 @@ bool SP_SocketCtrl::openOutput(uchar addr)
 
 bool SP_SocketCtrl::closeAll()
 {
-    bool ret = true;
-    //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
-    for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
+    //bool ret = true;
+    for(int i=0; i<mDt->outputs; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x01);
+    return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
+    //for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
 }
 
 bool SP_SocketCtrl::closeOutput(uchar addr)
@@ -55,10 +57,10 @@ bool SP_SocketCtrl::measRot(uchar addr, uint &t)
     for(int i=0; i<3; ++i) {
         QByteArray array = masterRequest(FC_MEAS_ROT, addr);
         if(array.size() && (array.at(0) == FC_MEAS_ROT)) {
-            t =  array.at(2) * 256 + array.at(3);
+            t =  ((uchar)array.at(2)) * 256 + (uchar)array.at(3);
             t = t * 100.0 / 20.0 ; // 转换为ms
             if((t>200)&&(t<1500)) {ret = true; break;}
-        } mdelay(2);
+        } mdelay(10);
     }
 
     return ret;

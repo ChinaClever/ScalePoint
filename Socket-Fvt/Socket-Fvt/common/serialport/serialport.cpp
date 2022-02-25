@@ -220,7 +220,7 @@ int SerialPort::read(QByteArray &array, int secs)
                 mSerialData.clear();
                 break;
             } else {
-                if(i) msleep(SERIAL_TIMEOUT); else msleep(275);
+                if(i) msleep(SERIAL_TIMEOUT); else msleep(375);
             }
         }
     }
