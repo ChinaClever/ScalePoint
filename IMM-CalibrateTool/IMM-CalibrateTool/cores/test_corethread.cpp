@@ -147,7 +147,7 @@ void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
     bool ret = initFun();
-    if(ret) {
+    if(ret || (mPro->step == Test_Collect)) {
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Collect: collectData(); break;
