@@ -15,7 +15,7 @@ uchar *SP_ImmObj::toInt(uchar *ptr, uint &value)
     value =  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电能高8位
     value <<= 16; // 左移8位
     value +=  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电能底8位
-    if(value > 0xFFFFF) value = 0;// qDebug() << "Err: SP_ImmObj toInt " << value;
+    if(value > 0xFFFFFFF) value = 0;// qDebug() << "Err: SP_ImmObj toInt " << value;
     return ptr;
 }
 
