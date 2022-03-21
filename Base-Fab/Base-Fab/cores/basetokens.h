@@ -25,6 +25,7 @@ class BaseTokens : public QObject
 public:
     explicit BaseTokens(QObject *parent = nullptr);
     sToken *bulidTokens();
+
 protected:
     void initFun();
     void writeFile();
