@@ -129,7 +129,7 @@ bool Ad_Resulting::eachCurCheck(int k, int exValue)
     updatePro(str); for(int i=0; i<5; ++i) {
         if(i) str += tr(" 第%1次").arg(i+1); else delay(4);
         ret = curRangeByID(k, exValue, i);
-        if(ret) break; else if(!delay(i+5)) break;        
+        if(ret) break; else if(!delay(i+5)) break;
         mCollect->readPduData();
     }
 
@@ -171,7 +171,10 @@ bool Ad_Resulting::neutralCheck(int exValue)
         sBranchIt *it = &(mData->neutral); int cur = it->cur_rms / 10;
         QString str = tr("零线电流%1A  期望值%2A ")
                 .arg(it->cur_rms/COM_RATE_CUR).arg(exValue/AD_CUR_RATE);
-        ret = curErrRange(exValue, cur);
+        for(int i=0; i<3; ++i) {
+            ret = curErrRange(exValue, cur);
+            if(ret) break; else mCollect->readPduData();
+        }
         if(ret) str += tr("正常"); else str += tr("错误");
         updatePro(str, ret);
     }

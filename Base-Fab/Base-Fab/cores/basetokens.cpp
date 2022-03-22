@@ -15,8 +15,7 @@ BaseTokens::BaseTokens(QObject *parent) : QObject(parent)
 void BaseTokens::initFun()
 {
     QString g = "Tokens";
-    mToken = new sToken();
-    mCfg = Cfg::bulid(this);
+    mToken = new sToken(); mCfg = Cfg::bulid(this);
     mToken->board_name = mCfg->read("BOARD_NAME","", g).toString();
     mToken->manuf_id = mCfg->read("MANUF_ID", "0x2110", g).toString();
     mToken->CUSTOM_EUI = mCfg->read("CUSTOM_EUI", 1, g).toUInt();
@@ -33,7 +32,7 @@ void BaseTokens::argumentsWrite()
 void BaseTokens::writeFile()
 {
     QFile file(TOKEN_FN);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
     QString txt = "TOKEN_MFG_BOARD_NAME: \"" + mToken->board_name + "\"\n"
                   "TOKEN_MFG_MANUF_ID: " + mToken->manuf_id + "\n"
                   "TOKEN_MFG_CUSTOM_EUI_64: " + mToken->custom_eui + "\n"
@@ -64,11 +63,9 @@ QString BaseTokens::createInstallCode()
 
 sToken *BaseTokens::bulidTokens()
 {
-    QString g = "Tokens";
     mToken->custom_eui = addCustomEui();
     mToken->install_code = createInstallCode();
-    mCfg->write("CUSTOM_EUI", mToken->CUSTOM_EUI, g);
-    writeFile();
+    writeFile(); argumentsWrite();
 
     return mToken;
 }

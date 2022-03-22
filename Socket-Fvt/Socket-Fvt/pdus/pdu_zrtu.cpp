@@ -10,7 +10,6 @@ Pdu_ZRtu::Pdu_ZRtu(QObject *parent) : Pdu_ZCtrl(parent)
 
 }
 
-
 Pdu_ZRtu *Pdu_ZRtu::bulid(QObject *parent)
 {
     Pdu_ZRtu* sington = nullptr;
