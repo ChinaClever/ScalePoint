@@ -15,6 +15,7 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
+    Test_BsThread::bulid(this);
     mYc = Yc_Obj::bulid(this);
     mDev = SP_ImmRtu::bulid(this);
     mAd = Ad_CoreThread::bulid(this);
@@ -79,7 +80,7 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    // if(mPr) printer(); ///===========
+    if(mPr) printer();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
@@ -112,7 +113,9 @@ bool Test_CoreThread::initFun()
     updatePro(tr("即将开始"));
     bool ret = cylinderDown();
     if(ret) ret = enumDeviceType();
-    if(ret) ret = mYc->powerOn();
+    if(mPro->step != Test_Bs)
+        if(ret) ret = mYc->powerOn();
+
     if(ret) ret = readDev();
     return ret;
 }
@@ -146,16 +149,16 @@ void Test_CoreThread::collectData()
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
-    bool ret = initFun();
-    if(ret || (mPro->step == Test_Collect)) {
+    bool ret = initFun(); if(ret) {
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Collect: collectData(); break;
         case Test_Ading: mAd->startAdjust(); break;
         case Test_vert: mAd->verifyResult(); break;
+        case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
         }
     } else mPro->result = Test_Fail;
-
     workResult();
+
     isRun = false;
 }
