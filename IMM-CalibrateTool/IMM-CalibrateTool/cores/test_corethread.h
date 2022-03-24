@@ -1,6 +1,6 @@
 #ifndef TEST_CORETHREAD_H
 #define TEST_CORETHREAD_H
-#include "test_execute.h"
+#include "test_bsthread.h"
 #include "sp_socketrtu.h"
 
 class Test_CoreThread : public BaseThread
