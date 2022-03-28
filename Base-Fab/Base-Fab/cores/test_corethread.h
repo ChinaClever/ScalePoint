@@ -16,6 +16,7 @@ protected:
     bool fabBootloader();
     bool workDown();
     void workResult(bool ret);
+    bool printer();
 
 protected slots:
     void initFunSlot();

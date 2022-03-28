@@ -9,7 +9,7 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    mSocket->bind(QHostAddress::LocalHost, 47755);
+    mSocket->bind(QHostAddress::Any, 47755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
@@ -27,8 +27,8 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     str += it.pn + ","; str += it.hw + ","; str += it.fw + ",";
     QString date = QDate::currentDate().toString("yy") + "W";
     date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
-    str += date+","; str += it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
+    str += date+","; str += "IEEE " + it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
+    str += QString("G$K:%1$I:%2%Z$A:%3%M:%4$HW:%5$FW%6").arg(it.pn).arg(it.code).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 
@@ -51,11 +51,12 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
-    int port = 1044;
-    sendMsg("start", port);
+    int port = 2044;
+    QHostAddress host = QHostAddress::Broadcast;
+    sendMsg("start", port, host);
 
     QString order = createOrder(it);
-    sendMsg(order.toLocal8Bit(), port+1);
+    sendMsg(order.toLocal8Bit(), port+1, host);
     return recvResponse(3);
 }
 

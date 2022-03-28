@@ -19,6 +19,26 @@ void Test_CoreThread::initFunSlot()
     mTokens = new BaseTokens(this);
 }
 
+
+bool Test_CoreThread::printer()
+{
+    bool ret = true;
+    QString str = tr("标签打印 ");
+    if(mPro->result != Test_Fail){
+        sBarTend it;
+        it.pn = "AG13098AA"; //mDt->pn;
+        it.sn = mDt->sn;
+        it.fw = mDt->fw;
+        it.hw = "1.1";//mDt->hw;
+        it.code = mDt->code;
+
+        ret = Printer_BarTender::bulid(this)->printer(it);
+        if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
+        if(ret) str += tr("正常"); else str += tr("错误");
+    } else str = tr("因测试未通过，标签未打印");
+    return updatePro(str, ret);
+}
+
 bool Test_CoreThread::fabBootloader()
 {
     QStringList ls{"flash"};
