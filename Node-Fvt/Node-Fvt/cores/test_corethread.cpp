@@ -4,6 +4,7 @@
  *      Author: Lzy
  */
 #include "test_corethread.h"
+#include "printer_bartender.h"
 
 Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 {
@@ -13,10 +14,29 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
+    Printer_BarTender::bulid(this);
     mSn = Test_SerialNumber::bulid(this);
     mFab = test_FabPartition::bulid(this);
     mNetWork = Test_NetWork::bulid(this);
     connect(mFab, SIGNAL(fabSig(QString)), mNetWork, SIGNAL(msgSig(QString)));
+}
+
+
+bool Test_CoreThread::printer()
+{
+    bool ret = true;
+    QString str = tr("标签打印 ");
+    if(mPro->result != Test_Fail){
+        sBarTend it;
+        it.pn = "A024387AA";
+        it.sn = "00 04 74 " + mDt->sn;
+        it.fw = mDt->fwRevision;
+        it.hw = mDt->hwRevision;
+        ret = Printer_BarTender::bulid(this)->printer(it);
+        if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
+        if(ret) str += tr("正常"); else str += tr("错误");
+    } else str = tr("因测试未通过，标签未打印");
+    return updatePro(str, ret);
 }
 
 void Test_CoreThread::workResult()
@@ -59,7 +79,7 @@ bool Test_CoreThread::programFab()
     return ret;
 }
 
-void Test_CoreThread::macSnCheck()
+bool Test_CoreThread::macSnCheck()
 {
     bool ret = false;
     QString str = "serial Number" + tr("检查");
@@ -77,6 +97,7 @@ void Test_CoreThread::macSnCheck()
         str += tr("正确：%1 ").arg(mDt->macAddress); ret = true;
     }
     updatePro(str, ret);
+    return ret;
 }
 
 bool Test_CoreThread::waitFor()
@@ -97,7 +118,8 @@ void Test_CoreThread::workDown()
     if(ret) {
         ret =  waitFor();
         if(ret) ret = mNetWork->startProcess();
-        if(ret) macSnCheck();
+        if(ret) ret = macSnCheck();
+        if(ret) ret = printer();
     }
 }
 

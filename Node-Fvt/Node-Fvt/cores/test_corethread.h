@@ -17,10 +17,11 @@ protected:
     void run();
     bool initFun();
     bool programFab();
-    void macSnCheck();
+    bool macSnCheck();
     void workDown();
     void workResult();
     bool waitFor();
+    bool printer();
 
 protected slots:
     void initFunSlot();

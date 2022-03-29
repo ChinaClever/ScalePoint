@@ -20,35 +20,38 @@ PrinterWid::~PrinterWid()
     delete ui;
 }
 
-void PrinterWid::printerWid(QWidget *wid)
+void PrinterWid::printerWid(QPixmap &pixmap)
 {
-    QPixmap pixmap = QPixmap::grabWidget(wid, wid->rect());
-    ui->lab_img->setPixmap(pixmap);
+    QSize picSize(400,200);
+    QPixmap scaledPixmap = pixmap.scaled(picSize, Qt::KeepAspectRatio); // Qt::IgnoreAspectRatio, Qt::SmoothTransformation
+    ui->lab_img->setPixmap(scaledPixmap);
     ui->lab_img->adjustSize();
 }
 
 void PrinterWid::on_printsBtn_clicked()
 {
    QPrinter printerPixmap;
-   QPixmap pixmap = QPixmap::grabWidget(ui->lab_img, ui->lab_img->rect());  //获取界面的图片
+   QPixmap pixmap = ui->lab_img->grab(); //获取界面的图片
    printerPixmap.setOrientation(QPrinter::Portrait);//纵向：Portrait 横向：Landscape
    printerPixmap.setPageSize(QPrinter::A4);//设置纸张大小
    QPainter painterPixmap;
+   painterPixmap.setRenderHint(QPainter::Antialiasing, true);
    painterPixmap.begin(&printerPixmap);
-   painterPixmap.scale(1, 1);//设置图像长宽是原图的多少倍
-   painterPixmap.drawPixmap(300, 300 , pixmap);//设置图像在A4中的开始坐标是什么
+   painterPixmap.scale(0.5, 0.5);//设置图像长宽是原图的多少倍
+   painterPixmap.drawPixmap(10, 50, pixmap);//设置图像在A4中的开始坐标是什么
    painterPixmap.end();
 }
 
 void PrinterWid::printPreviewSlot(QPrinter* printerPixmap)
 {
     printerPixmap->setOrientation(QPrinter::Landscape);
-    QPixmap pixmap = QPixmap::grabWidget(ui->lab_img, ui->lab_img->rect()); //获取界面的图片
+    QPixmap pixmap = ui->lab_img->grab(); //获取界面的图片
     QPainter painterPixmap(this);
     painterPixmap.begin(printerPixmap);
     QRect rect = painterPixmap.viewport();
     int x = rect.width() / pixmap.width();
     int y = rect.height() / pixmap.height();
+    painterPixmap.setRenderHint(QPainter::Antialiasing, true);
     painterPixmap.scale(x, y);
     painterPixmap.drawPixmap(0, 0, pixmap);
     painterPixmap.end();
@@ -58,7 +61,7 @@ void PrinterWid::on_previewBt_clicked()
 {
     QPrinter printer(QPrinter::HighResolution);
     QPrintPreviewDialog preview(&printer, this);
-    preview.setMinimumSize(1000,600);
+    preview.setMinimumSize(1200,600);
     printer.setPageSize(QPrinter::Custom); //自定义纸张大小
     printer.setPaperSize(QSizeF(ui->lab_img->height(), ui->lab_img->width()), QPrinter::Point);
     connect(&preview, SIGNAL(paintRequested(QPrinter*)), SLOT(printPreviewSlot(QPrinter*)));
@@ -82,7 +85,7 @@ void PrinterWid::on_saveBtn_clicked()
         printerPixmap.setOrientation(QPrinter::Landscape);  //横向打印
         printerPixmap.setOutputFormat(QPrinter::PdfFormat); //设置输出格式为pdf
         printerPixmap.setOutputFileName(fileName); //设置输出路径
-        QPixmap pixmap = QPixmap::grabWidget(ui->lab_img, ui->lab_img->rect());  //获取界面的图片
+        QPixmap pixmap = ui->lab_img->grab(); //QPixmap::grabWidget(ui->lab_img, ui->lab_img->rect());  //获取界面的图片
         QPainter painterPixmap;
         painterPixmap.begin(&printerPixmap);
         QRect rect = painterPixmap.viewport();
