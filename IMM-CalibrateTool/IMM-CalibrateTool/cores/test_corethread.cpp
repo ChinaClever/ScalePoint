@@ -82,7 +82,6 @@ void Test_CoreThread::workResult()
 {
     if(mPr) printer();
     bool res = mYc->powerDown();
-    //bool res = true;
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         str += tr("通过");
@@ -114,10 +113,12 @@ bool Test_CoreThread::initFun()
     updatePro(tr("即将开始"));
     bool ret = cylinderDown();
     if(ret) ret = enumDeviceType();
+    qDebug()<<"ret1 "<<ret<<endl;
     if(mPro->step != Test_Bs)
         if(ret) ret = mYc->powerOn();
-
+    qDebug()<<"ret2 "<<ret<<endl;
     if(ret) ret = readDev();
+    qDebug()<<"ret3 "<<ret<<endl;
     return ret;
 }
 
@@ -150,7 +151,7 @@ void Test_CoreThread::collectData()
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
-    bool ret = initFun(); if(ret) {
+    bool ret = initFun(); //if(ret) {
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Collect: collectData(); break;
@@ -158,7 +159,7 @@ void Test_CoreThread::run()
         case Test_vert: mAd->verifyResult(); break;
         case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
         }
-    } else mPro->result = Test_Fail;
+    //} else mPro->result = Test_Fail;
     workResult();
 
     isRun = false;
