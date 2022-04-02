@@ -47,7 +47,6 @@ bool SP_ImmRtu::readPduData()
     bool ret = false;
     auto t = masterRequest(FC_READ_DATA);
     int len = std::get<0>(t);
-    qDebug()<<"len            "<<len<<endl;
     if(recvLen(len-4)) {
         uchar *recv = std::get<1>(t);
         ret = recvPacket(recv, len, mData);
