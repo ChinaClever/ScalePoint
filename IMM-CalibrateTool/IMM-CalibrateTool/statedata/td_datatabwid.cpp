@@ -29,7 +29,7 @@ QStringList Td_DataTabWid::getItem(sLineData &line)
     if(line.cur_rms) listStr << QString::number(line.cur_rms/COM_RATE_CUR)+"A"; else listStr << "---";
     if(line.cur_peak) listStr << QString::number(line.cur_peak/COM_RATE_CUR)+"A"; else listStr << "---";
     if(line.pow.active) listStr << QString::number(line.pow.active/COM_RATE_POW)+"W"; else listStr << "---";
-    if(line.ele) listStr << QString::number(line.ele/COM_RATE_ELE)+"Wh"; else listStr << "---";
+    if(line.ele) listStr << QString::number(line.ele/COM_RATE_ELE , 'f' , 1)+"kWh"; else listStr << "---";
     if(line.cur_ed) listStr << QString::number(line.cur_ed/COM_RATE_CUR)+"A"; else listStr << "---";
     if(line.powed) listStr << QString::number(line.powed/COM_RATE_POW)+"W"; else listStr << "---";
 

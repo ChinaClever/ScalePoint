@@ -28,7 +28,7 @@ QStringList Td_EleTabWid::getItem(sLineData &line)
 
     if(line.vol_rms) listStr << QString::number(line.vol_rms/COM_RATE_VOL)+"V"; else listStr << "---";
     if(line.cur_rms) listStr << QString::number(line.cur_rms/COM_RATE_CUR)+"A"; else listStr << "---";
-    if(line.ele) listStr << QString::number(line.ele/COM_RATE_POW)+"Wh"; else listStr << "---";
+    if(line.ele) listStr << QString::number(line.ele/COM_RATE_POW , 'f' , 1)+"kWh"; else listStr << "---";
 
     return listStr;
 }
