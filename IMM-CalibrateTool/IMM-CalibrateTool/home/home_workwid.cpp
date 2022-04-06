@@ -166,6 +166,8 @@ bool Home_WorkWid::initSerial()
     if(!ret) {MsgBox::critical(this, tr("请先打开IMM串口")); return ret;}
 
     ret = mItem->coms.src->isOpened();
+    int step = ui->modeBox->currentIndex()+Test_Start;
+    if( step == Test_Bs || step == Test_Collect) ret = true;
     if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
     return ret;
 }

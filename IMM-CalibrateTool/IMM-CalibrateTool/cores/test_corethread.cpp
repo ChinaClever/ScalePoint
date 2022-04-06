@@ -115,7 +115,7 @@ bool Test_CoreThread::initFun()
     if(ret) ret = enumDeviceType();
     if(mPro->step != Test_Bs)
         if(ret) ret = mYc->powerOn();
-
+    if(mPro->step == Test_Collect) ret = true;
     if(ret) ret = readDev();
     return ret;
 }
@@ -127,7 +127,7 @@ void Test_CoreThread::workDown()
     for(int i=0; i<mData->size; ++i) {
         sLineData *line = &(mData->lines[i]);
         if(line->ele) {
-            QString e = QString::number(line->ele/COM_RATE_ELE)+"Wh";
+            QString e = QString::number(line->ele/COM_RATE_ELE , 'f' , 1)+"kWh";
             QString str = tr("L%1 存在电能 %2").arg(i+1).arg(e); updatePro(str, false);
         }
     }
@@ -149,15 +149,14 @@ void Test_CoreThread::collectData()
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
-    bool ret = initFun(); if(ret) {
-        switch (mPro->step) {
-        case Test_Start: workDown(); break;
-        case Test_Collect: collectData(); break;
-        case Test_Ading: mAd->startAdjust(); break;
-        case Test_vert: mAd->verifyResult(); break;
-        case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
-        }
-    } else mPro->result = Test_Fail;
+    bool ret = initFun();
+    switch (mPro->step) {
+    case Test_Start: workDown(); break;
+    case Test_Collect: collectData(); break;
+    case Test_Ading: mAd->startAdjust(); break;
+    case Test_vert: mAd->verifyResult(); break;
+    case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
+    }
     workResult();
 
     isRun = false;

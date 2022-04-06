@@ -5,7 +5,7 @@
  */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "printer_bartender.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,13 +26,6 @@ MainWindow::~MainWindow()
 void MainWindow::initFunSlot()
 {
     initWid();
-
-    sBarTend it;
-    it.pn = "lzy";
-    it.fw = "1.1";
-    it.hw = "1.2";
-    it.sn = "123456789";
-    Printer_BarTender::bulid(this)->printer(it);
 }
 
 void MainWindow::initWid()
