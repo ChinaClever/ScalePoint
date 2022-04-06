@@ -14,7 +14,8 @@ Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 void Test_CoreThread::initFunSlot()
 {
     BaseLogs::bulid(this);
-    //Printer_BarTender::bulid(this);
+    Printer_BarTender::bulid(this);
+    mFvt = Test_BaseFvt::bulid(this);
     mExe = Test_Execute::bulid(this);
     mTokens = new BaseTokens(this);
 }
@@ -26,10 +27,10 @@ bool Test_CoreThread::printer()
     QString str = tr("标签打印 ");
     if(mPro->result != Test_Fail){
         sBarTend it;
-        it.pn = "AG13098AA"; //mDt->pn;
+        it.pn = mDt->pn;
         it.sn = mDt->sn;
         it.fw = mDt->fw;
-        it.hw = "1.1";//mDt->hw;
+        it.hw = mItem->hw;
         it.code = mDt->code;
 
         ret = Printer_BarTender::bulid(this)->printer(it);
@@ -74,6 +75,8 @@ bool Test_CoreThread::workDown()
     if(ret) {
         ret = fabFile();
         if(ret) fabTokens();
+        if(ret) ret = mFvt->workDown();
+        if(ret) printer();
     }
 
     return ret;
@@ -95,6 +98,7 @@ void Test_CoreThread::run()
     case Test_Bootloader: ret = fabBootloader(); break;
     case Test_Firmware: ret = fabFile(); break;
     case Test_Token: ret = fabTokens(); break;
+    case Test_Fvt: ret = mFvt->workDown(); break;
     }
 
     workResult(ret);

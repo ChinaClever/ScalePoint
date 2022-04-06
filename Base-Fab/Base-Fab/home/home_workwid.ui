@@ -132,6 +132,11 @@
         <string>令牌写入</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>设备测试</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </item>
