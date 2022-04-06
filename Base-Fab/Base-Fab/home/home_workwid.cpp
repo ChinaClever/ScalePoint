@@ -139,7 +139,8 @@ bool Home_WorkWid::initSerial()
 //    if(!ret) {MsgBox::critical(this, tr("请先打开Socket串口")); return ret;}
     QString str = ui->cmdEdit->text();
     if(str.isEmpty()) {
-        str = tr(" commander.exe 烧录程序未指定\n 软件无法执行。。。");
+//        str = tr(" commander.exe 烧录程序未指定\n 软件无法执行。。。");
+        str = tr(" commander 烧录程序未指定\n 软件无法执行。。。");
         MsgBox::critical(this, str); return false;
     }
 
@@ -234,8 +235,10 @@ QString Home_WorkWid::selectFile(const QString &filter, QString dir)
 
 void Home_WorkWid::on_cmdBtn_clicked()
 {
-    QString fn = selectFile("执行文件(*.exe)", ui->cmdEdit->text());
-    if(fn.contains(".exe"))  ui->cmdEdit->setText(fn);
+//    QString fn = selectFile("执行文件(*.exe)", ui->cmdEdit->text());
+//    if(fn.contains(".exe"))  ui->cmdEdit->setText(fn);
+    QString fn = selectFile("执行文件(*)", ui->cmdEdit->text());
+    if(fn.contains("commander"))  ui->cmdEdit->setText(fn);
     mItem->commander = fn;
 }
 

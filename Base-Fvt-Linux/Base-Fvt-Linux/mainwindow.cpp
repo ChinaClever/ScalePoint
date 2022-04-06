@@ -6,7 +6,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#define EXE_FN "scdump"
+#define SC_REG "screg"
+#define SC_DUMP "scdump"
 #define USB_DEV "/dev/ttyUSB0"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -55,6 +56,7 @@ bool MainWindow::readOutput(QProcess &pro)
         bs +=  pro.readAllStandardError();
         QString str = QString::fromLocal8Bit(bs);
         insertText(str); if(str.contains("ERROR")) res = false;
+        if(str.contains("error")) res = false;
     } while(!ret);
     pro.close();
 
@@ -65,8 +67,49 @@ bool MainWindow::execute()
 {
     QProcess pro(this);
     QStringList ls{"-i", "/dev/ttyUSB0"};
-    pro.start(EXE_FN, ls);
+    pro.start(SC_DUMP, ls);
     return readOutput(pro);
+}
+
+bool MainWindow::relayControl(int id, int oc)
+{
+    QProcess pro(this);
+    QStringList ls{"-i", "/dev/ttyUSB0","-w"};
+    ls << QString::number(id);
+    ls << QString::number(oc);
+    pro.start(SC_REG, ls);
+    return readOutput(pro);
+}
+
+void MainWindow::mdelay(int ms)
+{
+    QTime t = QTime::currentTime().addMSecs(ms);
+    while (QTime::currentTime() < t) {
+        QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+    }
+}
+
+bool MainWindow::relayControl(int id)
+{
+    bool ret = relayControl(id, 0x03);
+    if(ret){
+        mdelay(200);
+        ret = relayControl(id, 0x02);
+        mdelay(500);
+    }
+    return ret;
+}
+
+bool MainWindow::zigbeeConnect()
+{
+    int id = 0x0097;
+    return relayControl(id);
+}
+
+bool MainWindow::rsConnect()
+{
+    int id = 0x0096;
+    return relayControl(id);
 }
 
 void MainWindow::initWid()
@@ -88,9 +131,9 @@ bool MainWindow::zigbeeCheck()
     int index = str.indexOf("Dual Zigbee Sensor #0");
     QStringList ls = str.remove(0, index).split("\n");
     if(ls.size() > 6) {
-         QString str = ls.at(id+1).split(":").last().simplified();
-         if(str.toInt(nullptr, 16) > 0) ui->zigbeeLab->setText(str);
-         else {ret = false; mStr = tr("Zigbee设备信息错误");}
+        QString str = ls.at(id+1).split(":").last().simplified();
+        if(str.toInt(nullptr, 16) > 0) ui->zigbeeLab->setText(str);
+        else {ret = false; mStr = tr("Zigbee设备信息错误");}
     }
     return ret;
 }
@@ -98,8 +141,9 @@ bool MainWindow::zigbeeCheck()
 bool MainWindow::updateWid()
 {
     bool ret = false; int id = 0;
-    QStringList ls = ui->textEdit->toPlainText().split("\n");
+    QStringList ls = ui->textEdit->toPlainText().split("\n", QString::SkipEmptyParts);
     if(ls.size() > 6) {
+        for(int i=0; i<2; ++i) ls.removeFirst();
         QString str = ls.at(id++).split(":").last().simplified();
         ui->idLab->setText(str);
 
@@ -113,7 +157,7 @@ bool MainWindow::updateWid()
         ui->protocolLab->setText(str);
 
         str = ls.at(id+1).split(":").last().simplified().remove(0,2);
-        str = QString::number(str.toInt(nullptr, 16)).rightJustified(16, '0');
+        str = QString::number(str.toInt(nullptr, 16)).rightJustified(10, '0');
         ui->snLab->setText(str); ret = zigbeeCheck();
     } else mStr = tr("获取设备信息不全");
     return ret;
@@ -122,8 +166,10 @@ bool MainWindow::updateWid()
 bool MainWindow::workDown()
 {
     initWid();
-    bool ret = execute();
+    bool ret = zigbeeConnect();
+    if(ret) ret = execute();
     if(ret) ret = updateWid();
+    if(ret) ret = rsConnect();
     return ret;
 }
 
@@ -140,10 +186,11 @@ bool MainWindow::inputCheck()
         return false;
     }
 
-    str = EXE_FN;
+    str = SC_DUMP;
     ret = isFileExist(str);
+    if(ret) {str =SC_REG; ret = isFileExist(str);}
     if(ret) {
-        str = "echo \"123456\" | sudo -S chmod 777 " + str;
+        str = "echo \"123456\" | sudo -S chmod 777 sc*";
         system(str.toLatin1().data());
     } else {
         str = tr(" 文件未接找到") + str;
