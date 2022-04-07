@@ -17,7 +17,7 @@ void Test_CoreThread::initFunSlot()
     Printer_BarTender::bulid(this);
     mFvt = Test_BaseFvt::bulid(this);
     mExe = Test_Execute::bulid(this);
-    mTokens = new BaseTokens(this);
+    mTokens = BaseTokens::bulid(this);
 }
 
 
@@ -31,8 +31,7 @@ bool Test_CoreThread::printer()
         it.sn = mDt->sn;
         it.fw = mDt->fw;
         it.hw = mItem->hw;
-        it.code = mDt->code;
-
+        it.code = mTokens->codeCrc();
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(ret) str += tr("正常"); else str += tr("错误");
