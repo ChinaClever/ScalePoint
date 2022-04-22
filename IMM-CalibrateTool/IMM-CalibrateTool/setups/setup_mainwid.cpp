@@ -104,8 +104,8 @@ void Setup_MainWid::on_pcBtn_clicked()
 
 void Setup_MainWid::on_verBtn_clicked()
 {
-    VersionDlg dlg(this);
-    dlg.exec();
+    //VersionDlg dlg(this);
+    //dlg.exec();
 }
 
 
