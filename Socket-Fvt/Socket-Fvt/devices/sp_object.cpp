@@ -173,9 +173,13 @@ bool SP_Object::onewireBus(int addr)
     bool ret = false; mDt->addr = addr;
     writeSerial(FC_RESET, BROADCAST_ADDR, 0, 0);
     writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, addr, mDt->outputs); reflush();
-    QByteArray array = mModbus->readSerial(350);
+    QByteArray array = mModbus->readSerial(1550);
+
     for(int k=0; k<=array.size()-6; ++k) {
-        if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR) && (array.at(k+2) == 0x0C)) {
+//        if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR) && (array.at(k+2) == 0x0C)) {
+//            ret = writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, array.at(k+2), array.at(k+3)); break;
+//        }
+        if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR)&& (array.at(k+3) == mDt->outputs)) {
             ret = writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, array.at(k+2), array.at(k+3)); break;
         }
     } msleep(300); reflush();

@@ -116,7 +116,7 @@ void Home_WorkWid::updateResult()
 {
     QString style;
     QString str = tr("---");
-    if(isCheck){ if(mId < 20) mPro->result = Test_Fail; }
+    if(isCheck){ if(mId < 10) mPro->result = Test_Fail; }
     if(Test_Fail == mPro->result) {
         str = tr("失败"); style = "background-color:red; color:rgb(255, 255, 255);";
     } else {

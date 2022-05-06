@@ -9,7 +9,7 @@ CfgCom::CfgCom(QObject *parent)
 {
     QCoreApplication::setOrganizationName("CLEVER");
     QCoreApplication::setOrganizationDomain("clever.com");
-    QCoreApplication::setApplicationName("Base-Fvt");
+    QCoreApplication::setApplicationName("Socket-Fvt");
     mCfgIni = nullptr; cfgOpen(parent);
 }
 

@@ -85,7 +85,7 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    bool res = true; // if(mPr)printer();  ///////============
+    bool res = true;  if(mPr)printer();  ///////============
     BaseLogs::bulid()->start();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
@@ -225,7 +225,7 @@ void Test_CoreThread::workDown()
 {
     mPr = true;
     btCurCheck();
-    outputCheck();
+    ////outputCheck();
     zeroMeasRot();
 }
 
