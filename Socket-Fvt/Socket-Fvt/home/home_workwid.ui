@@ -318,6 +318,19 @@
        </property>
       </item>
      </widget>
+     <widget class="QRadioButton" name="tipBtn">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>220</y>
+        <width>161</width>
+        <height>18</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>下压和规格选择提示</string>
+      </property>
+     </widget>
     </widget>
    </item>
    <item row="1" column="0" rowspan="2">
