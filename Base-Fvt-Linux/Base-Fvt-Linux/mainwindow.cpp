@@ -93,9 +93,9 @@ bool MainWindow::relayControl(int id)
 {
     bool ret = relayControl(id, 0x03);
     if(ret){
-        mdelay(200);
+        mdelay(800);
         ret = relayControl(id, 0x02);
-        mdelay(500);
+        mdelay(600);
     }
     return ret;
 }
