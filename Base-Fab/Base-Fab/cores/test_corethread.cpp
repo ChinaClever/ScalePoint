@@ -88,11 +88,19 @@ void Test_CoreThread::workResult(bool ret)
     mPro->step = Test_Over;
 }
 
+bool Test_CoreThread::factoryWork()
+{
+    bool ret = fabTokens();
+    if(ret) ret = mFvt->workDown();
+    return ret;
+}
+
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
     bool ret = false;
     switch (mPro->step) {
+    case Test_Factory: ret = factoryWork(); break;
     case Test_Start: ret = workDown(); break;
     case Test_Bootloader: ret = fabBootloader(); break;
     case Test_Firmware: ret = fabFile(); break;

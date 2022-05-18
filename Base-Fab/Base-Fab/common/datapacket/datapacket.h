@@ -18,7 +18,7 @@ struct sDevType
     QString protocol;
     QString zigbee;
 
-    QString pn; // AG13098AA
+    QString pn; // 981225
     QString dt;
     QString code;
 };
@@ -35,6 +35,7 @@ struct sDevData
 
 enum {
     Test_Fun, // 功能
+    Test_Factory,
     Test_Start, // 开始
     Test_Bootloader,
     Test_Firmware,

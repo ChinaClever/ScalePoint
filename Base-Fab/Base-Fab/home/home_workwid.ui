@@ -63,6 +63,7 @@
       <property name="font">
        <font>
         <pointsize>16</pointsize>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -112,6 +113,11 @@
         <height>35</height>
        </rect>
       </property>
+      <item>
+       <property name="text">
+        <string>生产流程</string>
+       </property>
+      </item>
       <item>
        <property name="text">
         <string>标准流程</string>

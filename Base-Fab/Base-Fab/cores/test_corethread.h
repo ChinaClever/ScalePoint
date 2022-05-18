@@ -15,6 +15,7 @@ protected:
     bool fabTokens();
     bool fabBootloader();
     bool workDown();
+    bool factoryWork();
     void workResult(bool ret);
     bool printer();
 

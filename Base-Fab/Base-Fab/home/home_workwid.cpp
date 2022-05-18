@@ -183,7 +183,7 @@ bool Home_WorkWid::initUser()
 void Home_WorkWid::initData()
 {
     mPacket->init();
-    mDt->pn = "AG13098AA";
+    mDt->pn = "981225";
 }
 
 bool Home_WorkWid::inputCheck()

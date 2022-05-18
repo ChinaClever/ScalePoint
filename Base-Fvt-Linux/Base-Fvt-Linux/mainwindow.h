@@ -37,10 +37,12 @@ protected:
     bool execute();
     bool workDown();
     void mdelay(int ms);
+    void changeStatus(QLabel *lab, bool flag);
 
 private slots:
     void initFunSlot();
     void on_startBtn_clicked();
+    void initStatus();
 
 private:
     Ui::MainWindow *ui;

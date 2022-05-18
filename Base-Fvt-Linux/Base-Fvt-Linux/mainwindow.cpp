@@ -122,6 +122,25 @@ void MainWindow::initWid()
     ui->zigbeeLab->setText(str);
     ui->protocolLab->setText(str);
     ui->textEdit->clear();
+
+    str = "－－－－";
+    QString style = "color:black;" ;
+    ui->idResLab->setText(str);
+    ui->fwResLab->setText(str);
+    ui->bootResLab->setText(str);
+    ui->protocolResLab->setText(str);
+    ui->snResLab->setText(str);
+    ui->socketResLab->setText(str);
+    ui->IMMResLab->setText(str);
+    ui->zigbeeResLab->setText(str);
+    ui->idResLab->setStyleSheet(style);
+    ui->fwResLab->setStyleSheet(style);
+    ui->bootResLab->setStyleSheet(style);
+    ui->protocolResLab->setStyleSheet(style);
+    ui->snResLab->setStyleSheet(style);
+    ui->socketResLab->setStyleSheet(style);
+    ui->IMMResLab->setStyleSheet(style);
+    ui->zigbeeResLab->setStyleSheet(style);
 }
 
 bool MainWindow::zigbeeCheck()
@@ -134,8 +153,21 @@ bool MainWindow::zigbeeCheck()
         QString str = ls.at(id+1).split(":").last().simplified();
         if(str.toInt(nullptr, 16) > 0) ui->zigbeeLab->setText(str);
         else {ret = false; mStr = tr("Zigbee设备信息错误");}
+        changeStatus(ui->zigbeeResLab , ret);
     }
     return ret;
+}
+
+void MainWindow::changeStatus(QLabel *lab , bool flag)
+{
+    QString str ,style;
+    if(!flag){
+        str = tr("失败"); style = "color:red;";
+    } else {
+        str = tr("成功"); style = "color:green;";
+    }
+    lab->setText(str);
+    lab->setStyleSheet(style);
 }
 
 bool MainWindow::updateWid()
@@ -146,20 +178,35 @@ bool MainWindow::updateWid()
         for(int i=0; i<2; ++i) ls.removeFirst();
         QString str = ls.at(id++).split(":").last().simplified();
         ui->idLab->setText(str);
+        changeStatus(ui->idResLab , str != "正在测试中" || str != "－－－－");
 
         str = ls.at(id++).split(":").last();
         ui->fwLab->setText(str);
+        changeStatus(ui->fwResLab , str != "正在测试中" || str != "－－－－");
 
         str = ls.at(id++).split(":").last();
         ui->bootLab->setText(str);
+        changeStatus(ui->bootResLab , str != "正在测试中" || str != "－－－－");
 
         str = ls.at(id++).split(":").last();
         ui->protocolLab->setText(str);
+        changeStatus(ui->protocolResLab , str != "正在测试中" || str != "－－－－");
 
-        str = ls.at(id+1).split(":").last().simplified().remove(0,2);
-        str = QString::number(str.toInt(nullptr, 16)).rightJustified(10, '0');
-        ui->snLab->setText(str); ret = zigbeeCheck();
-    } else mStr = tr("获取设备信息不全");
+        str = ls.at(id+1).split(":").last();
+        ui->snLab->setText(str);
+        changeStatus(ui->snResLab , str != "正在测试中" || str != "－－－－");
+        ret = zigbeeCheck();
+    } else{
+        changeStatus(ui->idResLab , false);
+        changeStatus(ui->fwResLab , false);
+        changeStatus(ui->bootResLab , false);
+        changeStatus(ui->protocolResLab , false);
+        changeStatus(ui->snResLab , false);
+        changeStatus(ui->socketResLab , false);
+        changeStatus(ui->IMMResLab , false);
+        changeStatus(ui->zigbeeResLab , false);
+        mStr = tr("获取设备信息不全");
+    }
     return ret;
 }
 
@@ -167,6 +214,8 @@ bool MainWindow::workDown()
 {
     initWid();
     bool ret = zigbeeConnect();
+    changeStatus(ui->socketResLab , ret);
+    changeStatus(ui->IMMResLab , ret);
     if(ret) ret = execute();
     if(ret) ret = updateWid();
     if(ret) ret = rsConnect();
@@ -201,10 +250,24 @@ bool MainWindow::inputCheck()
     return ret;
 }
 
+void MainWindow::initStatus()
+{
+    QString str = tr("正在测试中");
+    ui->idResLab->setText(str);
+    ui->fwResLab->setText(str);
+    ui->bootResLab->setText(str);
+    ui->protocolResLab->setText(str);
+    ui->snResLab->setText(str);
+    ui->socketResLab->setText(str);
+    ui->IMMResLab->setText(str);
+    ui->zigbeeResLab->setText(str);
+}
+
 void MainWindow::on_startBtn_clicked()
 {
     bool ret = inputCheck();
     if(ret) {
+        initStatus();
         ret = workDown();
         if(!ret) {
             QMessageBox::critical(this, tr("错误提示"), mStr);

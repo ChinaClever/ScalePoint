@@ -43,7 +43,7 @@ void BaseTokens::writeFile()
 
 QString BaseTokens::addCustomEui()
 {
-    return "000474000110" + QString::number(mToken->CUSTOM_EUI++).rightJustified(4, '0');
+    return "000474000110" + QString::number(mToken->CUSTOM_EUI++,16).rightJustified(4, '0');
 }
 
 
