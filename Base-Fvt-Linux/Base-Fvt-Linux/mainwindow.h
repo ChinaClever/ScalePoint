@@ -24,6 +24,11 @@ protected:
     bool isFileExist(const QString &fn);
     void insertText(const QString &str);
     bool readOutput(QProcess &pro);
+    bool relayControl(int id, int oc);
+    bool relayControl(int id);
+    bool zigbeeConnect();
+    bool rsConnect();
+
     bool inputCheck();
     void initWid();
     bool updateWid();
@@ -31,10 +36,13 @@ protected:
 
     bool execute();
     bool workDown();
+    void mdelay(int ms);
+    void changeStatus(QLabel *lab, bool flag);
 
 private slots:
     void initFunSlot();
     void on_startBtn_clicked();
+    void initStatus();
 
 private:
     Ui::MainWindow *ui;
