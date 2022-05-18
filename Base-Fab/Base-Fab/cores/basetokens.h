@@ -16,14 +16,17 @@ struct sToken
     QString manuf_id;
     QString custom_eui;
     QString install_code;
+    QString crc_code;
     uint CUSTOM_EUI;
 };
 
 class BaseTokens : public QObject
 {
     Q_OBJECT
-public:
     explicit BaseTokens(QObject *parent = nullptr);
+public:
+    static BaseTokens *bulid(QObject *parent = nullptr);
+    QString codeCrc() {return mToken->crc_code;}
     sToken *bulidTokens();
 
 protected:

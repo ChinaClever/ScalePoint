@@ -23,10 +23,9 @@ public:
     explicit PrinterWid(QWidget *parent = nullptr);
     ~PrinterWid();
 
-    void printerWid(QWidget *wid);
+    void printerWid(QPixmap &pixmap);
 
-
-private slots:
+public slots:
     void printPreviewSlot(QPrinter*);
     void on_printsBtn_clicked();
     void on_previewBt_clicked();

@@ -55,7 +55,7 @@ bool Printer_BarTender::printer(sBarTend &it)
     sendMsg("start", port);
 
     QString order = createOrder(it);
-    sendMsg(order.toLocal8Bit(), port+1);
+    sendMsg(order.toLocal8Bit(), port+1, host);
     return recvResponse(3);
 }
 
