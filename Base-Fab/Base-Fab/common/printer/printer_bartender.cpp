@@ -51,7 +51,7 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
-    int port = 1044;
+    int port = 10044;
     sendMsg("start", port);
 
     QString order = createOrder(it);

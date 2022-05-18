@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1042</width>
+    <width>1049</width>
     <height>447</height>
    </rect>
   </property>
@@ -615,7 +615,7 @@
       <property name="geometry">
        <rect>
         <x>60</x>
-        <y>200</y>
+        <y>170</y>
         <width>151</width>
         <height>60</height>
        </rect>
@@ -651,7 +651,7 @@
       <property name="geometry">
        <rect>
         <x>110</x>
-        <y>80</y>
+        <y>50</y>
         <width>100</width>
         <height>30</height>
        </rect>
@@ -702,7 +702,7 @@
       <property name="geometry">
        <rect>
         <x>49</x>
-        <y>78</y>
+        <y>48</y>
         <width>55</width>
         <height>35</height>
        </rect>
@@ -736,7 +736,7 @@
       <property name="geometry">
        <rect>
         <x>110</x>
-        <y>130</y>
+        <y>100</y>
         <width>100</width>
         <height>35</height>
        </rect>
@@ -786,7 +786,7 @@
       <property name="geometry">
        <rect>
         <x>48</x>
-        <y>132</y>
+        <y>102</y>
         <width>55</width>
         <height>35</height>
        </rect>
@@ -814,6 +814,19 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="tipBtn">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>240</y>
+        <width>151</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>规格选择提示</string>
       </property>
      </widget>
     </widget>
