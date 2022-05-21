@@ -122,6 +122,9 @@
       <property name="contextMenuPolicy">
        <enum>Qt::NoContextMenu</enum>
       </property>
+      <property name="currentIndex">
+       <number>3</number>
+      </property>
       <item>
        <property name="text">
         <string>标准流程</string>

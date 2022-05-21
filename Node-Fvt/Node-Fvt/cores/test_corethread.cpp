@@ -28,7 +28,7 @@ bool Test_CoreThread::printer()
     QString str = tr("标签打印 ");
     if(mPro->result != Test_Fail){
         sBarTend it;
-        it.pn = "A024387AA";
+        it.pn = "646130";
         it.sn = "00 04 74 " + mDt->sn;
         it.fw = mDt->fwRevision;
         it.hw = mDt->hwRevision;
@@ -123,6 +123,13 @@ void Test_CoreThread::workDown()
     }
 }
 
+void Test_CoreThread::testNode()
+{
+    bool ret = mNetWork->startProcess();
+    if(ret) ret = printer();
+}
+
+
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
@@ -132,7 +139,7 @@ void Test_CoreThread::run()
         case Test_Start: workDown(); break;
         case Test_Set:  programFab(); break;
         case Test_Secure: mFab->secure_boot_prov(); break;
-        case Test_Collect:  mNetWork->startProcess(); break;
+        case Test_Collect:  testNode(); break;
         }
     } else mPro->result = Test_Fail;
 

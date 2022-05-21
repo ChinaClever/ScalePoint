@@ -22,6 +22,7 @@ protected:
     void workResult();
     bool waitFor();
     bool printer();
+    void testNode();
 
 protected slots:
     void initFunSlot();
