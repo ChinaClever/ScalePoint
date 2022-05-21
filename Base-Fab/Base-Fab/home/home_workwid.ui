@@ -63,6 +63,7 @@
       <property name="font">
        <font>
         <pointsize>16</pointsize>
+        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -114,6 +115,11 @@
       </property>
       <item>
        <property name="text">
+        <string>生产流程</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
         <string>标准流程</string>
        </property>
       </item>
@@ -130,6 +136,11 @@
       <item>
        <property name="text">
         <string>令牌写入</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>设备测试</string>
        </property>
       </item>
      </widget>

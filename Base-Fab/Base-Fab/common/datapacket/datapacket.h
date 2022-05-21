@@ -11,9 +11,14 @@ struct sDevType
     uchar devType;
     uchar outputs;
 
+    QString id;
     QString sn; // IEEE
     QString fw;
-    QString pn; // AG13098AA
+    QString boot;
+    QString protocol;
+    QString zigbee;
+
+    QString pn; // 981225
     QString dt;
     QString code;
 };
@@ -30,10 +35,12 @@ struct sDevData
 
 enum {
     Test_Fun, // 功能
+    Test_Factory,
     Test_Start, // 开始
     Test_Bootloader,
     Test_Firmware,
     Test_Token,
+    Test_Fvt,
     Test_Over, // 终止
     Test_End, // 完成
 
