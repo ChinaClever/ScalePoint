@@ -51,9 +51,9 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
-    int port = 2044;
+    int port = 10044;
+    sendMsg("start", port);
     QHostAddress host = QHostAddress::Broadcast;
-    sendMsg("start", port, host);
 
     QString order = createOrder(it);
     sendMsg(order.toLocal8Bit(), port+1, host);

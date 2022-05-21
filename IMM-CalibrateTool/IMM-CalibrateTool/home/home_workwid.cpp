@@ -43,6 +43,7 @@ void Home_WorkWid::initFunSlot()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
+    ui->pnBox->setCurrentIndex(0);
 }
 
 void Home_WorkWid::setTextColor()
@@ -78,7 +79,10 @@ void Home_WorkWid::updateCntSlot()
     ui->errLcd->display(cnt->err);
 
     ui->cntSpin->setValue(mItem->cnts.cnt);
-    if(mItem->cnts.cnt < 1)mItem->user.clear();
+    if(mItem->cnts.cnt < 1){
+        mItem->user.clear();
+        ui->pnBox->setCurrentIndex(0);
+    }
     ui->userEdit->setText(mItem->user);
 
     QString str = "0";
@@ -201,6 +205,10 @@ bool Home_WorkWid::inputCheck()
 {
     bool ret = initSerial();
     if(ret) ret = initUser();
+    bool tip = ui->tipBtn->isChecked();
+    if( tip ){
+        ret = MsgBox::question(this , tr("请确认设备规格与实际产品一致"));
+    }
     if(ret) {
         switch (ui->pnBox->currentIndex()) {
         case 1: mDt->pn = "A024388AA"; break;
@@ -210,7 +218,7 @@ bool Home_WorkWid::inputCheck()
         default: MsgBox::critical(this, tr("请选择设备规格")); ret = false; break;
         }
     }
-
+    mDt->hw = ui->hwEdit->text();
     if(ret) setWidEnabled(false);
     return ret;
 }
