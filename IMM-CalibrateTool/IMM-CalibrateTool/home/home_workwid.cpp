@@ -218,7 +218,7 @@ bool Home_WorkWid::inputCheck()
         default: MsgBox::critical(this, tr("请选择设备规格")); ret = false; break;
         }
     }
-
+    mDt->hw = ui->hwEdit->text();
     if(ret) setWidEnabled(false);
     return ret;
 }
