@@ -150,12 +150,14 @@ void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
     bool ret = initFun();
-    switch (mPro->step) {
-    case Test_Start: workDown(); break;
-    case Test_Collect: collectData(); break;
-    case Test_Ading: mAd->startAdjust(); break;
-    case Test_vert: mAd->verifyResult(); break;
-    case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
+    if(ret){
+        switch (mPro->step) {
+        case Test_Start: workDown(); break;
+        case Test_Collect: collectData(); break;
+        case Test_Ading: mAd->startAdjust(); break;
+        case Test_vert: mAd->verifyResult(); break;
+        case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
+        }
     }
     workResult();
 
