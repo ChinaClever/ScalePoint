@@ -80,11 +80,14 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    if(mPr) printer();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
-        str += tr("通过");
+        if(mPr) res = printer();
+        if(res)
+            str += tr("通过");
+        else
+            str += tr("失败");
     } else {
         res = false;
         msleep(1650);
@@ -150,12 +153,14 @@ void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
     bool ret = initFun();
-    switch (mPro->step) {
-    case Test_Start: workDown(); break;
-    case Test_Collect: collectData(); break;
-    case Test_Ading: mAd->startAdjust(); break;
-    case Test_vert: mAd->verifyResult(); break;
-    case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
+    if(ret){
+        switch (mPro->step) {
+        case Test_Start: workDown(); break;
+        case Test_Collect: collectData(); break;
+        case Test_Ading: mAd->startAdjust(); break;
+        case Test_vert: mAd->verifyResult(); break;
+        case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
+        }
     }
     workResult();
 

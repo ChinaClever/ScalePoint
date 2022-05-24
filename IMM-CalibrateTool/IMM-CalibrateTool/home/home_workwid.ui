@@ -346,7 +346,7 @@
       <item row="2" column="4">
        <widget class="QLineEdit" name="hwEdit">
         <property name="text">
-         <string>1.2.3</string>
+         <string>0.37</string>
         </property>
        </widget>
       </item>
