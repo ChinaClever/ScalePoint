@@ -31,6 +31,7 @@ private:
     Test_NetWork *mNetWork;
     Test_SerialNumber *mSn;
     test_FabPartition *mFab;
+    int mSelect;
 };
 
 #endif // TEST_CORETHREAD_H

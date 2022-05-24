@@ -19,6 +19,7 @@ void Test_CoreThread::initFunSlot()
     mFab = test_FabPartition::bulid(this);
     mNetWork = Test_NetWork::bulid(this);
     connect(mFab, SIGNAL(fabSig(QString)), mNetWork, SIGNAL(msgSig(QString)));
+    mSelect = 0;
 }
 
 
@@ -45,7 +46,13 @@ void Test_CoreThread::workResult()
     BaseLogs::bulid()->start();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
-        str += tr("通过");
+        if( mSelect == Test_Collect ){
+            res = printer();
+        }
+        if(res)
+            str += tr("通过");
+        else
+            str += tr("失败");
     } else {
         res = false;
         str += tr("失败");
@@ -119,14 +126,8 @@ void Test_CoreThread::workDown()
         ret =  waitFor();
         if(ret) ret = mNetWork->startProcess();
         if(ret) ret = macSnCheck();
-        if(ret) ret = printer();
+        //if(ret) ret = printer();
     }
-}
-
-void Test_CoreThread::testNode()
-{
-    bool ret = mNetWork->startProcess();
-    if(ret) ret = printer();
 }
 
 
@@ -135,11 +136,12 @@ void Test_CoreThread::run()
     if(isRun) return; else isRun = true;
     bool ret = initFun();
     if(ret) {
+        mSelect = mPro->step;
         switch (mPro->step) {
         case Test_Start: workDown(); break;
         case Test_Set:  programFab(); break;
         case Test_Secure: mFab->secure_boot_prov(); break;
-        case Test_Collect:  testNode(); break;
+        case Test_Collect:  ret = mNetWork->startProcess(); break;
         }
     } else mPro->result = Test_Fail;
 
