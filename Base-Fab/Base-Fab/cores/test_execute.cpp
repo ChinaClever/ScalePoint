@@ -18,7 +18,7 @@ Test_Execute *Test_Execute::bulid(QObject *parent)
     return sington;
 }
 
-bool Test_Execute::readOutput(QProcess &pro)
+bool Test_Execute::readOutput(QProcess &pro, QString *ptr)
 {
     bool ret, res = true;
     do {
@@ -27,7 +27,7 @@ bool Test_Execute::readOutput(QProcess &pro)
         bs +=  pro.readAllStandardError();
         QString str = QString::fromLocal8Bit(bs);
         if(str.contains("ERROR")) res = false;
-        emit msgSig(str);
+        emit msgSig(str); if(ptr) ptr->append(str);
     } while(!ret);
     pro.close();
 

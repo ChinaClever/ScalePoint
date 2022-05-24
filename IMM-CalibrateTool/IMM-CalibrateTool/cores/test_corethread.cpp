@@ -80,11 +80,14 @@ bool Test_CoreThread::printer()
 
 void Test_CoreThread::workResult()
 {
-    if(mPr) printer();
     bool res = mYc->powerDown();
     QString str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
-        str += tr("通过");
+        if(mPr) res = printer();
+        if(res)
+            str += tr("通过");
+        else
+            str += tr("失败");
     } else {
         res = false;
         msleep(1650);

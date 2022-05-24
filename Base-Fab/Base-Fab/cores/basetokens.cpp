@@ -43,7 +43,16 @@ void BaseTokens::writeFile()
 
 QString BaseTokens::addCustomEui()
 {
-    return "000474000110" + QString::number(mToken->CUSTOM_EUI++).rightJustified(4, '0');
+    return "000474000110" + QString::number(mToken->CUSTOM_EUI++,16).rightJustified(4, '0');
+}
+
+
+BaseTokens *BaseTokens::bulid(QObject *parent)
+{
+    static BaseTokens* sington = nullptr;
+    if(sington == nullptr)
+        sington = new BaseTokens(parent);
+    return sington;
 }
 
 QString BaseTokens::createInstallCode()
@@ -53,10 +62,11 @@ QString BaseTokens::createInstallCode()
     QString OOBkey = QString::number(value, 16).rightJustified(16, '0');
     value = generator.generate() & std::numeric_limits<qint64>::max();
     OOBkey += QString::number(value, 16).rightJustified(16, '0');
-    //QByteArray ar = QByteArray::fromHex(OOBkey.toUtf8());
-    //quint16 crcBytes = qChecksum(ar.data(), ar.length());
-    //quint16 crc = (crcBytes << 8) + (crcBytes >> 8);
-    //QString code = OOBkey + QString::number(crc, 16).rightJustified(4, '0');
+
+    QByteArray ar = QByteArray::fromHex(OOBkey.toUtf8());
+    quint16 crcBytes = qChecksum(ar.data(), ar.length());
+    quint16 crc = (crcBytes << 8) + (crcBytes >> 8);
+    mToken->crc_code = OOBkey + QString::number(crc, 16).rightJustified(4, '0');
 
     return OOBkey.toUpper();
 }
