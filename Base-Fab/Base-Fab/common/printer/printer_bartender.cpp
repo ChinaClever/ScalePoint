@@ -9,7 +9,7 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    mSocket->bind(QHostAddress::Any, 47755);
+    //mSocket->bind(QHostAddress::Any, 47755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
@@ -51,9 +51,9 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
-    int port = 10044;
-    sendMsg("start", port);
+    int port = 20044;
     QHostAddress host = QHostAddress::Broadcast;
+    sendMsg("start", port, host);
 
     QString order = createOrder(it);
     sendMsg(order.toLocal8Bit(), port+1, host);

@@ -28,7 +28,7 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QString date = QDate::currentDate().toString("yy") + "W";
     date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
     str += date+","; str += "ETH " + it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
+    str += QString("G$K:%1%E$A:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     qDebug()<<str<<endl;
     return str;
 }
