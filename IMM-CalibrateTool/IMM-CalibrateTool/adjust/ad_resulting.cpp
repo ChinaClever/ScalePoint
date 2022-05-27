@@ -22,8 +22,8 @@ Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
 bool Ad_Resulting::curErrRange(int exValue, int cur)
 {
     bool ret = false;
-    int min = exValue - mItem->errs.curErr * 10;
-    int max = exValue + mItem->errs.curErr * 10;
+    int min = exValue - mItem->errs.curErr * 10;//400-1
+    int max = exValue + mItem->errs.curErr * 10;//400+1
     if((cur >= min) && (cur <= max )) ret =  true;
     return ret;
 }
@@ -154,7 +154,7 @@ bool Ad_Resulting::loopCurCheck(int exValue)
         sBranchIt *it = &(mData->branchs[i]); int cur = it->cur_rms / 10;
         QString str = tr("C%1电流 电流%3A  期望值%2A ").arg(i+1)
                 .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR);
-        int err = (mItem->errs.curErr+3) * 10; bool ret = false;
+        int err = (mItem->errs.curErr) * 10; bool ret = false;
         int min = exValue - err; int max = exValue + err;
         if((cur >= min) && (cur <= max )) {str += tr("正常"); ret = true;}
         else {str += tr("错误").arg(cur/COM_RATE_CUR); res = false;}

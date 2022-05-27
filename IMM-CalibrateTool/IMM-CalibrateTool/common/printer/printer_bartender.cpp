@@ -9,7 +9,7 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    mSocket->bind(QHostAddress::Any, 37755);
+    //mSocket->bind(QHostAddress::LocalHost, 37755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
@@ -46,18 +46,18 @@ bool Printer_BarTender::recvResponse(int sec)
         if (mRes) break; else delay(100);
     }
 
+    this->mSocket->close();
     return mRes;
 }
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
     int port = 10044;
-    QHostAddress addr = QHostAddress::Broadcast;
     QString order = createOrder(it);
-    sendMsg("start", port, addr);
-    sendMsg(order.toLocal8Bit(), port+1, addr);
+    sendMsg("start", port);
+    sendMsg(order.toLocal8Bit(), port+1);
 
-    return recvResponse(6);
+    return recvResponse(10);
 }
 
 int Printer_BarTender::sendMsg(const QByteArray &msg, quint16 port, const QHostAddress &host)
@@ -70,8 +70,11 @@ int Printer_BarTender::sendMsg(const QByteArray &msg, quint16 port, const QHostA
 
 void Printer_BarTender::recvSlot()
 {
+    QByteArray array;
     while (mSocket->hasPendingDatagrams()) {
-        QNetworkDatagram datagram = mSocket->receiveDatagram();
-        if(datagram.data().size()) mRes = true;
+        //QNetworkDatagram datagram = mSocket->receiveDatagram();
+        array.resize(mSocket->bytesAvailable());
+        mSocket->readDatagram(array.data(),array.size());
+        if(array.size()) mRes = true;
     }
 }

@@ -2,7 +2,7 @@
 #define PRINTER_BARTENDER_H
 
 #include <QObject>
-#include <QtNetwork>
+#include <QUdpSocket>
 
 struct sBarTend {
     QString pn;

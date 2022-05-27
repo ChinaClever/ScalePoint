@@ -9,7 +9,7 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    mSocket->bind(QHostAddress::LocalHost, 47755);
+    //mSocket->bind(QHostAddress::LocalHost, 47755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
@@ -46,6 +46,7 @@ bool Printer_BarTender::recvResponse(int sec)
         if (mRes) break; else delay(100);
     }
 
+    this->mSocket->close();
     return mRes;
 }
 
