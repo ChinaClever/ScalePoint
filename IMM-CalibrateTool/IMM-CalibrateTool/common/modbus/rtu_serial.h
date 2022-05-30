@@ -21,6 +21,7 @@ public:
     int transmit(uchar *sent, int len, uchar *recv, int secs);
     void reflush() {mSerial->reflush();}
     QByteArray readSerial(int msecs=100) {return mSerial->readSerial(msecs);}
+    bool setBaudRate(qint32 br);
 
 protected:
     ushort calccrc (ushort crc, uchar crcbuf);

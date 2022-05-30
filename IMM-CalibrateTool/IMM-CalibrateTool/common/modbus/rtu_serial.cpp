@@ -127,3 +127,8 @@ bool Rtu_Serial::changeBaudRate()
     }
     return mSerial->setBaudRate(br);;
 }
+
+bool Rtu_Serial::setBaudRate(qint32 br)
+{
+    return mSerial->setBaudRate(br);
+}

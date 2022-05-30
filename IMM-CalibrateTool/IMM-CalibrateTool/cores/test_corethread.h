@@ -2,6 +2,7 @@
 #define TEST_CORETHREAD_H
 #include "test_bsthread.h"
 #include "sp_socketrtu.h"
+#include "bt_serial.h"
 
 class Test_CoreThread : public BaseThread
 {
@@ -22,6 +23,7 @@ protected:
     void workDown();
     void collectData();
     void workResult();
+    bool btCurCheck();
 
 protected slots:
     void initFunSlot();
@@ -33,6 +35,7 @@ private:
     SP_ImmRtu *mDev;
     Yc_Obj *mYc;
     bool mPr;
+    Bt_Serial *mBt;
 };
 
 #endif // TEST_CORETHREAD_H

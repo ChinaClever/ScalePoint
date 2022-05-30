@@ -136,6 +136,27 @@ void Test_CoreThread::workDown()
     }
 }
 
+bool Test_CoreThread::btCurCheck()
+{
+    sBtIt bt; mBt->init(2);
+    bool ret = mBt->readPacket(bt);
+    if(ret) {
+        QString str = tr("检测供电电压：%1V ").arg(bt.vol/100.0);
+        if((bt.vol > 1100) && (bt.vol < 1300)) ret = true; else ret = false;
+        if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret);
+
+        str = tr("检测消耗电流：%1A ").arg(bt.cur/1000.0);
+        if((bt.cur > 1) && (bt.cur < 90)) ret = true; else ret = false;
+        if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
+
+        str = tr("检测消耗功率：%1W ").arg(bt.pow/100.0);
+        if((bt.pow > 1) && (bt.pow < 50)) ret = true; else ret = false;
+        if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
+    } else updatePro(tr("外购计量板通讯错误"), ret);
+
+    return ret;
+}
+
 void Test_CoreThread::collectData()
 {
     int cnt = 0;

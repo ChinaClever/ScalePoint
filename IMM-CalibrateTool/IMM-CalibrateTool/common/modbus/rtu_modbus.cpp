@@ -31,7 +31,7 @@ RtuRw *Rtu_Modbus::get(int id)
     switch (id) {
     case 0:  ser = com->sp; break;
     case 1:  ser = com->src; break;
-    case 2:  ser = com->ser; break;
+    case 2:  ser = com->pow; break;
     }
     if(ser) {
         res->init(ser);

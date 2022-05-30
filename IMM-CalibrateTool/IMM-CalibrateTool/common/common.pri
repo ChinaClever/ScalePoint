@@ -20,6 +20,7 @@ include(datapacket/datapacket.pri)
 include(serialport/serialport.pri)
 include(backcolour/backcolour.pri)
 include(qtsingleapplication/qtsingleapplication.pri)
+include(RK9800/RK9800.pri)
 
 HEADERS += \
     $$PWD/common.h
