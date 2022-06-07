@@ -18,6 +18,7 @@ protected:
     bool factoryWork();
     void workResult(bool ret);
     bool printer();
+    bool test(RtuRw *modbus);
 
 protected slots:
     void initFunSlot();
@@ -26,6 +27,8 @@ private:
     Test_BaseFvt *mFvt;
     Test_Execute *mExe;
     BaseTokens *mTokens;
+    RtuRw *mModbusJ7;
+    RtuRw *mModbusJ8;
 };
 
 #endif // TEST_CORETHREAD_H

@@ -39,6 +39,17 @@ bool SerialPort::open(const QString &name,qint32 baudRate)
     if(!isOpen)
     {
         mSerial = new QSerialPort(name);       //串口号，一定要对应好，大写！！！
+#if defined(Q_OS_LINUX)
+        QString str = "/dev/"+name;
+        QFileInfo file(str);
+        if (file.exists()) ret =  true;
+        if(ret) {
+            str = "echo \"123456\" | sudo -S chmod 777 " + str;
+            system(str.toLatin1().data());
+        } else {
+            return ret;
+        }
+#endif
         ret = mSerial->open(QIODevice::ReadWrite);      //读写打开
         if(ret)
         {

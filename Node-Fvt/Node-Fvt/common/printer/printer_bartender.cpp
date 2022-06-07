@@ -47,6 +47,7 @@ bool Printer_BarTender::recvResponse(int sec)
         if (mRes) break; else delay(100);
     }
 
+    mSocket->close();
     return mRes;
 }
 
