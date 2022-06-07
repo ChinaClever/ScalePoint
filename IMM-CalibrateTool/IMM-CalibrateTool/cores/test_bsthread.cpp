@@ -62,9 +62,7 @@ bool Test_BsThread::volErrRange()
 bool Test_BsThread::curErrRange(int cur)
 {
     bool ret = false;
-    int min = 2 * 100;
-    int max = 10 * 100;
-    if((cur >= min) && (cur <= max )) ret =  true;
+    if(cur > 0) ret =  true;
     return ret;
 }
 

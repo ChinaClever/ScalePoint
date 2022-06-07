@@ -200,7 +200,7 @@ bool Home_WorkWid::initWid()
         initData();
         setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
-        mPro->step = ui->modeBox->currentIndex()+Test_Start; emit startSig();
+        mPro->step = ui->modeBox->currentIndex()+Test_Factory; emit startSig();
         QString str = mPro->startTime.toString("hh:mm:ss");
         ui->startLab->setText(str);
         ui->endLab->setText("---");
