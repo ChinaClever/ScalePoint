@@ -23,9 +23,17 @@ private:
 
     bool updateData(const QString &v);
     bool zigbeeCheck(const QString &v);
+    inline bool getToken();
+    inline bool startTest(QString str);
+    inline bool disableTest(QString str);
+    inline QString transmit(QString str);
+    inline bool getFw(QString str);
+    inline bool getIc(QString str);
+    inline bool getIeee(QString str);
 
 private:
     Test_Execute *mExe;
+    RtuRw *mModbus232;
 };
 
 #endif // TEST_BASEFVT_H

@@ -33,7 +33,7 @@ bool Test_CoreThread::printer()
         it.sn = mDt->sn;
         it.fw = mDt->fw;
         it.hw = mItem->hw;
-        it.code = mTokens->codeCrc();
+        //it.code = mTokens->codeCrc();
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(ret) str += tr("正常"); else str += tr("错误");
@@ -76,8 +76,8 @@ bool Test_CoreThread::workDown()
     if(ret) {
         ret = fabFile();
         if(ret) fabTokens();
-        if(ret) ret = mFvt->workDown();
-        if(ret) printer();
+//        if(ret) ret = mFvt->workDown();
+//        if(ret) printer();
     }
 
     return ret;
@@ -93,12 +93,27 @@ void Test_CoreThread::workResult(bool ret)
 bool Test_CoreThread::factoryWork()
 {
     //bool ret = fabTokens();
-    bool ret = false;
-    ret = test(this->mModbusJ7);
-    qDebug()<<" J7 "<< ret <<endl;
-    if(ret) {ret = test(this->mModbusJ8);qDebug()<<" J8 "<< ret<<endl;}
+//    bool ret = false;
+//    ret = test(this->mModbusJ7);
+//    QString str;
+//    if(!ret){
+//        str = "test J7 failed!!!!!!!!";
+//        updatePro(str ,ret);
+//        emit mExe->msgSig(str);
+//    }
+//    if(ret) {
+//        ret = test(this->mModbusJ8);
+//        if(!ret){
+//            str = "test J7 failed!!!!!!!!";
+//            updatePro(str ,ret);
+//            emit mExe->msgSig(str);
+//        }
+//    }
+    bool ret = true;
 
     if(ret) ret = mFvt->workDown();
+//    if(ret) ret = printer();
+
     return ret;
 }
 

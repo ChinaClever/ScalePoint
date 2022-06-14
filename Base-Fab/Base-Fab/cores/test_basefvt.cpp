@@ -7,6 +7,7 @@ Test_BaseFvt::Test_BaseFvt(QObject *parent)
     : BaseThread{parent}
 {
     mExe = Test_Execute::bulid(this);
+    mModbus232 = Rtu_Modbus::bulid(this)->get(0);
 }
 
 Test_BaseFvt *Test_BaseFvt::bulid(QObject *parent)
@@ -37,16 +38,16 @@ bool Test_BaseFvt::inputCheck()
         return false;
     }
 
-    str = EXE_FN;
-    ret = isFileExist(str);
-    if(ret) {
-        str = "echo \"123456\" | sudo -S chmod 777 " + str;
-        system(str.toLatin1().data());
-    } else {
-        str = tr(" 文件未接找到") + str;
-        emit mExe->msgSig(str);
-        return false;
-    }
+    //    str = EXE_FN;
+    //    ret = isFileExist(str);
+    //    if(ret) {
+    //        str = "echo \"123456\" | sudo -S chmod 777 " + str;
+    //        system(str.toLatin1().data());
+    //    } else {
+    //        str = tr(" 文件未接找到") + str;
+    //        emit mExe->msgSig(str);
+    //        return false;
+    //    }
 
     return ret;
 }
@@ -137,17 +138,115 @@ bool Test_BaseFvt::updateData(const QString &v)
         updatePro(str, ret); emit mExe->msgSig(str);
     }
 
-return ret;
+    return ret;
 }
 
+QString Test_BaseFvt::transmit(QString str)
+{
+    static uchar recv[128] = {0};
+    static uchar send[20] = {0};
+    int len = str.length()+1;
+    memset(send , 0 , sizeof(send));
+    memset(recv , 0 , sizeof(recv));
+    strcpy((char*)send , str.toLatin1().data());
+    send[str.length()]= 0x0D;
+    len = mModbus232->transmit(send, len, recv, 10);
+    QString recvStr=QString((char*)recv);
+    return recvStr;
+}
+
+bool Test_BaseFvt::startTest(QString str)
+{
+    bool ret = false;
+    QString recvStr = transmit(str);
+    if(recvStr=="test_start") ret = true;
+    else{
+        recvStr = tr("start test failed!!!!!!!!");
+        updatePro(recvStr, ret);
+    }
+    emit mExe->msgSig("start test: "+recvStr);
+    return ret;
+}
+
+bool Test_BaseFvt::getFw(QString str)
+{
+    bool ret = false;
+    QString recvStr = transmit(str);
+    if(recvStr!=""){ ret = true;mDt->fw = recvStr;}
+    else{
+        recvStr = tr("getFw failed!!!!!!!!");
+        updatePro(recvStr, ret);
+    }
+    emit mExe->msgSig("getFw: "+recvStr);
+    return ret;
+}
+
+bool Test_BaseFvt::getIc(QString str)
+{
+    bool ret = false;
+    QString recvStr = transmit(str);
+    if(recvStr!=""){ ret = true;mDt->code= recvStr;}
+    else{
+        recvStr = tr("getIc failed!!!!!!!!");
+        updatePro(recvStr, ret);
+    }
+    emit mExe->msgSig("getIc: "+recvStr);
+    return ret;
+}
+
+bool Test_BaseFvt::getIeee(QString str)
+{
+    bool ret = false;
+    QString recvStr = transmit(str);
+    if(recvStr!=""){ ret = true;mDt->sn= recvStr;}
+    else{
+        recvStr = tr("getIeee failed!!!!!!!!");
+        updatePro(recvStr, ret);
+    }
+    emit mExe->msgSig("getIeee: "+recvStr);
+    return ret;
+}
+
+bool Test_BaseFvt::disableTest(QString str)
+{
+    bool ret = false;
+    QString recvStr = transmit(str);
+    if(recvStr=="test_disable") ret = true;
+    if(recvStr!=""){ ret = true;mDt->code= recvStr;}
+    else{
+        recvStr = tr("disableTest failed!!!!!!!!");
+        updatePro(recvStr, ret);
+    }
+    emit mExe->msgSig("disableTest: pass");
+    return ret;
+}
+
+bool Test_BaseFvt::getToken()
+{
+    QString str = "start_test";
+    bool ret = startTest(str);
+
+    if(ret){
+        str = "get_fw";
+        if(ret) ret = getFw(str);
+        str = "get_ic";
+        if(ret) ret = getIc(str);
+        str = "get_ieee";
+        if(ret) ret = getIeee(str);
+        str = "disable_test";
+        ret = disableTest(str);
+    }
+    return ret;
+}
 
 bool Test_BaseFvt::workDown()
 {
     QString str;
     bool ret = inputCheck();
-    if(ret) ret = zigbeeConnect();
-    if(ret) ret = execute(&str);
-    if(ret) ret = updateData(str);
-    if(ret) ret = rsConnect();
+    if(ret) ret = getToken();
+    //    if(ret) ret = zigbeeConnect();
+    //    if(ret) ret = execute(&str);
+    //    if(ret) ret = updateData(str);
+    //    if(ret) ret = rsConnect();
     return ret;
 }
