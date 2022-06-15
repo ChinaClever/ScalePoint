@@ -59,7 +59,7 @@ void Cfg::initErrData()
 {
     sErrData *errs = &(item->errs);
     errs->volErr = read("vol", 1,"Errs").toInt();
-    errs->curErr = read("cur", 1,"Errs").toInt();
+    errs->curErr = read("cur", 0.1,"Errs").toDouble();
     errs->powErr = read("pow", 15,"Errs").toInt();
 }
 
