@@ -17,7 +17,7 @@ struct sToken
     QString custom_eui;
     QString install_code;
     QString crc_code;
-    uint CUSTOM_EUI;
+    unsigned long long CUSTOM_EUI;
 };
 
 class BaseTokens : public QObject

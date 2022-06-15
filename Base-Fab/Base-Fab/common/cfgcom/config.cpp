@@ -10,6 +10,8 @@ Cfg::Cfg(QObject *parent) : CfgSerial(parent)
 {
     item = new sCfgItem();
     item->coms.sp = nullptr;
+    item->coms.comj7 = nullptr;
+    item->coms.comj8 = nullptr;
 
     initCnt();
     initCfgDev();

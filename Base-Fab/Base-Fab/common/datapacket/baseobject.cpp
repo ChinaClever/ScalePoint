@@ -34,6 +34,8 @@ BaseThread::~BaseThread()
 void BaseThread::initFunSlot()
 {
     mModbus = Rtu_Modbus::bulid(this)->get();
+    mModbusJ7 = Rtu_Modbus::bulid(this)->get(1);
+    mModbusJ8 = Rtu_Modbus::bulid(this)->get(2);
     if(!mModbus) {
         int t = 100+rand()%50;
         QTimer::singleShot(t,this,SLOT(initFunSlot()));

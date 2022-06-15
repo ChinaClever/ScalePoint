@@ -18,6 +18,8 @@ void Test_CoreThread::initFunSlot()
     mFvt = Test_BaseFvt::bulid(this);
     mExe = Test_Execute::bulid(this);
     mTokens = BaseTokens::bulid(this);
+    mModbusJ7 = Rtu_Modbus::bulid(this)->get(1);
+    mModbusJ8 = Rtu_Modbus::bulid(this)->get(2);
 }
 
 
@@ -31,7 +33,7 @@ bool Test_CoreThread::printer()
         it.sn = mDt->sn;
         it.fw = mDt->fw;
         it.hw = mItem->hw;
-        it.code = mTokens->codeCrc();
+        //it.code = mTokens->codeCrc();
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(ret) str += tr("正常"); else str += tr("错误");
@@ -74,8 +76,8 @@ bool Test_CoreThread::workDown()
     if(ret) {
         ret = fabFile();
         if(ret) fabTokens();
-        if(ret) ret = mFvt->workDown();
-        if(ret) printer();
+//        if(ret) ret = mFvt->workDown();
+//        if(ret) printer();
     }
 
     return ret;
@@ -90,8 +92,44 @@ void Test_CoreThread::workResult(bool ret)
 
 bool Test_CoreThread::factoryWork()
 {
-    bool ret = fabTokens();
+    //bool ret = fabTokens();
+//    bool ret = false;
+//    ret = test(this->mModbusJ7);
+//    QString str;
+//    if(!ret){
+//        str = "test J7 failed!!!!!!!!";
+//        updatePro(str ,ret);
+//        emit mExe->msgSig(str);
+//    }
+//    if(ret) {
+//        ret = test(this->mModbusJ8);
+//        if(!ret){
+//            str = "test J7 failed!!!!!!!!";
+//            updatePro(str ,ret);
+//            emit mExe->msgSig(str);
+//        }
+//    }
+    bool ret = true;
+
     if(ret) ret = mFvt->workDown();
+//    if(ret) ret = printer();
+
+    return ret;
+}
+
+bool Test_CoreThread::test(RtuRw *modbus)
+{
+    bool ret = false;
+    if(modbus == nullptr) return ret;
+    static uchar sent[14] = {0xA1,0x30,0x00,0x04,0x01,0x00,0x00,0x10,0x00,0xAE,0x50,0x87,0xCD,0xA5};
+    int len = 14;
+    static uchar recv[128] = {0};
+    len = modbus->transmit(sent, len, recv, 10);
+    if(len == 0 || len > 30) len = modbus->transmit(sent, len, recv, 10);
+    int count = 30;
+
+    if( len == count ) ret = true;
+    qDebug()<<ret <<endl;
     return ret;
 }
 

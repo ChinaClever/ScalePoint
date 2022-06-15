@@ -30,7 +30,8 @@ bool Test_CoreThread::printer()
     if(mPro->result != Test_Fail){
         sBarTend it;
         it.pn = "646130";
-        it.sn = "00 04 74 " + mDt->sn;
+        mDt->sn = mDt->ctrlBoardSerial.mid(3,2)+mDt->ctrlBoardSerial.mid(6);
+        it.sn = "000474" + mDt->sn;
         it.fw = mDt->fwRevision;
         it.hw = mDt->hwRevision;
         ret = Printer_BarTender::bulid(this)->printer(it);

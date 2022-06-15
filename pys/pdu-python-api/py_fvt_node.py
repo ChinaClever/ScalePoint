@@ -147,9 +147,9 @@ def USB_A_Test(agent):
     Use USB VID and PID to check how many USB device there.
     You can attach a USB stick into USB-A. Then check its PID and VID to verify USB-A port.
     '''
-    cnt_devices = 2
-    USB1_VID = 0x0424
-    USB1_PID = 0x2513
+    cnt_devices = 3
+    USB1_VID = 0x058F
+    USB1_PID = 0x6387
     cnt_usb1 = 1
     USB2_VID = 0x1D6B
     USB2_PID = 0x0001
@@ -174,7 +174,7 @@ def USB_A_Test(agent):
             print d.vendorId
             print d.productId
         '''
-        #suc1 = check_device(usbdescs, USB1_VID, USB1_PID, cnt_usb1, 'checking #count of VID = 0x%04X PDI = 0x%04X'%(USB1_VID,USB1_PID))
+        suc1 = check_device(usbdescs, USB1_VID, USB1_PID, cnt_usb1, 'checking #count of VID = 0x%04X PDI = 0x%04X'%(USB1_VID,USB1_PID))
         suc2 = check_device(usbdescs, USB2_VID, USB2_PID, cnt_usb2, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID)
         sendtoMainApp(text , suc2)
@@ -187,8 +187,8 @@ def USB_A_Test(agent):
         sendtoMainApp( '检查设备USB口的总数 ...')
 
         suc4 =check_count(cnt_devices, len(usbdescs))
-        #suc = suc1 and suc2 and suc3 and suc4
-        suc = suc2 and suc3 and suc4
+        suc = suc1 and suc2 and suc3 and suc4
+        #suc = suc2 and suc3 and suc4
         text = '检查设备USB口的总数'
         sendtoMainApp(text , suc)
 
@@ -217,7 +217,7 @@ def check_count(expectcnt, cnt):
 def count_descs(descs, vid, pid):
     cnt = 0
     for d in descs:
-        if d.vendorId == vid and d.productId == pid:
+        if(d.vendorId == vid and d.productId == pid):
             print('d.vendorId : %d ; d.productId : %d' % ( d.vendorId , d.productId))
             cnt += 1
     return cnt
@@ -330,6 +330,7 @@ if __name__=='__main__':
     finally:
         close()
     sys.exit()
+
 
 
 

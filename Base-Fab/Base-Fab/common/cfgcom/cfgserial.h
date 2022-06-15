@@ -6,10 +6,10 @@
 
 struct sSerial
 {
-    sSerial() {sp=src=ser=nullptr;}
+    sSerial() {sp=comj7=comj8=nullptr;}
     SerialPort *sp; // 标准源
-    SerialPort *src; // 串口对象
-    SerialPort *ser; // 串口对象
+    SerialPort *comj7; // 串口对象
+    SerialPort *comj8; // 串口对象
 };
 
 class CfgSerial : public CfgCom
