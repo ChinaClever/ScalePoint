@@ -2,6 +2,7 @@
 #define SC_REG "screg"
 #define EXE_FN "scdump"
 #define USB_DEV "/dev/ttyUSB0"
+#include "config.h"
 
 Test_BaseFvt::Test_BaseFvt(QObject *parent)
     : BaseThread{parent}
@@ -27,8 +28,9 @@ bool Test_BaseFvt::isFileExist(const QString &fn)
 
 bool Test_BaseFvt::inputCheck()
 {
-    QString str = USB_DEV;
-    bool ret = isFileExist(str);
+    mPinsName = "/dev/"+(&(Cfg::bulid()->item->coms))->sp->getSerialName();
+    QString str = mPinsName;
+    bool ret = isFileExist(mPinsName);
     if(ret) {
         str = "echo \"123456\" | sudo -S chmod 777 " + str;
         system(str.toLatin1().data());
@@ -38,16 +40,16 @@ bool Test_BaseFvt::inputCheck()
         return false;
     }
 
-    //    str = EXE_FN;
-    //    ret = isFileExist(str);
-    //    if(ret) {
-    //        str = "echo \"123456\" | sudo -S chmod 777 " + str;
-    //        system(str.toLatin1().data());
-    //    } else {
-    //        str = tr(" 文件未接找到") + str;
-    //        emit mExe->msgSig(str);
-    //        return false;
-    //    }
+    str = EXE_FN;
+    ret = isFileExist(str);
+    if(ret) {
+        str = "echo \"123456\" | sudo -S chmod 777 " + str;
+        system(str.toLatin1().data());
+    } else {
+        str = tr(" 文件未接找到") + str;
+        emit mExe->msgSig(str);
+        return false;
+    }
 
     return ret;
 }
@@ -93,7 +95,7 @@ bool Test_BaseFvt::relayControl(int id)
 
 bool Test_BaseFvt::zigbeeConnect()
 {
-    int id = 0x0097;
+    int id = 0x0093;
     return relayControl(id);
 }
 
@@ -172,7 +174,7 @@ bool Test_BaseFvt::getFw(QString str)
 {
     bool ret = false;
     QString recvStr = transmit(str);
-    if(recvStr!=""){ ret = true;mDt->fw = recvStr;}
+    if(recvStr!=""){ ret = true;mDt->fw = "0x"+recvStr;recvStr="0x"+recvStr;}
     else{
         recvStr = tr("getFw failed!!!!!!!!");
         updatePro(recvStr, ret);
@@ -223,6 +225,9 @@ bool Test_BaseFvt::disableTest(QString str)
 
 bool Test_BaseFvt::getToken()
 {
+    QString comStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();
+    emit openSig(comStr,QSerialPort::Baud57600);
+    sleep(15);
     QString str = "start_test";
     bool ret = startTest(str);
 
@@ -233,8 +238,8 @@ bool Test_BaseFvt::getToken()
         if(ret) ret = getIc(str);
         str = "get_ieee";
         if(ret) ret = getIeee(str);
-        str = "disable_test";
-        ret = disableTest(str);
+        //        str = "disable_test";
+        //        ret = disableTest(str);
     }
     return ret;
 }
@@ -243,10 +248,16 @@ bool Test_BaseFvt::workDown()
 {
     QString str;
     bool ret = inputCheck();
-    if(ret) ret = getToken();
-    //    if(ret) ret = zigbeeConnect();
-    //    if(ret) ret = execute(&str);
-    //    if(ret) ret = updateData(str);
-    //    if(ret) ret = rsConnect();
+    QString comStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();
+    if((&(Cfg::bulid()->item->coms))->sp->isOpened())
+        emit closeSig();
+    sleep(1);
+    ret = inputCheck();
+    if(ret) ret = zigbeeConnect();
+    if(ret) ret = execute(&str);
+    if(ret) ret = updateData(str);
+    sleep(2);
+    //        if(ret) ret = rsConnect();
     return ret;
 }
+

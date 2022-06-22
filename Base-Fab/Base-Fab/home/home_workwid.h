@@ -43,6 +43,7 @@ private slots:
     void on_dlBtn_clicked();
     void on_fnBtn_clicked();
     void on_startBtn_clicked();
+    void waitForSlot();
 
 private:
     Ui::Home_WorkWid *ui;

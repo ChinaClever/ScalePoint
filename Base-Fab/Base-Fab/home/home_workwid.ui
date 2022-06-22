@@ -120,7 +120,7 @@
       </item>
       <item>
        <property name="text">
-        <string>标准流程</string>
+        <string>烧录流程</string>
        </property>
       </item>
       <item>
@@ -140,7 +140,7 @@
       </item>
       <item>
        <property name="text">
-        <string>设备测试</string>
+        <string>RS485测试</string>
        </property>
       </item>
      </widget>
