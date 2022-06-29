@@ -35,6 +35,7 @@ bool Test_CoreThread::printer()
         it.sn = mDt->sn;
         it.fw = mDt->fw;
         it.hw = mItem->hw;
+        it.code = mDt->code;
         //it.code = mTokens->codeCrc();
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
@@ -98,7 +99,7 @@ bool Test_CoreThread::factoryWork()
 
     if(ret) ret = waitFor();
     if(ret) ret = mFvt->getToken();
-    //    if(ret) ret = printer();
+    if(ret) ret = printer();
     return ret;
 }
 
@@ -114,7 +115,7 @@ bool Test_CoreThread::test(RtuRw *modbus)
     int count = 30;
 
     if( len >= count ) ret = true;
-    qDebug()<<ret <<endl;
+    qDebug()<<ret <<"   ccccc "<<len<<endl;
     return ret;
 }
 

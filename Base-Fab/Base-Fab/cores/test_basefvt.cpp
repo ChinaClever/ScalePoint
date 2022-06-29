@@ -57,7 +57,7 @@ bool Test_BaseFvt::inputCheck()
 bool Test_BaseFvt::execute(QString *ptr)
 {
     QProcess pro(this);
-    QStringList ls{"-i", "/dev/ttyUSB0"};
+    QStringList ls{"-i", mPinsName};
     pro.start(EXE_FN, ls);
     return mExe->readOutput(pro, ptr);
 }
@@ -66,7 +66,7 @@ bool Test_BaseFvt::execute(QString *ptr)
 bool Test_BaseFvt::relayControl(int id, int oc)
 {
     QProcess pro(this);
-    QStringList ls{"-i", "/dev/ttyUSB0","-w"};
+    QStringList ls{"-i", mPinsName,"-w"};
     ls << QString::number(id);
     ls << QString::number(oc);
     pro.start(SC_REG, ls);
@@ -214,7 +214,7 @@ bool Test_BaseFvt::disableTest(QString str)
     bool ret = false;
     QString recvStr = transmit(str);
     if(recvStr=="test_disable") ret = true;
-    if(recvStr!=""){ ret = true;mDt->code= recvStr;}
+    if(recvStr!=""){ ret = true;}
     else{
         recvStr = tr("disableTest failed!!!!!!!!");
         updatePro(recvStr, ret);
