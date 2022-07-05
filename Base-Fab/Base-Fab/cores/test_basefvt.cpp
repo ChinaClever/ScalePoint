@@ -8,7 +8,6 @@ Test_BaseFvt::Test_BaseFvt(QObject *parent)
     : BaseThread{parent}
 {
     mExe = Test_Execute::bulid(this);
-    mModbus232 = Rtu_Modbus::bulid(this)->get(0);
 }
 
 Test_BaseFvt *Test_BaseFvt::bulid(QObject *parent)
@@ -143,7 +142,7 @@ bool Test_BaseFvt::updateData(const QString &v)
     return ret;
 }
 
-QString Test_BaseFvt::transmit(QString str)
+QString Test_BaseFvt::transmit(RtuRw * ser ,QString str)
 {
     static uchar recv[128] = {0};
     static uchar send[20] = {0};
@@ -152,15 +151,15 @@ QString Test_BaseFvt::transmit(QString str)
     memset(recv , 0 , sizeof(recv));
     strcpy((char*)send , str.toLatin1().data());
     send[str.length()]= 0x0D;
-    len = mModbus232->transmit(send, len, recv, 10);
+    len = ser->transmit(send, len, recv, 10);
     QString recvStr=QString((char*)recv);
     return recvStr;
 }
 
-bool Test_BaseFvt::startTest(QString str)
+bool Test_BaseFvt::startTest(RtuRw * ser ,QString str)
 {
     bool ret = false;
-    QString recvStr = transmit(str);
+    QString recvStr = transmit(ser , str);
     if(recvStr=="test_start") ret = true;
     else{
         recvStr = tr("start test failed!!!!!!!!");
@@ -170,10 +169,10 @@ bool Test_BaseFvt::startTest(QString str)
     return ret;
 }
 
-bool Test_BaseFvt::getFw(QString str)
+bool Test_BaseFvt::getFw(RtuRw * ser ,QString str)
 {
     bool ret = false;
-    QString recvStr = transmit(str);
+    QString recvStr = transmit(ser ,str);
     if(recvStr!=""){ ret = true;mDt->fw = "0x"+recvStr;recvStr="0x"+recvStr;}
     else{
         recvStr = tr("getFw failed!!!!!!!!");
@@ -183,10 +182,10 @@ bool Test_BaseFvt::getFw(QString str)
     return ret;
 }
 
-bool Test_BaseFvt::getIc(QString str)
+bool Test_BaseFvt::getIc(RtuRw * ser ,QString str)
 {
     bool ret = false;
-    QString recvStr = transmit(str);
+    QString recvStr = transmit(ser , str);
     if(recvStr!=""){ ret = true;mDt->code= recvStr;}
     else{
         recvStr = tr("getIc failed!!!!!!!!");
@@ -196,10 +195,10 @@ bool Test_BaseFvt::getIc(QString str)
     return ret;
 }
 
-bool Test_BaseFvt::getIeee(QString str)
+bool Test_BaseFvt::getIeee(RtuRw * ser ,QString str)
 {
     bool ret = false;
-    QString recvStr = transmit(str);
+    QString recvStr = transmit(ser ,str);
     if(recvStr!=""){ ret = true;mDt->sn= recvStr;}
     else{
         recvStr = tr("getIeee failed!!!!!!!!");
@@ -209,10 +208,10 @@ bool Test_BaseFvt::getIeee(QString str)
     return ret;
 }
 
-bool Test_BaseFvt::disableTest(QString str)
+bool Test_BaseFvt::disableTest(RtuRw * ser ,QString str)
 {
     bool ret = false;
-    QString recvStr = transmit(str);
+    QString recvStr = transmit(ser,str);
     if(recvStr=="test_disable") ret = true;
     if(recvStr!=""){ ret = true;}
     else{
@@ -223,21 +222,28 @@ bool Test_BaseFvt::disableTest(QString str)
     return ret;
 }
 
-bool Test_BaseFvt::getToken()
+bool Test_BaseFvt::getToken(int index)
 {
     QString comStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();
-    emit openSig(comStr,QSerialPort::Baud57600);
-    sleep(15);
+    RtuRw *ser = mModbus;
+    switch(index){
+    //case 0:{ comStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();ser = mModbus;break;}
+    case 1:{ comStr = (&(Cfg::bulid()->item->coms))->comj7->getSerialName();ser = mModbusJ7;break;}
+    case 2:{ comStr = (&(Cfg::bulid()->item->coms))->comj8->getSerialName();ser = mModbusJ8;break;}
+    }
+//    if(mModbus)
+//        emit openSig(comStr,QSerialPort::Baud57600);
+    if(index == 1) sleep(15);
     QString str = "start_test";
-    bool ret = startTest(str);
+    bool ret = startTest(ser ,str);
 
     if(ret){
         str = "get_fw";
-        if(ret) ret = getFw(str);
+        if(ret) ret = getFw(ser,str);
         str = "get_ic";
-        if(ret) ret = getIc(str);
+        if(ret) ret = getIc(ser,str);
         str = "get_ieee";
-        if(ret) ret = getIeee(str);
+        if(ret) ret = getIeee(ser,str);
         //        str = "disable_test";
         //        ret = disableTest(str);
     }

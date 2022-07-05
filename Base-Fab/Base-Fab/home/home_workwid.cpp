@@ -265,7 +265,7 @@ void Home_WorkWid::on_fnBtn_clicked()
 
 void Home_WorkWid::waitForSlot()
 {
-    bool ret = MsgBox::question(this, tr("请重新确认插入USB转232串口..."));
+    bool ret = MsgBox::question(this, tr("请确认拔出USB转232串口..."));
     if(!ret) {
         mPro->step = Test_Over;
         mPro->result = Test_Fail;

@@ -98,7 +98,8 @@ bool Test_CoreThread::factoryWork()
     ret = mFvt->workDown();
 
     if(ret) ret = waitFor();
-    if(ret) ret = mFvt->getToken();
+    if(ret) ret = mFvt->getToken(1);
+    if(ret) ret = mFvt->getToken(2);
     if(ret) ret = printer();
     return ret;
 }
@@ -151,7 +152,7 @@ bool Test_CoreThread::waitFor()
     isContinue = false;
     while(!isContinue) msleep(10);
     if(mPro->step < Test_Over) ret = true;
-    else updatePro(tr("设备未正常启动.."), ret);
+    else updatePro(tr("请确认拔出USB转232串口..."), ret);
 
     return ret;
 }
