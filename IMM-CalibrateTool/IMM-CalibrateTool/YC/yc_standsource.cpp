@@ -40,7 +40,7 @@ bool YC_StandSource::write(QByteArray &array)
 bool YC_StandSource::powerOn(int v)
 {
     bool ret = setVol(220);
-    if(ret) ret = setCur(v);
+    if(ret) ret = setCur(v , 10);
 
     return ret;
 }

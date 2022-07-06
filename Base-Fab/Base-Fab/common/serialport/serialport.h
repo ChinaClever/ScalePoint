@@ -44,6 +44,8 @@ private slots:
     void recvSlot();
     void writeSlot();
     void timeoutDone();
+    void openSlot(QString name , int baud);
+    void closeSlot();
 
 private:
     bool isOpen;

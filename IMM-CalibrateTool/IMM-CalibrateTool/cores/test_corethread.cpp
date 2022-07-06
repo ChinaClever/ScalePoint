@@ -21,6 +21,7 @@ void Test_CoreThread::initFunSlot()
     mAd = Ad_CoreThread::bulid(this);
     mExe = Test_Execute::bulid(this);
     mSocket = SP_SocketRtu::bulid(this);
+    mBt = new Bt_Serial(this);
 }
 
 bool Test_CoreThread::resDev()

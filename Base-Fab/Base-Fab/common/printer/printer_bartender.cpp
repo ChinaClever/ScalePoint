@@ -9,7 +9,7 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    //mSocket->bind(QHostAddress::Any, 47755);
+    mSocket->bind(QHostAddress::AnyIPv4, 47755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
@@ -28,7 +28,7 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QString date = QDate::currentDate().toString("yy") + "W";
     date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
     str += date+","; str += "IEEE " + it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1$I:%2%Z$A:%3%M:%4$HW:%5$FW%6").arg(it.pn).arg(it.code).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
+    str += QString("G$K:%1$I:%2%Z$A:%3%M:%4$HW:%5$FW:%6").arg(it.pn).arg(it.code).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 
@@ -57,7 +57,7 @@ bool Printer_BarTender::printer(sBarTend &it)
 
     QString order = createOrder(it);
     sendMsg(order.toLocal8Bit(), port+1, host);
-    return recvResponse(3);
+    return recvResponse(10);
 }
 
 int Printer_BarTender::sendMsg(const QByteArray &msg, quint16 port, const QHostAddress &host)

@@ -14,6 +14,8 @@ protected:
     sDevType *mDt;
     sDevData *mDev;
     RtuRw *mModbus;
+    RtuRw *mModbusJ7;
+    RtuRw *mModbusJ8;
     sCfgItem *mItem;
     sProgress *mPro;
     // sDevObj *mData;

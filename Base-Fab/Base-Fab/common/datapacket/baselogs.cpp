@@ -24,7 +24,7 @@ bool BaseLogs::writeMac()
 {
     sMacItem it;
 
-    it.dev = "Node";
+    it.dev = "Base";
     it.user = mItem->user;
     it.sn = mDt->sn;
     it.mac = mMac;

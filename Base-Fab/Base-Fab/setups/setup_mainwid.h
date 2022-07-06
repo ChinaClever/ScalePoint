@@ -31,8 +31,9 @@ private:
     Ui::Setup_MainWid *ui;
     sCfgItem *mItem;
     UserMainWid *mUserWid;
-    SerialStatusWid *mDeWid;
     SerialStatusWid *mComWid;
+    SerialStatusWid *mComWid7;
+    SerialStatusWid *mComWid8;
 };
 
 #endif // SETUP_MAINWID_H
