@@ -9,7 +9,7 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    //mSocket->bind(QHostAddress::LocalHost, 37755);
+    mSocket->bind(QHostAddress::AnyIPv4, 37755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
@@ -28,7 +28,7 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QString date = QDate::currentDate().toString("yy") + "W";
     date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
     str += date+","; str += "SN " + it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
+    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW:%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 
@@ -46,7 +46,7 @@ bool Printer_BarTender::recvResponse(int sec)
         if (mRes) break; else delay(100);
     }
 
-    this->mSocket->close();
+    //this->mSocket->close();
     return mRes;
 }
 
