@@ -40,7 +40,10 @@ void Home_WorkWid::initFunSlot()
     timer->start(500);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
-    mCoreThread = new Test_CoreThread(this);   
+    mCoreThread = new Test_CoreThread(this);
+    connect(mCoreThread, SIGNAL(closeSig()), mItem->coms.sp, SLOT(closeSlot()));
+    connect(mCoreThread, SIGNAL(openSig(QString,int)), mItem->coms.sp, SLOT(openSlot(QString,int)));
+    connect(mCoreThread, SIGNAL(waitSig()), this, SLOT(waitForSlot()));
 }
 
 void Home_WorkWid::updateCntSlot()
@@ -198,7 +201,7 @@ bool Home_WorkWid::initWid()
     bool ret = inputCheck();
     if(ret) {
         initData();
-        setWidEnabled(false);
+        //setWidEnabled(false);
         ui->startBtn->setText(tr("终 止"));
         mPro->step = ui->modeBox->currentIndex()+Test_Factory; emit startSig();
         QString str = mPro->startTime.toString("hh:mm:ss");
@@ -257,4 +260,15 @@ void Home_WorkWid::on_fnBtn_clicked()
     QString fn = selectFile("设备固件(*.s37)", ui->fnEdit->text());
     if(fn.contains(".s37")) ui->fnEdit->setText(fn);
     mItem->firmware = fn;
+}
+
+
+void Home_WorkWid::waitForSlot()
+{
+    bool ret = MsgBox::question(this, tr("请确认拔出USB转232串口..."));
+    if(!ret) {
+        mPro->step = Test_Over;
+        mPro->result = Test_Fail;
+    }
+    mCoreThread->isContinue = true;
 }

@@ -10,6 +10,11 @@ class Test_BaseFvt : public BaseThread
 public:
     static Test_BaseFvt *bulid(QObject *parent = nullptr);
     bool workDown();
+    bool getToken(int index);
+
+signals:
+    void closeSig();
+    void openSig(QString str , int baud);
 
 private:
     bool isFileExist(const QString &fn);
@@ -23,17 +28,17 @@ private:
 
     bool updateData(const QString &v);
     bool zigbeeCheck(const QString &v);
-    inline bool getToken();
-    inline bool startTest(QString str);
-    inline bool disableTest(QString str);
-    inline QString transmit(QString str);
-    inline bool getFw(QString str);
-    inline bool getIc(QString str);
-    inline bool getIeee(QString str);
+
+    inline bool startTest(RtuRw * ser ,QString str);
+    inline bool disableTest(RtuRw * ser ,QString str);
+    inline QString transmit(RtuRw *ser, QString str);
+    inline bool getFw(RtuRw *ser, QString str);
+    inline bool getIc(RtuRw *ser, QString str);
+    inline bool getIeee(RtuRw * ser ,QString str);
 
 private:
     Test_Execute *mExe;
-    RtuRw *mModbus232;
+    QString mPinsName;
 };
 
 #endif // TEST_BASEFVT_H

@@ -341,3 +341,13 @@ bool SerialPort::loopTest()
         qDebug() << "Serial test OK";
     return ret;
 }
+
+void SerialPort::openSlot(QString name , int baud)
+{
+    open(name , baud);
+}
+
+void SerialPort::closeSlot()
+{
+    close();
+}

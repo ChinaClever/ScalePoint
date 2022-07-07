@@ -94,7 +94,6 @@ void SerialPortWid::workBtnSlot()
     statusSlot();
 }
 
-
 void SerialPortWid::updateBtnSlot()
 {
     initSerialPort();

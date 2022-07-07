@@ -20,6 +20,8 @@ void Test_CoreThread::initFunSlot()
     mTokens = BaseTokens::bulid(this);
     mModbusJ7 = Rtu_Modbus::bulid(this)->get(1);
     mModbusJ8 = Rtu_Modbus::bulid(this)->get(2);
+    connect(mFvt, SIGNAL(closeSig()), this, SIGNAL(closeSig()));
+    connect(mFvt, SIGNAL(openSig(QString,int)), this, SIGNAL(openSig(QString,int)));
 }
 
 
@@ -33,6 +35,7 @@ bool Test_CoreThread::printer()
         it.sn = mDt->sn;
         it.fw = mDt->fw;
         it.hw = mItem->hw;
+        it.code = mDt->code;
         //it.code = mTokens->codeCrc();
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
@@ -76,8 +79,6 @@ bool Test_CoreThread::workDown()
     if(ret) {
         ret = fabFile();
         if(ret) fabTokens();
-//        if(ret) ret = mFvt->workDown();
-//        if(ret) printer();
     }
 
     return ret;
@@ -92,28 +93,14 @@ void Test_CoreThread::workResult(bool ret)
 
 bool Test_CoreThread::factoryWork()
 {
-    //bool ret = fabTokens();
-//    bool ret = false;
-//    ret = test(this->mModbusJ7);
-//    QString str;
-//    if(!ret){
-//        str = "test J7 failed!!!!!!!!";
-//        updatePro(str ,ret);
-//        emit mExe->msgSig(str);
-//    }
-//    if(ret) {
-//        ret = test(this->mModbusJ8);
-//        if(!ret){
-//            str = "test J7 failed!!!!!!!!";
-//            updatePro(str ,ret);
-//            emit mExe->msgSig(str);
-//        }
-//    }
-    bool ret = true;
 
-    if(ret) ret = mFvt->workDown();
-//    if(ret) ret = printer();
+    bool ret = false;
+    ret = mFvt->workDown();
 
+    if(ret) ret = waitFor();
+    if(ret) ret = mFvt->getToken(1);
+    if(ret) ret = mFvt->getToken(2);
+    if(ret) ret = printer();
     return ret;
 }
 
@@ -125,11 +112,48 @@ bool Test_CoreThread::test(RtuRw *modbus)
     int len = 14;
     static uchar recv[128] = {0};
     len = modbus->transmit(sent, len, recv, 10);
-    if(len == 0 || len > 30) len = modbus->transmit(sent, len, recv, 10);
+    if(len == 0) len = modbus->transmit(sent, len, recv, 10);
     int count = 30;
 
-    if( len == count ) ret = true;
-    qDebug()<<ret <<endl;
+    if( len >= count ) ret = true;
+    qDebug()<<ret <<"   ccccc "<<len<<endl;
+    return ret;
+}
+
+bool Test_CoreThread::test485()
+{
+    bool ret = false;
+    ret = test(this->mModbusJ7);
+    QString str = "test J7 pass---------";;
+    if(!ret){
+        str = "test J7 failed!!!!!!!!";
+        updatePro(str ,ret);
+    }
+    emit mExe->msgSig(str);
+    if(ret) {
+        ret = test(mModbusJ8);
+        if(!ret){
+            str = "test J8 failed!!!!!!!!";
+            updatePro(str ,ret);
+        }
+        else
+        {
+            str = "test J8 pass---------";
+        }
+    }
+    emit mExe->msgSig(str);
+    return ret;
+}
+
+bool Test_CoreThread::waitFor()
+{
+    emit waitSig();
+    bool ret = false;
+    isContinue = false;
+    while(!isContinue) msleep(10);
+    if(mPro->step < Test_Over) ret = true;
+    else updatePro(tr("请确认拔出USB转232串口..."), ret);
+
     return ret;
 }
 
@@ -138,12 +162,12 @@ void Test_CoreThread::run()
     if(isRun) return; else isRun = true;
     bool ret = false;
     switch (mPro->step) {
-    case Test_Factory: ret = factoryWork(); break;
+    case Test_Factory:{ ret = factoryWork(); mPro->step = Test_Factory;}break;
     case Test_Start: ret = workDown(); break;
     case Test_Bootloader: ret = fabBootloader(); break;
     case Test_Firmware: ret = fabFile(); break;
     case Test_Token: ret = fabTokens(); break;
-    case Test_Fvt: ret = mFvt->workDown(); break;
+    case Test_Fvt: ret = test485(); break;
     }
 
     workResult(ret);

@@ -8,6 +8,12 @@ class Test_CoreThread : public BaseThread
     Q_OBJECT
 public:
     explicit Test_CoreThread(QObject *parent = nullptr);
+    bool isContinue;
+
+signals:
+    void waitSig();
+    void closeSig();
+    void openSig(QString str ,int baud);
 
 protected:
     void run();
@@ -19,6 +25,8 @@ protected:
     void workResult(bool ret);
     bool printer();
     bool test(RtuRw *modbus);
+    bool test485();
+    bool waitFor();
 
 protected slots:
     void initFunSlot();

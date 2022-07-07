@@ -45,7 +45,6 @@ bool Printer_BarTender::recvResponse(int sec)
     for(int i=0; i<10*sec; ++i) {
         if (mRes) break; else {recvSlot();delay(100);}
     }
-
     return mRes;
 }
 

@@ -32,7 +32,8 @@ bool Test_CoreThread::printer()
         it.pn = "646130";
         mDt->sn = mDt->ctrlBoardSerial.mid(3,2)+mDt->ctrlBoardSerial.mid(6);
         it.sn = "000474" + mDt->sn;
-        it.fw = mDt->fwRevision;
+        //it.fw = mDt->fwRevision;
+        it.fw = "4.0.0.10-48687";
         it.hw = mDt->hwRevision;
         ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
@@ -76,9 +77,9 @@ bool Test_CoreThread::programFab()
 {
     bool ret = mFab->check();
     if(ret) {
-        if(mDt->img.size()) {
-            ret = mFab->programFull();
-        }
+//        if(mDt->img.size()) {
+//            ret = mFab->programFull();
+//        }
 
         mSn->createSn();
         ret = mFab->workDown();
