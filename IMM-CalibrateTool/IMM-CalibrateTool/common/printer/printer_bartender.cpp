@@ -9,8 +9,8 @@
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
     mSocket = new QUdpSocket(this);
-    //mSocket->bind(QHostAddress::LocalHost, 37755);
-    connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
+    mSocket->bind(QHostAddress::AnyIPv4, 37756);
+    //connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
 }
 
 Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
@@ -28,7 +28,7 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QString date = QDate::currentDate().toString("yy") + "W";
     date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
     str += date+","; str += "SN " + it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
+    str += QString("G$K:%1%$S:%2%M:%3$HW:%4$FW:%5").arg(it.pn).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 
@@ -43,10 +43,9 @@ bool Printer_BarTender::recvResponse(int sec)
 {
     mRes = false;
     for(int i=0; i<10*sec; ++i) {
-        if (mRes) break; else delay(100);
+        if (mRes) break; else {recvSlot();delay(100);}
     }
 
-    this->mSocket->close();
     return mRes;
 }
 
@@ -71,7 +70,7 @@ int Printer_BarTender::sendMsg(const QByteArray &msg, quint16 port, const QHostA
 void Printer_BarTender::recvSlot()
 {
     QByteArray array;
-    while (mSocket->hasPendingDatagrams()) {
+    if (mSocket->hasPendingDatagrams()) {
         //QNetworkDatagram datagram = mSocket->receiveDatagram();
         array.resize(mSocket->bytesAvailable());
         mSocket->readDatagram(array.data(),array.size());
