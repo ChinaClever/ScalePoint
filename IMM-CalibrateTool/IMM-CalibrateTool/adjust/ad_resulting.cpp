@@ -185,7 +185,7 @@ bool Ad_Resulting::neutralCheck(int exValue)
 bool Ad_Resulting::workDown(int exValue)
 {
     bool ret = eachCurEnter(exValue);
-    if(ret) ret = neutralCheck(exValue);
+    //if(ret) ret = neutralCheck(exValue);
     if(ret) ret = loopCurCheck(exValue);
     return ret;
 }
