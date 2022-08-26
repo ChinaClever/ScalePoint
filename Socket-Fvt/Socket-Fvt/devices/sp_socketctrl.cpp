@@ -10,11 +10,12 @@ SP_SocketCtrl::SP_SocketCtrl(QObject *parent) : SP_Object(parent)
 
 }
 
-bool SP_SocketCtrl::openAll()
+bool SP_SocketCtrl::closeAll()
 {
     //bool ret = true;
     for(int i=0; i<mDt->outputs; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x00);
-     return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
+    // return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
+    return true;
     //for(int i=0; i<mDt->outputs; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
 }
 
@@ -38,11 +39,39 @@ bool SP_SocketCtrl::openOutput(uchar addr)
     return ctrlOutput(addr, 0x00);
 }
 
-bool SP_SocketCtrl::closeAll()
+bool SP_SocketCtrl::openAll()
 {
     //bool ret = true;
     for(int i=0; i<mDt->outputs; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x01);
-    return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
+    //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
+    return true;
+    //for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
+}
+
+bool SP_SocketCtrl::openAll_front4()
+{
+    //bool ret = true;
+    for(int i=0; i<4; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x01);
+    //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
+    return true;
+    //for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
+}
+
+bool SP_SocketCtrl::closeAll_front4()
+{
+    //bool ret = true;
+    for(int i=0; i<4; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x00);
+    //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
+    return true;
+    //for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
+}
+
+bool SP_SocketCtrl::openAll_back4()
+{
+    //bool ret = true;
+    for(int i=4; i<8; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x01);
+    //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
+    return true;
     //for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
 }
 
