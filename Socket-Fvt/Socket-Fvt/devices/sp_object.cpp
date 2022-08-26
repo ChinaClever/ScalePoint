@@ -211,6 +211,7 @@ bool SP_Object::readVersion()
 {
     bool ret = true;
     QByteArray res = masterRequest(FC_FW_VERSION, mDt->addr, 0, 0);
+    qDebug()<<"aaaaaaaaaa"<<res.size()<<endl;
     if(res.size() && (res.at(0) == FC_FW_VERSION)) {
         mDt->fw = tr("%1.%2").arg((uchar)res[2]).arg((uchar)res[3]);
     } else {
