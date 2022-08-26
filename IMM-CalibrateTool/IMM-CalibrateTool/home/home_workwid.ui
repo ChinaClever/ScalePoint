@@ -795,6 +795,11 @@
         <string>惠州生产</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>仅打印</string>
+       </property>
+      </item>
      </widget>
      <widget class="QLabel" name="label_10">
       <property name="geometry">

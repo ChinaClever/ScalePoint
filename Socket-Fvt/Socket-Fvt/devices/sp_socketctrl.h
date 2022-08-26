@@ -15,6 +15,9 @@ public:
     bool closeAll();
     bool closeOutput(uchar addr);
     int readOutput(uchar addr);
+    bool openAll_front4();
+    bool closeAll_front4();
+    bool openAll_back4();
 
     bool measRot(uchar addr, uint &t);
     QString storeValue();

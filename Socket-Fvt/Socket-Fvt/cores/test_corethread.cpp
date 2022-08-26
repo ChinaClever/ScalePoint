@@ -19,6 +19,7 @@ void Test_CoreThread::initFunSlot()
     mRtu = SP_SocketRtu::bulid(this);
     mPdu = Pdu_ZRtu::bulid(this);
     mBt = new Bt_Serial(this);
+    mBt->init(1);
 }
 
 bool Test_CoreThread::enumDeviceType()
@@ -101,11 +102,22 @@ void Test_CoreThread::workResult()
 
 void Test_CoreThread::outputCtrl()
 {
-//    updatePro(tr("Socket 关闭所有的输出位"));
+
+//    updatePro(tr("Socket 打开所有的输出位"));
 //    mRtu->openAll(); msleep(500);
 
-    updatePro(tr("Socket 打开所有的输出位"));
-    mRtu->closeAll(); sleep(1);
+//    if(mDt->outputs == 8){
+//        updatePro(tr("Socket 打开前4个输出位"));
+//        mRtu->openAll_front4(); sleep(20);
+//        updatePro(tr("Socket 关闭前4个输出位"));
+//        mRtu->closeAll_front4();
+//        updatePro(tr("Socket 打开后4个输出位"));
+//        mRtu->openAll_back4(); sleep(20);
+//    }
+//    else{
+        updatePro(tr("Socket 打开所有的输出位"));
+        mRtu->openAll();
+//    }
 
 //    updatePro(tr("Socket 再次打开所有的输出位"));
 //    mRtu->openAll();
@@ -113,15 +125,19 @@ void Test_CoreThread::outputCtrl()
 
 bool Test_CoreThread::btCurCheck()
 {
-    sBtIt bt; mBt->init(1);
+    sBtIt bt;
     bool ret = mBt->readPacket(bt);
+    for(int i = 0 ; i < 10 ; i++) {
+        if(!ret){ ret = mBt->readPacket(bt); msleep(100);}
+        else break;
+    }
     if(ret) {
         QString str = tr("检测供电电压：%1V ").arg(bt.vol/100.0);
         if((bt.vol > 1100) && (bt.vol < 1300)) ret = true; else ret = false;
         if(ret) str += tr("正确"); else str += tr("错误"); updatePro(str, ret);
 
         str = tr("检测消耗电流：%1A ").arg(bt.cur/1000.0);
-        if((bt.cur > 1) && (bt.cur < 90)) ret = true; else ret = false;
+        if((bt.cur >= 1) && (bt.cur < 90)) ret = true; else ret = false;
         if(ret) str += tr("正确"); else str += tr("错误");  updatePro(str, ret);
 
         str = tr("检测消耗功率：%1W ").arg(bt.pow/100.0);
@@ -224,9 +240,10 @@ bool Test_CoreThread::zeroMeasRot()
 void Test_CoreThread::workDown()
 {
     mPr = true;
-    btCurCheck();
+    //btCurCheck();
     ////outputCheck();
     zeroMeasRot();
+    outputCtrl();
 }
 
 void Test_CoreThread::run()

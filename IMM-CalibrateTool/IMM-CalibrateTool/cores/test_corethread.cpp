@@ -117,10 +117,10 @@ bool Test_CoreThread::initFun()
     updatePro(tr("即将开始"));
     bool ret = cylinderDown();
     if(ret) ret = enumDeviceType();
-    if(mPro->step != Test_Bs)
+    if(mPro->step != Test_Bs && mPro->step != Test_Print)
         if(ret) ret = mYc->powerOn();
-    if(mPro->step == Test_Collect) ret = true;
-    if(ret) ret = readDev();
+    if(mPro->step == Test_Collect || mPro->step == Test_Print) ret = true;
+    if(ret) ret = readDev();///
     return ret;
 }
 
@@ -183,6 +183,7 @@ void Test_CoreThread::run()
         case Test_Ading: mAd->startAdjust(); break;
         case Test_vert: mAd->verifyResult(); break;
         case Test_Bs:  Test_BsThread::bulid()->workDown(); break;
+        case Test_Print:  mPr = true; break;
         }
     }
     workResult();
