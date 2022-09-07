@@ -238,6 +238,7 @@ bool Test_CoreThread::zeroMeasRot()
 
 void Test_CoreThread::workDown()
 {
+
     mPr = true;
     //btCurCheck();
     ////outputCheck();
@@ -257,7 +258,6 @@ void Test_CoreThread::run()
         case Test_Zero: zeroMeasRot(); break;
         }
     } else mPro->result = Test_Fail;
-
     workResult();
     isRun = false;
 }
