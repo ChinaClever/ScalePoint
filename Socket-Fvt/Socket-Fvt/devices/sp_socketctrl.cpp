@@ -14,6 +14,7 @@ bool SP_SocketCtrl::closeAll()
 {
     //bool ret = true;
     for(int i=0; i<mDt->outputs; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x00);
+
     // return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x00);
     return true;
     //for(int i=0; i<mDt->outputs; ++i){ if(!openOutput(mDt->addr+i)) ret = false; } return ret;
@@ -45,6 +46,7 @@ bool SP_SocketCtrl::openAll()
     for(int i=0; i<mDt->outputs; ++i) masterWrite(FC_WRITE_RELAY, mDt->addr+i, 0x00, 0x01);
     //return  masterWrite(FC_WRITE_RELAY, BROADCAST_ADDR, 0x00, 0x01);
     return true;
+
     //for(int i=0; i<mDt->outputs; ++i){ if(!closeOutput(mDt->addr+i)) ret = false; } return ret;
 }
 

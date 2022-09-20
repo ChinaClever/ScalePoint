@@ -102,6 +102,7 @@ void Test_CoreThread::workResult()
 
 void Test_CoreThread::outputCtrl()
 {
+
 //    updatePro(tr("Socket 打开所有的输出位"));
 //    mRtu->openAll(); msleep(500);
 

@@ -55,7 +55,7 @@ void Setup_MainWid::initSerial()
     mItem->coms.sp = mComWid->initSerialPort(tr("Socket"));
 
     mDeWid = new SerialStatusWid(ui->devWid);
-    mItem->coms.src = mDeWid->initSerialPort(tr("标准源"));
+    mItem->coms.src = mDeWid->initSerialPort(tr("电流表"));
 }
 
 void Setup_MainWid::initLogCount()
