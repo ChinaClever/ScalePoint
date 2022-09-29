@@ -68,7 +68,7 @@ void MainWindow::on_createSnBtn_clicked()
     int count = y * 1000 + day;
     int hi = (count&0xff00)>>8;
     int lo = count&0xff;
-    ui->snEdit->setText(QString("01 00 %1 %2").arg(QString::number(lo,16)).arg(QString::number(hi,16)));
+    ui->snEdit->setText(QString("01 00 %1 %2").arg(QString::number(lo,16).rightJustified(2, '0')).arg(QString::number(hi,16).rightJustified(2, '0')));
 }
 
 void MainWindow::on_getDateBtn_clicked()
