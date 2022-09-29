@@ -5,6 +5,7 @@
  */
 #include "test_corethread.h"
 #include "printer_bartender.h"
+#include <QDesktopServices>
 
 Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 {
@@ -155,9 +156,7 @@ bool Test_CoreThread::writeFile(QByteArray &array)
     QFile file(path+QString("/srcFile/%1/%2.bin").arg(mDev->dt.sn).arg(mDev->dt.sn) );
     bool ret = file.open(QIODevice::WriteOnly);
     if(ret) {
-
-        //getXorNumber(array);
-        array.remove(array.size() - 4, 4);//配合测试不同情况
+        array.remove(array.size() - 4, 4);//删除原来的最后四个字节
 
         bool ok;
         QByteArray arr = cm_HexStringToByteArray("00 00 00 01" , &ok);///////
@@ -222,10 +221,10 @@ void Test_CoreThread::run()
                     if(ret){
                         updatePro(tr("转换成功"));
 
-                        QString fn = curpath.remove(curpath.lastIndexOf('/') , curpath.size() - curpath.lastIndexOf('/') )
-                                +QString("/srcFile/%1/%2.bin").arg(mDev->dt.sn).arg(mDev->dt.sn);///////
-                        int index = fn.lastIndexOf('/');
-                        QDesktopServices::openUrl(QUrl("file:///"+fn.left(index), QUrl::TolerantMode));
+//                        QString fn = curpath.remove(curpath.lastIndexOf('/') , curpath.size() - curpath.lastIndexOf('/') )
+//                                +QString("/srcFile/%1/%2.bin").arg(mDev->dt.sn).arg(mDev->dt.sn);///////
+//                        int index = fn.lastIndexOf('/');
+//                        QDesktopServices::openUrl(QUrl("file:///"+fn.left(index), QUrl::TolerantMode));
                     }
                     else{
                         updatePro(tr("转换失败"),false);
