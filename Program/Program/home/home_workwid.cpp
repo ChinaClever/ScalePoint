@@ -31,6 +31,10 @@ void Home_WorkWid::initLayout()
     QGridLayout *gridLayout = new QGridLayout(this->parentWidget());
     gridLayout->setContentsMargins(0, 0, 0, 0);
     gridLayout->addWidget(this);
+    ui->JFlashEdit->setText(mItem->jflashPath);
+    ui->projectSrcEdit->setText(mItem->proPath);
+    ui->fileSrcEdit->setText(mItem->srcPath);
+
 }
 
 void Home_WorkWid::initFunSlot()
@@ -43,6 +47,7 @@ void Home_WorkWid::initFunSlot()
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
     connect(this, SIGNAL(sendIndexSig(int)), mCoreThread, SLOT(getIndexSlot(int)));
+    connect(this, SIGNAL(sendTypeSig(int)), mCoreThread, SLOT(getTypeSlot(int)));
 }
 
 void Home_WorkWid::setTextColor()
@@ -118,7 +123,7 @@ void Home_WorkWid::updateResult()
 {
     QString style;
     QString str = tr("---");
-    if(isCheck){ if(mId < 10) mPro->result = Test_Fail; }
+    //if(isCheck){ if(mId < 10) mPro->result = Test_Fail; }
     if(Test_Fail == mPro->result) {
         str = tr("失败"); style = "background-color:red; color:rgb(255, 255, 255);";
     } else {
@@ -145,16 +150,15 @@ void Home_WorkWid::updateWid()
     if(str.isEmpty()) str = "--- ---";
     ui->fwLab->setText(str);
 
-    str = mDev->dt.sn;
-    if(str.isEmpty()) str = "--- ---";
-    ui->firstSNEdit->setText(str);
+    if(ui->modeBox->currentIndex()==0){
+        str = mDev->dt.sn;
+        if(str.isEmpty()) str = "--- ---";
+        ui->firstSNEdit->setText(str);
 
-    str = mDev->dt.fw;
-    if(str.isEmpty()) str = "--- ---";
-    ui->firstVerEdit->setText(str);
-    //    str = mDt->pn;
-    //    if(str.isEmpty()) str = "--- ---";
-    //    ui->pnLab->setText(str);
+        str = mDev->dt.fw;
+        if(str.isEmpty()) str = "--- ---";
+        ui->firstVerEdit->setText(str);
+    }
 
     if(mPro->step < Test_Over) {
         updateTime();
@@ -176,7 +180,6 @@ bool Home_WorkWid::initSerial()
 
     //    ret = mItem->coms.src->isOpened();
     //    if(!ret) {MsgBox::critical(this, tr("请先打开标准源串口")); return ret;}
-
     return ret;
 }
 
@@ -242,6 +245,12 @@ bool Home_WorkWid::initFilePath()
 //        MsgBox::critical(this, str); return false;
 //    }
 
+    str = ui->JFlashEdit->text();
+//    if(str.isEmpty()) {
+//        str = tr(" JFflash.exe地址未指定\n 软件无法执行。。。");
+//        MsgBox::critical(this, str); return false;
+//    }
+
     str = ui->fileSrcEdit->text();
     if(str.isEmpty()) {
         str = tr(" 烧录升级源文件未指定\n 软件无法执行。。。");
@@ -257,6 +266,7 @@ void Home_WorkWid::on_startBtn_clicked()
     if(flag){
         if(mPro->step == Test_End) {
             emit sendIndexSig(ui->modeBox->currentIndex());
+            emit sendTypeSig(ui->TypeBox->currentIndex());
             if(initWid()) mCoreThread->start();
         } else {
             bool ret = MsgBox::question(this, tr("确定需要提前结束？"));
@@ -291,4 +301,19 @@ void Home_WorkWid::on_srcBtn_clicked()
     QString fn = selectFile("烧录文件|(*.bin;*.hex)", ui->fileSrcEdit->text());
     if(fn.contains(".bin")||fn.contains(".hex"))  ui->fileSrcEdit->setText(fn);
     mItem->srcPath = fn;
+}
+
+void Home_WorkWid::on_TypeBox_currentIndexChanged(int index)
+{
+    emit sendTypeSig(index);
+}
+
+void Home_WorkWid::on_JFlashBtn_clicked()
+{
+    QString dir = ui->JFlashEdit->text();
+    QString filter = "JFlash程序|(*.exe)";
+    if(dir.isEmpty()) dir = QCoreApplication::applicationDirPath();
+    QString fn = QFileDialog::getOpenFileName(this, tr("选择文件"), dir, filter);
+    if(fn.contains(".exe"))  ui->JFlashEdit->setText(fn);
+    mItem->jflashPath = fn;
 }

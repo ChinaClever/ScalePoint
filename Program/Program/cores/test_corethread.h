@@ -16,22 +16,26 @@ protected:
     bool enumDeviceType();
 
     void workDown();
-    void workResult();
+    void workResult(int step = 0);
     bool startProgram(const QString& propath,const QString& filepath);
     bool isFileExist(const QString &fn);
-    bool createFile(QString sn);
+    bool createFile();
     bool readFile(QString strPath, QByteArray &array);
     bool writeFile(QByteArray &array);
-    void cmd(QString ls);
 
 protected slots:
     void initFunSlot();
     void getIndexSlot(int index);
+    void getTypeSlot(int type);
 
 private:
     Test_Execute *mExe;
     SP_SocketRtu *mRtu;
     int mIndex;
+    int mType;
+    QString mTypeStr;
+    QString mWritePath;
+    QString firstVer , firstSN;
 };
 
 #endif // TEST_CORETHREAD_H

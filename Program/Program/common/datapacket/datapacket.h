@@ -42,6 +42,10 @@ enum {
     Test_Info=0,
     Test_Pass=1,
     Test_Fail=2,
+
+    First_read=0,
+    Program=1,
+    Second_read=2,
 };
 
 struct sProgress

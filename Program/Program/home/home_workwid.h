@@ -20,6 +20,7 @@ public:
 signals:
     void startSig();
     void sendIndexSig(int);
+    void sendTypeSig(int);
 
 protected:
     void initLayout();
@@ -46,10 +47,10 @@ private slots:
     void initFunSlot();
     void updateCntSlot();
     void on_startBtn_clicked();
-
     void on_proBtn_clicked();
-
     void on_srcBtn_clicked();
+    void on_TypeBox_currentIndexChanged(int index);
+    void on_JFlashBtn_clicked();
 
 private:
     Ui::Home_WorkWid *ui;

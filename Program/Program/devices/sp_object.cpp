@@ -200,6 +200,7 @@ bool SP_Object::readSn(QString & sn)
         QByteArray array = res.mid(2,4);
         QDataStream stream(&array, QIODevice::ReadOnly);
         mDt->sn = cm_ByteArrayToHexString(array);
+        sn = mDt->sn;
     } else {
         ret = false;
     }
@@ -213,6 +214,7 @@ bool SP_Object::readVersion(QString &ver)
     QByteArray res = masterRequest(FC_FW_VERSION, mDt->addr, 0, 0);
     if(res.size() && (res.at(0) == FC_FW_VERSION)) {
         mDt->fw = tr("%1.%2").arg((uchar)res[2]).arg((uchar)res[3]);
+        ver = mDt->fw;
     } else {
         ret = false;
     }

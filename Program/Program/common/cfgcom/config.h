@@ -27,6 +27,7 @@ struct sCfgItem
     uchar pcNum;
     QString proPath;
     QString srcPath;
+    QString jflashPath;
 };
 
 

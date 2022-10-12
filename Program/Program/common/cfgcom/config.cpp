@@ -28,6 +28,7 @@ void Cfg::initCfgDev()
     item->pcNum = read("pc_num", 0, "Sys").toInt();
     item->proPath = read("propath", "").toString();
     item->srcPath = read("srcpath", "").toString();
+    item->jflashPath = read("jflashpath", "").toString();
 }
 
 void Cfg::writeCfgDev()
@@ -37,6 +38,7 @@ void Cfg::writeCfgDev()
     write("pc_num", item->pcNum, "Sys");
     write("propath", item->proPath);
     write("srcpath", item->srcPath);
+    write("jflashpath", item->jflashPath);
 }
 
 void Cfg::initCnt()

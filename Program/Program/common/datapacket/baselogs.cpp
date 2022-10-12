@@ -64,10 +64,10 @@ bool BaseLogs::writeLog()
     Db_Tran db;
     sLogItem it;
 
-//    it.pn = mDt->pn;
+
     it.sn = mDt->sn;
     it.fw = mDt->fw;
-//    it.hw = mItem->hw;
+    it.op = mStep;
     it.user = mItem->user;    
 
     mItem->cnts.all += 1;
@@ -110,4 +110,13 @@ void BaseLogs::writeLogs()
         if(initItem(it)) DbStates::bulid()->insertItem(it);
     }
     mLogItems.clear();
+}
+
+void BaseLogs::getStep(int step)
+{
+    switch(step)
+    {
+        case 0: mStep = "1次读取"; break;
+        case 1: mStep = "2次读取"; break;
+    }
 }

@@ -14,6 +14,7 @@ public:
     void saveLogs();
     void writeMac(const QString &mac){mMac=mac;}
     bool appendLogItem(const QString &str, bool pass);
+    void getStep(int step);
 
 protected:
     void run(){saveLogs();}
@@ -25,6 +26,7 @@ protected:
 private:
     QString mMac;
     QList<sStateItem> mLogItems;
+    QString mStep;
 };
 
 #endif // BASELOGS_H

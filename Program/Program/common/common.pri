@@ -1,7 +1,7 @@
 
 INCLUDEPATH += $$PWD
 
-include(json/json.pri)
+#include(json/json.pri)
 include(excel/excel.pri)
 include(dbcom/dbcom.pri)
 include(sqlcom/sqlcom.pri)
