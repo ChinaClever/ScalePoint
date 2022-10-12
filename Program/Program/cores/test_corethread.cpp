@@ -6,8 +6,6 @@
 #include "test_corethread.h"
 #include "printer_bartender.h"
 #include <QDesktopServices>
-#include <QUrl>
-
 Test_CoreThread::Test_CoreThread(QObject *parent) : BaseThread(parent)
 {
 
@@ -189,7 +187,7 @@ bool Test_CoreThread::writeFile(QByteArray &array)
     QFile file( mWritePath );
     bool ret = file.open(QIODevice::WriteOnly);
     if(ret) {
-        array.remove(array.size() - 4, 4);//配合测试不同情况
+        array.remove(array.size() - 4, 4);//删除原来的最后四个字节
         bool ok;
         QByteArray arr = cm_HexStringToByteArray(mDev->dt.sn , &ok);
         for(int i = 0 ; i < arr.size() ; i++){
