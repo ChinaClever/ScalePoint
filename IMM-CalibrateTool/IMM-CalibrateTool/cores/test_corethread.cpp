@@ -126,7 +126,8 @@ bool Test_CoreThread::initFun()
 
 void Test_CoreThread::workDown()
 {
-    bool ret = btCurCheck();
+    //bool ret = btCurCheck();
+    bool ret = true;
     if(ret) {ret = mPr = mAd->startAdjust(); if(!ret) return;}
     Ad_Resulting::bulid(this)->initRtuThread();
     for(int i=0; i<mData->size; ++i) {
