@@ -24,7 +24,7 @@ public:
 
     void resDev();
     bool readSn();
-    bool readVersion();
+    int readVersion();
     bool enumImmType();
     bool enumSocketType();
     bool enumDeviceType();

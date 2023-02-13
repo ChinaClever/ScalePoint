@@ -210,6 +210,8 @@ bool Test_CoreThread::initFun()
     mPr = false;
     bool ret = updatePro(tr("即将开始，正在复位串口板"));
     if(ret) ret = mExe->startProcess();
+    QThread::msleep(1000);
+    mExe->startProcess();
     if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
     return ret;

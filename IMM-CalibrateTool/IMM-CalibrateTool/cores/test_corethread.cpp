@@ -44,14 +44,23 @@ bool Test_CoreThread::enumDeviceType()
 bool Test_CoreThread::readDev()
 {
     QString str = tr("请求地址 ");
-    bool ret = mDev->requestAddr();
+    int ret = mDev->requestAddr();
     if(ret) str += tr("正常：Addr=%1").arg(mDt->addr); else str += tr("错误");
     updatePro(str, ret);
 
     if(ret) {
         ret = mDev->readVersion();
         str = tr("Modbus-RTU通讯 版本读取 ");
-        if(ret) str += tr("正常"); else str += tr("错误");
+        if(ret == 1) str += tr("正常");
+        else if( ret == 2 ) {
+            str += tr("过低");
+            mPro->step = Test_Fail;
+            ret = 0;
+        }else{
+            str += tr("错误");
+            mPro->step = Test_Fail;
+        }
+
         updatePro(str, ret);
     }
 
@@ -132,7 +141,7 @@ void Test_CoreThread::workDown()
     Ad_Resulting::bulid(this)->initRtuThread();
     for(int i=0; i<mData->size; ++i) {
         sLineData *line = &(mData->lines[i]);
-        if(line->ele) {
+        if(line->ele > 10) {
             QString e = QString::number(line->ele/COM_RATE_ELE , 'f' , 1)+"kWh";
             QString str = tr("L%1 存在电能 %2").arg(i+1).arg(e); updatePro(str, false);
         }

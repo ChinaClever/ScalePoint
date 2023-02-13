@@ -202,14 +202,15 @@ bool SP_Object::requestAddr(int addr)
     return masterWrite(FC_REQUEST_ADDR, MASTER_ADDR, 1, addr);
 }
 
-bool SP_Object::readVersion()
+int SP_Object::readVersion()
 {
-    bool ret = true;
+    int ret = 1;
     QByteArray res = masterRequest(FC_FW_VERSION, mDt->addr, 0, 0);
     if(res.size() && (res.at(0) == FC_FW_VERSION)) {
         mDt->fw = tr("%1.%2").arg((uchar)res[2]).arg((uchar)res[3]);
+        if((uchar)res[2] == 1 && (uchar)res[3] < 41) return 2;
     } else {
-        ret = false;
+        ret = 0;
     }
 
     return ret;
