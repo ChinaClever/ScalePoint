@@ -141,23 +141,27 @@ bool Home_WorkWid::initSerial()
 //    bool ret = mItem->coms.sp->isOpened();
 //    if(!ret) {MsgBox::critical(this, tr("请先打开Socket串口")); return ret;}
 
-    QString str = ui->cmdEdit->text();
-    if(str.isEmpty()) {
-        str = tr(" commander 烧录程序未指定\n 软件无法执行。。。");
-        MsgBox::critical(this, str); return false;
-    }
+//    QString str = ui->cmdEdit->text();
+//    if(str.isEmpty()) {
+//        str = tr(" commander 烧录程序未指定\n 软件无法执行。。。");
+//        MsgBox::critical(this, str); return false;
+//    }
 
-    str = ui->blEdit->text();
-    if(str.isEmpty()) {
-        str = tr(" Bootloader 文件未指定\n 软件无法执行。。。");
-        MsgBox::critical(this,str); return false;
-    }
+//    str = ui->blEdit->text();
+//    if(str.isEmpty()) {
+//        str = tr(" Bootloader 文件未指定\n 软件无法执行。。。");
+//        MsgBox::critical(this,str); return false;
+//    }
 
-    str = ui->fnEdit->text();
-    if(str.isEmpty()) {
-        str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
-        MsgBox::critical(this,str); return false;
-    }
+//    str = ui->fnEdit->text();
+//    if(str.isEmpty()) {
+//        str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
+//        MsgBox::critical(this,str); return false;
+//    }
+    bool ret = mItem->coms.comj7->isOpened();
+    if(!ret) {MsgBox::critical(this, tr("请先打开J7串口")); return ret;}
+    ret = mItem->coms.comj8->isOpened();
+    if(!ret) {MsgBox::critical(this, tr("请先打开J8串口")); return ret;}
 
     return true;
 }

@@ -78,7 +78,7 @@ bool Test_CoreThread::workDown()
     bool ret = fabBootloader();
     if(ret) {
         ret = fabFile();
-        if(ret) fabTokens();
+        //if(ret) fabTokens();
     }
 
     return ret;
@@ -94,13 +94,14 @@ void Test_CoreThread::workResult(bool ret)
 bool Test_CoreThread::factoryWork()
 {
 
-    bool ret = false;
-    ret = mFvt->workDown();
+    bool ret = true;
+    //ret = mFvt->workDown();
 
-    if(ret) ret = waitFor();
-    if(ret) ret = mFvt->getToken(1);
+    //if(ret) ret = waitFor();
+    ret = mFvt->getToken(1);
     if(ret) ret = mFvt->getToken(2);
-    if(ret) ret = printer();
+    //if(ret) ret = test485();
+    //if(ret) ret = printer();
     return ret;
 }
 
@@ -123,7 +124,7 @@ bool Test_CoreThread::test(RtuRw *modbus)
 bool Test_CoreThread::test485()
 {
     bool ret = false;
-    ret = test(this->mModbusJ7);
+    ret = test(this->mModbusJ8);
     QString str = "test J7 pass---------";;
     if(!ret){
         str = "test J7 failed!!!!!!!!";
@@ -131,7 +132,7 @@ bool Test_CoreThread::test485()
     }
     emit mExe->msgSig(str);
     if(ret) {
-        ret = test(mModbusJ8);
+        ret = test(mModbusJ7);
         if(!ret){
             str = "test J8 failed!!!!!!!!";
             updatePro(str ,ret);
@@ -140,8 +141,9 @@ bool Test_CoreThread::test485()
         {
             str = "test J8 pass---------";
         }
+        emit mExe->msgSig(str);
     }
-    emit mExe->msgSig(str);
+
     return ret;
 }
 

@@ -31,6 +31,7 @@ protected slots:
 
 private:
     bool mRes;
+    int m_port;
     QUdpSocket *mSocket;
 };
 

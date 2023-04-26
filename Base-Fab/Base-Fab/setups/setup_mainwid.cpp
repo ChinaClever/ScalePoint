@@ -57,6 +57,7 @@ void Setup_MainWid::initSerial()
     mItem->coms.comj7 = mComWid7->initSerialPort(tr("J7"));
     mComWid8 = new SerialStatusWid(ui->J8Wid);
     mItem->coms.comj8 = mComWid8->initSerialPort(tr("J8"));
+    ui->comWid->hide();
 }
 
 void Setup_MainWid::initLogCount()

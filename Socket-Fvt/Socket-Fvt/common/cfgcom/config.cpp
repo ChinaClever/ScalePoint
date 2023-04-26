@@ -29,6 +29,11 @@ void Cfg::initCfgDev()
     item->hw = read("HW", "", "Sys").toString();
 }
 
+int Cfg::initPort()
+{
+    return read("port", 0, "Sys").toInt();
+}
+
 void Cfg::writeCfgDev()
 {
     writeCnt();

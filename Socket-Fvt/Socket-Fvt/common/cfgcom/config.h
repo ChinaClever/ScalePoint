@@ -37,6 +37,7 @@ public:
 
     void writeCnt();
     void writeCfgDev();
+    int initPort();
 
 protected:
     void initCnt();

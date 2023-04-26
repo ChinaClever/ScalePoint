@@ -156,16 +156,17 @@ QString Test_BaseFvt::transmit(RtuRw * ser ,QString str)
     return recvStr;
 }
 
-bool Test_BaseFvt::startTest(RtuRw * ser ,QString str)
+bool Test_BaseFvt::startTest(RtuRw * ser ,QString str , int i)
 {
     bool ret = false;
     QString recvStr = transmit(ser , str);
     if(recvStr=="test_start") ret = true;
     else{
-        recvStr = tr("start test failed!!!!!!!!");
-        updatePro(recvStr, ret);
+        recvStr = tr(" start test failed!!!!!!!!");
+        updatePro(mComStr+recvStr, ret);
+        emit mExe->msgSig(mComStr+tr("发送 %1 次 start test: ").arg(i)+recvStr);
     }
-    emit mExe->msgSig("start test: "+recvStr);
+    if(ret) emit mExe->msgSig(mComStr+" start test: "+recvStr);
     return ret;
 }
 
@@ -175,10 +176,10 @@ bool Test_BaseFvt::getFw(RtuRw * ser ,QString str)
     QString recvStr = transmit(ser ,str);
     if(recvStr!=""){ ret = true;mDt->fw = "0x"+recvStr;recvStr="0x"+recvStr;}
     else{
-        recvStr = tr("getFw failed!!!!!!!!");
-        updatePro(recvStr, ret);
+        recvStr = tr(" getFw failed!!!!!!!!");
+        updatePro(mComStr+recvStr, ret);
     }
-    emit mExe->msgSig("getFw: "+recvStr);
+    if(ret) emit mExe->msgSig(mComStr+" getFw: "+recvStr);
     return ret;
 }
 
@@ -188,10 +189,10 @@ bool Test_BaseFvt::getIc(RtuRw * ser ,QString str)
     QString recvStr = transmit(ser , str);
     if(recvStr!=""){ ret = true;mDt->code= recvStr;}
     else{
-        recvStr = tr("getIc failed!!!!!!!!");
-        updatePro(recvStr, ret);
+        recvStr = tr(" getIc failed!!!!!!!!");
+        updatePro(mComStr+recvStr, ret);
     }
-    emit mExe->msgSig("getIc: "+recvStr);
+    if(ret) emit mExe->msgSig(mComStr+ " getIc: "+recvStr);
     return ret;
 }
 
@@ -202,9 +203,9 @@ bool Test_BaseFvt::getIeee(RtuRw * ser ,QString str)
     if(recvStr!=""){ ret = true;mDt->sn= recvStr;}
     else{
         recvStr = tr("getIeee failed!!!!!!!!");
-        updatePro(recvStr, ret);
+        updatePro(mComStr+recvStr, ret);
     }
-    emit mExe->msgSig("getIeee: "+recvStr);
+    if(ret) emit mExe->msgSig(mComStr+" getIeee: "+recvStr);
     return ret;
 }
 
@@ -215,37 +216,65 @@ bool Test_BaseFvt::disableTest(RtuRw * ser ,QString str)
     if(recvStr=="test_disable") ret = true;
     if(recvStr!=""){ ret = true;}
     else{
-        recvStr = tr("disableTest failed!!!!!!!!");
-        updatePro(recvStr, ret);
+        recvStr = tr(" disableTest failed!!!!!!!!");
+        updatePro(mComStr+recvStr, ret);
     }
-    emit mExe->msgSig("disableTest: pass");
+    if(ret) emit mExe->msgSig(mComStr+" disableTest: pass");
+    return ret;
+}
+
+bool Test_BaseFvt::fullReset(RtuRw * ser ,QString str)
+{
+    bool ret = false;
+    QString recvStr = transmit(ser,str);
+    if(recvStr=="reset_full") ret = true;
+    if(recvStr!=""){ ret = true;}
+    else{
+        recvStr = tr(" fullreset failed!!!!!!!!");
+        updatePro(mComStr+recvStr, ret);
+    }
+    if(ret) emit mExe->msgSig(mComStr+" fullreset: "+ recvStr);
     return ret;
 }
 
 bool Test_BaseFvt::getToken(int index)
 {
-    QString comStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();
+    mComStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();
     RtuRw *ser = mModbus;
     switch(index){
     //case 0:{ comStr = (&(Cfg::bulid()->item->coms))->sp->getSerialName();ser = mModbus;break;}
-    case 1:{ comStr = (&(Cfg::bulid()->item->coms))->comj7->getSerialName();ser = mModbusJ7;break;}
-    case 2:{ comStr = (&(Cfg::bulid()->item->coms))->comj8->getSerialName();ser = mModbusJ8;break;}
+    case 1:{ mComStr = (&(Cfg::bulid()->item->coms))->comj7->getSerialName();ser = mModbusJ7;break;}
+    case 2:{ mComStr = (&(Cfg::bulid()->item->coms))->comj8->getSerialName();ser = mModbusJ8;break;}
     }
-//    if(mModbus)
-//        emit openSig(comStr,QSerialPort::Baud57600);
-    if(index == 1) sleep(15);
+    //    if(mModbus)
+    //        emit openSig(comStr,QSerialPort::Baud57600);
     QString str = "start_test";
-    bool ret = startTest(ser ,str);
+    bool ret = false;
+    if(index == 1)
+        for(int i = 0 ; i < 5 ; ++i){
+            ret = startTest(ser ,str , i);
+            if(ret) break;
+        }
 
-    if(ret){
-        str = "get_fw";
-        if(ret) ret = getFw(ser,str);
-        str = "get_ic";
-        if(ret) ret = getIc(ser,str);
-        str = "get_ieee";
-        if(ret) ret = getIeee(ser,str);
-        //        str = "disable_test";
-        //        ret = disableTest(str);
+
+    if(index == 2){
+        //        str = "get_fw";
+        //        if(ret) ret = getFw(ser,str);
+        //        str = "get_ic";
+        //        if(ret) ret = getIc(ser,str);
+        //        str = "get_ieee";
+        //        if(ret) ret = getIeee(ser,str);
+        sleep(2);
+        str = "full_reset";
+        ret = fullReset(ser,str);
+        sleep(30);
+        for(int i = 0 ; i < 5 ; ++i){
+            str = "start_test";
+            ret = startTest(ser,str,i);
+            if(ret) break;
+        }
+        str = "disable_test";
+        ret = disableTest(ser,str);
     }
     return ret;
 }
@@ -260,6 +289,7 @@ bool Test_BaseFvt::workDown()
     sleep(1);
     ret = inputCheck();
     if(ret) ret = zigbeeConnect();
+    sleep(20);
     if(ret) ret = execute(&str);
     if(ret) ret = updateData(str);
     sleep(2);

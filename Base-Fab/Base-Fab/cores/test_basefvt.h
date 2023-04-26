@@ -29,16 +29,18 @@ private:
     bool updateData(const QString &v);
     bool zigbeeCheck(const QString &v);
 
-    inline bool startTest(RtuRw * ser ,QString str);
+    inline bool startTest(RtuRw * ser , QString str, int i);
     inline bool disableTest(RtuRw * ser ,QString str);
     inline QString transmit(RtuRw *ser, QString str);
     inline bool getFw(RtuRw *ser, QString str);
     inline bool getIc(RtuRw *ser, QString str);
     inline bool getIeee(RtuRw * ser ,QString str);
+    inline bool fullReset(RtuRw * ser ,QString str);
 
 private:
     Test_Execute *mExe;
     QString mPinsName;
+    QString mComStr;
 };
 
 #endif // TEST_BASEFVT_H

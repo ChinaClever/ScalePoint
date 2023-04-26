@@ -115,32 +115,7 @@
       </property>
       <item>
        <property name="text">
-        <string>生产流程</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>烧录流程</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>引导文件</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>应用文件</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>令牌写入</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>RS485测试</string>
+        <string>质检流程</string>
        </property>
       </item>
      </widget>
