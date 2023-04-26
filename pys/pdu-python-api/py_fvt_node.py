@@ -5,7 +5,8 @@ from raritan import rpc
 from raritan import zeroconf
 #from raritan.rpc.pdumodel import *
 from raritan.rpc import Agent, security , pdumodel, production , firmware, test, usb
-from raritan.rpc import servermon, event, usermgmt, um, devsettings, pdumodel, cert, sensors
+#from raritan.rpc import servermon, event, usermgmt, um, devsettings, pdumodel, cert, sensors
+from raritan.rpc import servermon, event, usermgmt, devsettings, pdumodel, cert, sensors
 
 gSocket =  None
 dest_ip = '127.0.0.1'
@@ -66,6 +67,9 @@ def getOptArgvs():
 
 def createAgent():
     try:
+        global User
+        global Password
+        global IpAddress
         str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress
         agent = Agent("https", IpAddress, User, Password, disable_certificate_verification=True)
     except Exception as e:
@@ -113,7 +117,7 @@ def LCD_Button_Test(agent):
                 break
             print('Enter LCD button test mode...')
             sendtoMainApp('第%d次进入LCD屏和按键测试模式，如果是颜色检测，请按OK按键'% (5 - retry + 1) , 1)
-            testdisplay.enterTestMode()
+            testdisplay.enterTestMode(True)
             print('Please follow instruction on LCD panel to do test ...')
             sendtoMainApp('第%d次请按照步骤进行下面测试'% (5 - retry + 1), 1)
             time.sleep(0.6)
@@ -148,8 +152,14 @@ def USB_A_Test(agent):
     You can attach a USB stick into USB-A. Then check its PID and VID to verify USB-A port.
     '''
     cnt_devices = 3
-    USB1_VID = 0x058F
-    USB1_PID = 0x6387
+    #USB1_VID = 0x058F#0X090C
+    #USB1_PID = 0x6387#0X3267
+    USB1_VID = 0x0930
+    USB1_PID = 0x6545
+    #USB1_VID = 0x0951
+    #USB1_PID = 0x1643
+    USB4_VID = 0X090C
+    USB4_PID = 0X3267
     cnt_usb1 = 1
     USB2_VID = 0x1D6B
     USB2_PID = 0x0001
@@ -174,7 +184,7 @@ def USB_A_Test(agent):
             print d.vendorId
             print d.productId
         '''
-        suc1 = check_device(usbdescs, USB1_VID, USB1_PID, cnt_usb1, 'checking #count of VID = 0x%04X PDI = 0x%04X'%(USB1_VID,USB1_PID))
+        suc1 = check_device(usbdescs, USB1_VID, USB1_PID, cnt_usb1, 'checking #count of VID = 0x%04X PDI = 0x%04X'%(USB4_VID,USB4_PID))
         suc2 = check_device(usbdescs, USB2_VID, USB2_PID, cnt_usb2, 'checking count of VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID))
         text = '检测USB VID = 0x%04X PDI = 0x%04X'%(USB2_VID,USB2_PID)
         sendtoMainApp(text , suc2)
@@ -217,9 +227,10 @@ def check_count(expectcnt, cnt):
 def count_descs(descs, vid, pid):
     cnt = 0
     for d in descs:
+        print('d.vendorId : %d ; d.productId : %d' % ( d.vendorId , d.productId))
         if(d.vendorId == vid and d.productId == pid):
-            print('d.vendorId : %d ; d.productId : %d' % ( d.vendorId , d.productId))
-            cnt += 1
+        	print('d.vendorId : %d ; d.productId : %d' % ( d.vendorId , d.productId))
+        	cnt += 1
     return cnt
 
 def J1_Connection_Test(agent):
@@ -321,7 +332,7 @@ if __name__=='__main__':
             show_PDU_Info(agent)
             ret = LCD_Button_Test(agent)
             ret = USB_A_Test(agent)
-            ret = J1_Connection_Test(agent)
+            #ret = J1_Connection_Test(agent)
             ret = performFactoryHardReset(agent)
     except Exception as e:
         str = 'User=' + User + ' Password=' + Password + ' IpAddress=' + IpAddress

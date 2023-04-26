@@ -70,6 +70,11 @@ void Cfg::initCurrentNum()
 }
 
 
+int Cfg::initPort()
+{
+    return read("port", 20046,"Sys").toInt();
+}
+
 void Cfg::initCfgDev()
 {
     item->addr = read("addr", 1,"Sys").toInt();

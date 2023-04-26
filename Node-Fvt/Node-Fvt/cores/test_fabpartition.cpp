@@ -121,7 +121,7 @@ bool test_FabPartition::changePermissions()
     updatePro(tr("准备")+str);
 
     QString cmd = "echo \"123456\" | sudo -S chmod 777 -R " + mDir +
-                  "*.img \n sudo chmod 777 /etc/pki/secure_boot_prov/*";
+                  "*.img *.bin \n sudo chmod 777 /etc/pki/secure_boot_prov/*";
     processOn(cmd.arg(mDt->sn));
     return updatePro(tr("已")+str);
 }
@@ -207,7 +207,8 @@ bool test_FabPartition::programFull()
     QProcess pro(this);
     updatePro(tr("开始烧录镜像文件，请耐心等待"));
 
-    ls << "-y" << "/dev/ttyACM0" << mDt->img << "0x00000";
+    if(mDt->img.contains(".img")) ls << "-y" << "/dev/ttyACM0" << mDt->img << "0x00000";
+    else ls << "-y" << "/dev/ttyACM0" << mDt->img;
     QString exe = mDir + "at91recovery";
     pro.start(exe, ls);
 
@@ -229,6 +230,8 @@ bool test_FabPartition::workDown()
 {
     bool ret = check();
     if(ret) ret = createFab();
+//    mDt->sn = "2I3B200002";
+//    mItem->macs.mac = "00:04:74:1E:00:01";
     if(ret) ret = changePermissions();
     if(ret) ret = programFab();
     if(ret) secure_boot_prov();

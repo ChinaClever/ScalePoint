@@ -200,12 +200,13 @@ bool Test_BaseFvt::getIeee(RtuRw * ser ,QString str)
 {
     bool ret = false;
     QString recvStr = transmit(ser ,str);
-    if(recvStr!=""){ ret = true;mDt->sn= recvStr;}
+    if(recvStr!=""){ recvStr = recvStr.right(8)+recvStr.left(8);ret = true;mDt->sn= recvStr;}
     else{
         recvStr = tr("getIeee failed!!!!!!!!");
         updatePro(mComStr+recvStr, ret);
+        emit mExe->msgSig(mComStr+"    getIeee:   "+recvStr);
     }
-    if(ret) emit mExe->msgSig(mComStr+" getIeee: "+recvStr);
+    if(ret) emit mExe->msgSig(mComStr+"    getIeee:   "+recvStr);
     return ret;
 }
 
@@ -255,8 +256,6 @@ bool Test_BaseFvt::getToken(int index)
             ret = startTest(ser ,str , i);
             if(ret) break;
         }
-
-
     if(index == 2){
         //        str = "get_fw";
         //        if(ret) ret = getFw(ser,str);
@@ -273,6 +272,8 @@ bool Test_BaseFvt::getToken(int index)
             ret = startTest(ser,str,i);
             if(ret) break;
         }
+        str = "get_ieee";
+        if(ret) ret = getIeee(ser,str);
         str = "disable_test";
         ret = disableTest(ser,str);
     }

@@ -230,7 +230,8 @@ void Home_WorkWid::initData()
 
 bool Home_WorkWid::initWid()
 {
-    bool ret = initSerial();
+    bool ret = true;
+    if( ui->modeBox->currentIndex() != 3)ret = initSerial();
     if(ret) {
         initUser();
         if(mItem->user.isEmpty()){MsgBox::critical(this, tr("请先填写客户名称！")); return false;}
@@ -297,8 +298,8 @@ void Home_WorkWid::on_imgBtn_clicked()
     bool en = true;
     QString str = tr("未选择");
     QString dir = "./Firmware_Build/4.0.0.5-48035/";
-    QString fn = QFileDialog::getOpenFileName(this, tr("选择烧录文件"), dir, "镜像文件(*.img)");
-    if(fn.contains(".img")){
+    QString fn = QFileDialog::getOpenFileName(this, tr("选择烧录文件"), dir, "镜像文件(*.img);;应用文件(*.bin)");
+    if(fn.contains(".img")||fn.contains(".bin")){
         mDt->img = fn;
         str = tr("已选择");
     } else {

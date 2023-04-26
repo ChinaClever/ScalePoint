@@ -37,8 +37,7 @@ QString Test_SerialNumber::updateMacAddr(int step)
     sMac *it = &(mItem->macs);
     if(it->mac.size() > 5) {
         MacAddr *mac = MacAddr::bulid();
-        //it->mac = mac->macAdd(it->mac, step);
-        it->mac = "2C:26:5F:33:10:11";
+        it->mac = mac->macAdd(it->mac, step);
         BaseLogs::bulid()->writeMac(it->mac);
         Cfg::bulid()->write("mac", it->mac, "Mac");
     } else {

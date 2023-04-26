@@ -86,6 +86,7 @@ bool Test_NetWork::startProcess()
         QByteArray bs = mProcess->readAllStandardOutput();
         bs += mProcess->readAllStandardError();
         QString str = QString::fromLocal8Bit(bs); emit msgSig(str);
+        if(str.contains("'str' object is not callable")) {ret = false;}
     }
 
     return ret;

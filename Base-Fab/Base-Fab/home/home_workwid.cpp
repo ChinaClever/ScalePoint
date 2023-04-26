@@ -158,10 +158,13 @@ bool Home_WorkWid::initSerial()
 //        str = tr(" 设备固件(*.s37)未指定\n 软件无法执行。。。");
 //        MsgBox::critical(this,str); return false;
 //    }
+
     bool ret = mItem->coms.comj7->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开J7串口")); return ret;}
+
     ret = mItem->coms.comj8->isOpened();
     if(!ret) {MsgBox::critical(this, tr("请先打开J8串口")); return ret;}
+
 
     return true;
 }

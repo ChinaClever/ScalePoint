@@ -74,6 +74,7 @@ public:
     void wirteMac();
     void writeCnt();
     void writeCfgDev();
+    int initPort();
 
     void setCurrentNum();
     void write(const QString &key, const QVariant& v, const QString &g="cfg");

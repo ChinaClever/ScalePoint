@@ -98,8 +98,10 @@ bool Test_CoreThread::factoryWork()
     //ret = mFvt->workDown();
 
     //if(ret) ret = waitFor();
+
     ret = mFvt->getToken(1);
     if(ret) ret = mFvt->getToken(2);
+
     //if(ret) ret = test485();
     //if(ret) ret = printer();
     return ret;

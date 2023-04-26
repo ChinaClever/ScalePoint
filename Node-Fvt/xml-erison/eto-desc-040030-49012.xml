@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ETODescriptor
+    xmlns="http://www.raritan.com/xsd/pdu/eto-desc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.raritan.com/xsd/pdu/eto-desc ../xsd/eto-desc.xsd">
+
+<version>$Revision: 4452 $</version>
+
+<!-- firstly some Low Level Details -->
+<controllers>
+    <mainController id="MAIN" type="AT91ARM_51" option="nofeatureport,nosensorport"/>
+    <chassisController id="CC0" type="DESC_STORAGE" controllerId="MAIN" address="Serial-1:0x10" option="secure"/>
+</controllers>
+
+<sensors>
+    <!-- Unit Sensors -->
+    <sensor id="SUB0" type="GPIO" controllerId="MAIN" address="GPIO-D:7"/>
+    <sensor id="SUB1" type="GPIO" controllerId="MAIN" address="GPIO-D:8"/>
+    <sensor id="SUB2" type="GPIO" controllerId="MAIN" address="GPIO-D:9"/>
+    <sensor id="SUB3" type="GPIO" controllerId="MAIN" address="GPIO-D:10"/>
+</sensors>
+
+<effectors>
+    <!-- Unit Displays -->
+    <effector id="EUD0" type="DOTMATRIXDISP_00" controllerId="MAIN" address="0x0"/>
+</effectors>
+
+<interfaces>
+    <interface id="BASEEXT" type="BASE_RS485" controllerId="MAIN" address="Serial-2"/>
+</interfaces>
+
+<!-- lastly the Unit and what it contains -->
+<device>
+    <nameplate>
+        <manufacturer>Legrand</manufacturer>
+        <brand>ScalePoint</brand>
+    </nameplate>
+    <buttons>
+	<button id="down" sensorId="SUB3"/>
+	<button id="cancel" sensorId="SUB2"/>
+	<button id="up" sensorId="SUB0"/>
+	<button id="ok" sensorId="SUB1"/>
+    </buttons>
+    <displays>
+	<display id="main_disp" effectorId="EUD0" supportedOrientations="0,90,180,270" flippedOrientations="180,270" orientation="0"/>
+    </displays>
+</device>
+</ETODescriptor>
+

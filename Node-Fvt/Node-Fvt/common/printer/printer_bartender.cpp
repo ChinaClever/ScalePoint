@@ -5,6 +5,7 @@
  */
 #include "printer_bartender.h"
 #include "common.h"
+#include "common/cfgcom/config.h"
 
 Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
 {
@@ -12,6 +13,7 @@ Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
     //mSocket->bind(QHostAddress::LocalHost, 47755);
     mSocket->bind(QHostAddress::AnyIPv4, 47755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
+    mPort = Cfg::bulid()->initPort();
 }
 
 Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
@@ -53,7 +55,7 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
-    int port = 20044;
+    int port = mPort;
     sendMsg("start", port, QHostAddress::Broadcast);
 
     QString order = createOrder(it);
