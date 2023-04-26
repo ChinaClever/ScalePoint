@@ -29,7 +29,8 @@ ui_*.h
 Makefile*
 *build-*
 *pdu-json-rpc-sdk*
-*raritan*
+*rpc*
+*__pycache__*
 *.idea*
 *build*
 *dist*
