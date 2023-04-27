@@ -20,6 +20,8 @@ protected:
     bool checkNet();
     QString getExeFile();
     void pduInfo(int fn, QString &msg);
+    bool CheckAppRunningStatus(const QString &appName);
+    void KillAppProcess(const QString &appName);
 
     QStringList getCmd();
 

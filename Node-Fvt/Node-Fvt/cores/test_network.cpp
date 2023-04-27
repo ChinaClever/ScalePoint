@@ -79,6 +79,8 @@ bool Test_NetWork::startProcess()
     if(ret) {
         QString fn = getExeFile();
         if(!fn.size()) return false;
+        QString app = "py_fvt_node.exe";
+        if(CheckAppRunningStatus(app))KillAppProcess(app);
         QStringList cmd = getCmd();
         mProcess->start(fn, cmd);
 
@@ -92,6 +94,31 @@ bool Test_NetWork::startProcess()
     return ret;
 }
 
+bool Test_NetWork::CheckAppRunningStatus(const QString &appName)
+{
+#ifdef Q_OS_WIN
+    QProcess* process = new QProcess;
+    process->start("tasklist" ,QStringList()<<"/FI"<<"imagename eq " +appName);
+    process->waitForFinished();
+    QString outputStr = QString::fromLocal8Bit(process->readAllStandardOutput());
+    if(outputStr.contains(appName)){
+        return true;
+    }
+    else{
+        return false;
+    }
+#endif
+}
+
+void Test_NetWork::KillAppProcess(const QString &appName)
+{
+#ifdef Q_OS_WIN
+    QProcess p;
+    QString c = "taskkill /im " + appName + " /f";
+    p.execute(c);
+    p.close();
+#endif
+}
 
 void Test_NetWork::pduInfo(int fn, QString &msg)
 {
