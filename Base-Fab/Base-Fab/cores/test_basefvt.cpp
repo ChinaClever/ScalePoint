@@ -163,7 +163,7 @@ bool Test_BaseFvt::startTest(RtuRw * ser ,QString str , int i)
     if(recvStr=="test_start") ret = true;
     else{
         recvStr = tr(" start test failed!!!!!!!!");
-        updatePro(mComStr+recvStr, ret);
+        //updatePro(mComStr+recvStr, ret);
         emit mExe->msgSig(mComStr+tr("发送 %1 次 start test: ").arg(i)+recvStr);
     }
     if(ret) emit mExe->msgSig(mComStr+" start test: "+recvStr);
@@ -203,7 +203,7 @@ bool Test_BaseFvt::getIeee(RtuRw * ser ,QString str)
     if(recvStr!=""){ recvStr = recvStr.right(8)+recvStr.left(8);ret = true;mDt->sn= recvStr;}
     else{
         recvStr = tr("getIeee failed!!!!!!!!");
-        updatePro(mComStr+recvStr, ret);
+        //updatePro(mComStr+recvStr, ret);
         emit mExe->msgSig(mComStr+"    getIeee:   "+recvStr);
     }
     if(ret) emit mExe->msgSig(mComStr+"    getIeee:   "+recvStr);
