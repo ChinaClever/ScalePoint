@@ -28,6 +28,7 @@ bool Test_CoreThread::enumDeviceType()
     bool ret = mRtu->enumDeviceType();
     if(!ret) {
         ret = mExe->startProcess();
+        QThread::msleep(2000);
         if(ret) ret = mRtu->enumDeviceType();
     }
 
@@ -214,6 +215,7 @@ bool Test_CoreThread::initFun()
     mExe->startProcess();
     QThread::msleep(5000);
     mExe->startProcess();
+    QThread::msleep(2000);
     if(ret) ret = enumDeviceType();
     if(ret) ret = readDev();
     return ret;
