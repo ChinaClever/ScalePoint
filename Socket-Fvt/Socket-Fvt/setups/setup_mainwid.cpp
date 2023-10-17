@@ -15,8 +15,9 @@ Setup_MainWid::Setup_MainWid(QWidget *parent) :
 {
     ui->setupUi(this);
     groupBox_background_icon(this);
-    QTimer::singleShot(rand()%13,this,SLOT(initFunSlot()));
     mItem = Cfg::bulid()->item;
+    QTimer::singleShot(rand()%13,this,SLOT(initFunSlot()));
+
     initSerial();
 }
 
@@ -28,6 +29,7 @@ Setup_MainWid::~Setup_MainWid()
 void Setup_MainWid::initFunSlot()
 {
     initLogCount();
+    ui->portSpin->setValue(mItem->port);
     ui->pcNumSpin->setValue(mItem->pcNum);
     mUserWid = new UserMainWid(ui->stackedWid);
     ui->stackedWid->addWidget(mUserWid);
@@ -93,6 +95,7 @@ void Setup_MainWid::on_pcBtn_clicked()
         ret = false;
         writeLogCount();
         mItem->pcNum = ui->pcNumSpin->value();
+        mItem->port = ui->portSpin->value();
         Cfg::bulid()->writeCfgDev();
     } else {
         str = tr("保存");
@@ -100,6 +103,7 @@ void Setup_MainWid::on_pcBtn_clicked()
 
     ui->pcBtn->setText(str);
     ui->logCountSpin->setEnabled(ret);
+    ui->portSpin->setEnabled(ret);
     if(mItem->pcNum) ret = false;
     ui->pcNumSpin->setEnabled(ret);
 }

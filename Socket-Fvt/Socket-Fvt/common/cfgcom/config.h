@@ -25,6 +25,7 @@ struct sCfgItem
     sSerial coms;
     int logCount;
     uchar pcNum;
+    int port;
 };
 
 

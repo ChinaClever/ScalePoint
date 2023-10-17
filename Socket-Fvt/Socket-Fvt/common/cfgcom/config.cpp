@@ -27,12 +27,14 @@ void Cfg::initCfgDev()
     item->user = read("user", "", "User").toString();
     item->pcNum = read("pc_num", 0, "Sys").toInt();
     item->hw = read("HW", "", "Sys").toString();
+    item->port = read("port", 10046, "Sys").toInt();
 }
 
-int Cfg::initPort()
-{
-    return read("port", 0, "Sys").toInt();
-}
+//int Cfg::initPort()
+//{
+//    item->port = read("port", 10046, "Sys").toInt();
+//    return item->port;
+//}
 
 void Cfg::writeCfgDev()
 {
@@ -40,6 +42,7 @@ void Cfg::writeCfgDev()
     write("HW", item->hw, "Sys");
     write("user", item->user, "User");
     write("pc_num", item->pcNum, "Sys");
+    write("port", item->port, "Sys");
 }
 
 void Cfg::initCnt()

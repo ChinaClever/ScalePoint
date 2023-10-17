@@ -12,8 +12,7 @@ Printer_BarTender::Printer_BarTender(QObject *parent) : QObject(parent)
     mSocket = new QUdpSocket(this);
     mSocket->bind(QHostAddress::AnyIPv4, 47755);
     connect(mSocket,SIGNAL(readyRead()),this,SLOT(recvSlot()));
-    m_port = Cfg::bulid()->initPort();
-    qDebug()<<m_port;
+    m_port = Cfg::bulid()->item->port;
 }
 
 Printer_BarTender *Printer_BarTender::bulid(QObject *parent)
@@ -55,6 +54,7 @@ bool Printer_BarTender::recvResponse(int sec)
 
 bool Printer_BarTender::printer(sBarTend &it)
 {
+    m_port = Cfg::bulid()->item->port;
     int port = m_port;
     sendMsg("start", port);
 

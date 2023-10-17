@@ -160,7 +160,7 @@ bool Test_BaseFvt::startTest(RtuRw * ser ,QString str , int i)
 {
     bool ret = false;
     QString recvStr = transmit(ser , str);
-    if(recvStr=="test_start") ret = true;
+    if(recvStr.contains("test_start")) ret = true;
     else{
         recvStr = tr(" start test failed!!!!!!!!");
         //updatePro(mComStr+recvStr, ret);
@@ -196,11 +196,34 @@ bool Test_BaseFvt::getIc(RtuRw * ser ,QString str)
     return ret;
 }
 
+QString Test_BaseFvt::reverse(QString str)
+{
+    int len = str.length();
+    for(int i = 0 , j = len -1 ; i < j ; i++,j--)
+    {
+        QChar c = str[i];
+        str[i] = str[j];
+        str[j] = c;
+    }
+    for(int i = 0; i < len ; i+=2)
+    {
+        QChar c = str[i];
+        str[i] = str[i+1];
+        str[i+1] = c;
+    }
+    return str;
+}
+
 bool Test_BaseFvt::getIeee(RtuRw * ser ,QString str)
 {
     bool ret = false;
     QString recvStr = transmit(ser ,str);
-    if(recvStr!=""){ recvStr = recvStr.right(8)+recvStr.left(8);ret = true;mDt->sn= recvStr;}
+    if(recvStr!=""){
+        //recvStr = recvStr.right(8)+recvStr.left(8);
+        recvStr = reverse(recvStr.left(8))+reverse(recvStr.right(8));
+        ret = true;
+        mDt->sn= recvStr;
+    }
     else{
         recvStr = tr("getIeee failed!!!!!!!!");
         //updatePro(mComStr+recvStr, ret);
@@ -214,7 +237,7 @@ bool Test_BaseFvt::disableTest(RtuRw * ser ,QString str)
 {
     bool ret = false;
     QString recvStr = transmit(ser,str);
-    if(recvStr=="test_disable") ret = true;
+    if(recvStr.contains("test_disable")) ret = true;
     if(recvStr!=""){ ret = true;}
     else{
         recvStr = tr(" disableTest failed!!!!!!!!");
@@ -228,7 +251,7 @@ bool Test_BaseFvt::fullReset(RtuRw * ser ,QString str)
 {
     bool ret = false;
     QString recvStr = transmit(ser,str);
-    if(recvStr=="reset_full") ret = true;
+    if(recvStr.contains("reset_full")) ret = true;
     if(recvStr!=""){ ret = true;}
     else{
         recvStr = tr(" fullreset failed!!!!!!!!");

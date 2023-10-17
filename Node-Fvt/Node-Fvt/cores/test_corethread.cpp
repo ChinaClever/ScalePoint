@@ -29,13 +29,21 @@ bool Test_CoreThread::printer()
     QString str = tr("标签打印 ");
     if(mPro->result != Test_Fail){
         sBarTend it;
-        it.pn = "646130";
+        //it.pn = "646130";
+        it.pn = "A024387BA";
         mDt->sn = mDt->ctrlBoardSerial.mid(3,2)+mDt->ctrlBoardSerial.mid(6);
         it.sn = "000474" + mDt->sn;
         it.fw = mDt->fwRevision;
         //it.fw = "4.0.30.5-49136";
         it.hw = mDt->hwRevision;
-        ret = Printer_BarTender::bulid(this)->printer(it);
+        if(mDt->sn.isEmpty() || mDt->fwRevision.isEmpty() || mDt->hwRevision.isEmpty()){
+            mPro->result = Test_Fail;
+            ret  = false;
+            if(mDt->sn.isEmpty()) str += tr(" 读取到序列号SN为空 ");
+            if(mDt->fwRevision.isEmpty()) str += tr(" 读取到固件版本FW为空 ");
+            if(mDt->hwRevision.isEmpty()) str += tr(" 读取到硬件版本HW为空 ");
+        }
+        if(ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(!ret) ret = Printer_BarTender::bulid(this)->printer(it);
         if(ret) str += tr("正常"); else str += tr("错误");
     } else str = tr("因测试未通过，标签未打印");

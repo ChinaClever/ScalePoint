@@ -11,6 +11,7 @@ public:
     static Test_BaseFvt *bulid(QObject *parent = nullptr);
     bool workDown();
     bool getToken(int index);
+    QString reverse(QString str);
 
 signals:
     void closeSig();
