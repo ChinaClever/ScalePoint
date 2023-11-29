@@ -139,9 +139,45 @@ bool SP_Object::masterWrite(uchar fc, uchar addr, uchar msb, uchar lsb, bool ack
     return ret;
 }
 
-bool SP_Object::enumDeviceType()
+int SP_Object::enumDeviceType()
 {
-    bool ret = false; reflush();
+    int ret = 0; reflush();
+    int cnt = 0;
+    for(int i=0; i<15; ++i) {
+        QByteArray array = mModbus->readSerial(250);
+        if(array.size()) {
+            for(int k=0; k<=array.size()-6; ++k) {
+                if((array.at(k) == FC_REQUEST_ADDR) && (array.at(k+1) == MASTER_ADDR)) {
+                    mDt->devType = array.at(k+2) >> 1;
+                    mDt->outputbits = array.at(k+3);
+                    switch (mDt->devType) {
+                    case DEVICE_TYPE_A: {mDt->socketdt= "Standard Socket";mDt->dt = "Standard Socket"; break;}
+                    case DEVICE_TYPE_B: {mDt->socketdt= "Socket with Relay";mDt->dt = "Socket with Relay"; writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 1, mDt->outputbits);reflush();mDt->outputs = mDt->outputbits;break;}
+                    case DEVICE_TYPE_C: {mDt->socketdt= "Socket Metered";mDt->dt = "Socket Metered"; break;}
+                    case DEVICE_TYPE_D: {mDt->socketdt= "Socket Metered with Relay";mDt->dt = "Socket Metered with Relay"; break;}
+                    case DEVICE_TYPE_IMM_1L:{mDt->immdt = "IMM single line with 3 branch current"; writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 2, mDt->outputs+1);reflush();break;}
+                    case DEVICE_TYPE_IMM_3L: {mDt->immdt = "IMM three lines with 6 branch current"; writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 2, mDt->outputs+1);reflush();break;}
+                    case DEVICE_TYPE_IMM_3L_N:{mDt->immdt = "IMM three lines with 6 branch current + neutral"; writeSerial(FC_REQUEST_ADDR, MASTER_ADDR, 2, mDt->outputs+1);reflush();break;}
+                    default: qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->outputbits; continue;
+                    }
+                    if(mDt->socketdt.contains("Socket")){
+                        ret |=  1;mDt->socketdt.clear();break;
+                    }
+                    if(mDt->immdt.contains("IMM")){
+                        ret |=  2;mDt->immdt.clear();break;
+                    }
+                } else if(((array.at(k)&ERROR_MASK_BIT)) == 3 /*FC_RESET*/) return false;
+            }
+        } else if(cnt++ > 15) break;
+        else writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2);
+    }
+
+    return ret;
+}
+
+bool SP_Object::enumSocketType()
+{
+    bool ret = 0; reflush();
     for(int i=0; i<9; ++i) {
         QByteArray array = mModbus->readSerial(250);
         if(array.size()) {
@@ -150,18 +186,22 @@ bool SP_Object::enumDeviceType()
                     mDt->devType = array.at(k+2) >> 1;
                     mDt->outputs = array.at(k+3);
                     switch (mDt->devType) {
-                    case DEVICE_TYPE_A: mDt->dt = "Standard Socket"; break;
-                    case DEVICE_TYPE_B: mDt->dt = "Socket with Relay"; break;
-                    case DEVICE_TYPE_C: mDt->dt = "Socket Metered"; break;
-                    case DEVICE_TYPE_D: mDt->dt = "Socket Metered with Relay"; break;
-                    case DEVICE_TYPE_IMM_1L: mDt->dt = "IMM single line with 3 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L: mDt->dt = "IMM three lines with 6 branch current"; break;
-                    case DEVICE_TYPE_IMM_3L_N: mDt->dt = "IMM three lines with 6 branch current + neutral"; break;
+                    case DEVICE_TYPE_A: {mDt->dt = "Standard Socket"; break;}
+                    case DEVICE_TYPE_B: {mDt->dt = "Socket with Relay";break;}
+                    case DEVICE_TYPE_C: {mDt->dt = "Socket Metered"; break;}
+                    case DEVICE_TYPE_D: {mDt->dt = "Socket Metered with Relay"; break;}
+                    case DEVICE_TYPE_IMM_1L:{mDt->dt = "IMM single line with 3 branch current";break;}
+                    case DEVICE_TYPE_IMM_3L: {mDt->dt = "IMM three lines with 6 branch current";break;}
+                    case DEVICE_TYPE_IMM_3L_N:{mDt->dt = "IMM three lines with 6 branch current + neutral";break;}
                     default: qDebug() << "enumDeviceType err" <<  mDt->devType << mDt->outputs; continue;
-                    } return true;
+                    }
+                    if(mDt->dt.contains("IMM")) return false;
+                    else
+                    return true;
                 } else if(((array.at(k)&ERROR_MASK_BIT)) == 3 /*FC_RESET*/) return false;
             }
-        } else writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2);
+        }
+        else writeSerial(FC_RESET, BROADCAST_ADDR, 0, i%2);
     }
 
     return ret;

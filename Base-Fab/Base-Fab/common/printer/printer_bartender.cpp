@@ -28,7 +28,7 @@ QString Printer_BarTender::createOrder(sBarTend &it)
     QString date = QDate::currentDate().toString("yy") + "W";
     date += QString("%1").arg(QDate::currentDate().weekNumber(), 2, 10, QLatin1Char('0'));
     str += date+","; str += "IEEE " + it.sn + ","; it.sn = it.sn.remove(QRegExp("\\s"));
-    str += QString("G$K:%1$I:%2%Z$A:%3%M:%4$HW:%5$FW:%6").arg(it.pn).arg(it.code).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
+    str += QString("G$K:%1$I:%2%Z$A:%3%M:%4$HW:%5$FW:%6\n").arg(it.pn).arg(it.code).arg(it.sn).arg(date).arg(it.hw).arg(it.fw);
     return str;
 }
 

@@ -11,11 +11,15 @@ struct sDevType
     uchar addr;
     uchar devType;
     uchar outputs;
+    uchar outputbits;
 
     QString sn;
     QString fw;
     QString pn;
+
+    QString socketdt;
     QString dt;
+    QString immdt;
 };
 
 

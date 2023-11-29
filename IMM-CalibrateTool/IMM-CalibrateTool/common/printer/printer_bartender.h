@@ -24,7 +24,7 @@ protected:
     bool recvResponse(int sec);
     QString createOrder(sBarTend &it);
     int sendMsg(const QByteArray &msg, quint16 port,
-                const QHostAddress &host=QHostAddress::LocalHost);
+                const QHostAddress &host=QHostAddress::Broadcast);
 
 protected slots:
     void recvSlot();

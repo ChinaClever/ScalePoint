@@ -14,7 +14,8 @@ protected:
     void run();
     bool initFun();
     bool readDev();
-    bool enumDeviceType();
+    int enumDeviceType();
+    bool enumSocketType();
     void outputCtrl();
 
     bool zeroMeasRot();

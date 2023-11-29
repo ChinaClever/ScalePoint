@@ -24,7 +24,8 @@ public:
 
     bool readSn();
     bool readVersion();
-    bool enumDeviceType();
+    int enumDeviceType();
+    bool enumSocketType();
     bool onewireBus(int addr=1);
     bool requestAddr(int addr=1);
     int masterRequest(sFrameFormat &it);

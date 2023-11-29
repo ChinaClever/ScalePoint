@@ -22,16 +22,20 @@ void Test_CoreThread::initFunSlot()
     mBt->init(1);
 }
 
-bool Test_CoreThread::enumDeviceType()
+int Test_CoreThread::enumDeviceType()
+{
+    QString str;
+    int ans = mRtu->enumDeviceType();
+    if(ans == 0) {str = tr("Socket靠近通讯板通讯端口有问题"); updatePro(str, false);str="";}
+    if(ans == 1) {str = tr("Socket远离通讯板通讯端口有问题"); updatePro(str, false);str="";}
+    if(ans == 3) {str = tr("Socket通讯端口OK"); updatePro(str, true);str="";}
+    return ans;
+}
+
+bool Test_CoreThread::enumSocketType()
 {
     QString str = tr("设备类型：");
-    bool ret = mRtu->enumDeviceType();
-    if(!ret) {
-        ret = mExe->startProcess();
-        QThread::msleep(2000);
-        if(ret) ret = mRtu->enumDeviceType();
-    }
-
+    bool ret = mRtu->enumSocketType();
     if(ret) {
         str += tr("%1；输出位：%2").arg(mDt->dt).arg(mDt->outputs);
     } else str += tr("识别错误"); updatePro(str, ret);
@@ -104,24 +108,24 @@ void Test_CoreThread::workResult()
 void Test_CoreThread::outputCtrl()
 {
 
-//    updatePro(tr("Socket 打开所有的输出位"));
-//    mRtu->openAll(); msleep(500);
+    //    updatePro(tr("Socket 打开所有的输出位"));
+    //    mRtu->openAll(); msleep(500);
 
-//    if(mDt->outputs == 8){
-//        updatePro(tr("Socket 打开前4个输出位"));
-//        mRtu->openAll_front4(); sleep(20);
-//        updatePro(tr("Socket 关闭前4个输出位"));
-//        mRtu->closeAll_front4();
-//        updatePro(tr("Socket 打开后4个输出位"));
-//        mRtu->openAll_back4(); sleep(20);
-//    }
-//    else{
-        updatePro(tr("Socket 打开所有的输出位"));
-        mRtu->openAll();
-//    }
+    //    if(mDt->outputs == 8){
+    //        updatePro(tr("Socket 打开前4个输出位"));
+    //        mRtu->openAll_front4(); sleep(20);
+    //        updatePro(tr("Socket 关闭前4个输出位"));
+    //        mRtu->closeAll_front4();
+    //        updatePro(tr("Socket 打开后4个输出位"));
+    //        mRtu->openAll_back4(); sleep(20);
+    //    }
+    //    else{
+    updatePro(tr("Socket 打开所有的输出位"));
+    mRtu->openAll();
+    //    }
 
-//    updatePro(tr("Socket 再次打开所有的输出位"));
-//    mRtu->openAll();
+    //    updatePro(tr("Socket 再次打开所有的输出位"));
+    //    mRtu->openAll();
 }
 
 bool Test_CoreThread::btCurCheck()
@@ -215,9 +219,16 @@ bool Test_CoreThread::initFun()
     mExe->startProcess();
     QThread::msleep(5000);
     mExe->startProcess();
-    QThread::msleep(2000);
-    if(ret) ret = enumDeviceType();
-    if(ret) ret = readDev();
+    int ans = 0;
+    if(ret) ans = enumDeviceType();
+
+    mExe->startProcess();
+    QThread::msleep(5000);
+    mExe->startProcess();
+    QThread::msleep(5000);
+    mExe->startProcess();
+    if(ans!=0)ret = enumSocketType();
+    if(ans!=0 && ret) ret = readDev();
     return ret;
 }
 
