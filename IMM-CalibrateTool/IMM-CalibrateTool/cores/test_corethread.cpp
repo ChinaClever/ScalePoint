@@ -27,6 +27,7 @@ void Test_CoreThread::initFunSlot()
 bool Test_CoreThread::resDev()
 {    
     mDev->resDev(); msleep(120);
+    mExe->startProcess(); sleep(1);mExe->startProcess();
     return mExe->startProcess();
 }
 
