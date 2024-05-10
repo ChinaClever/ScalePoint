@@ -92,7 +92,30 @@ bool Test_CoreThread::printer()
 void Test_CoreThread::workResult()
 {
     bool res = mYc->powerDown();
-    QString str = tr("最终结果 ");
+    bool ret = false,ret1 = false,ret2 = false;
+    mBt->closeSocket(3);sleep(1);
+    ret1 =  mBt->readSocket(3 , 0);
+    if(!ret1){
+        mBt->closeSocket(3);sleep(1);
+        ret1 =  mBt->readSocket(3 , 0);
+    }
+    QString str = tr("互感器气缸退出");
+    if(ret1) str += tr("正常"); else str += tr("失败");
+    updatePro(str, ret1);
+    BaseLogs::bulid()->start();
+    if(ret1){
+        mBt->closeSocket(4);sleep(1);
+        ret2 =  mBt->readSocket(4 , 0);
+        if(!ret2){
+            mBt->closeSocket(4);sleep(1);
+            ret2 =  mBt->readSocket(4 , 0);
+        }
+    }
+    str = tr("压下气缸退出");
+    if(ret2) str += tr("正常"); else str += tr("失败");
+    updatePro(str, ret2);
+    ret = ret1 & ret2;
+    str = tr("最终结果 ");
     if(mPro->result != Test_Fail) {
         if(mPr) res = printer();
         if(res)
@@ -104,48 +127,42 @@ void Test_CoreThread::workResult()
         msleep(1650);
         str += tr("失败");
     }
+    updatePro(str, res, 1);mPro->step = Test_Over;
 
-    updatePro(str, res, 1); mPro->step = Test_Over;
-    bool ret = false,ret1 = false,ret2 = false;
-    mBt->closeSocket(1);sleep(1);
-    ret1 =  mBt->readSocket(1 , 0);
-    if(!ret1){
-        mBt->closeSocket(1);sleep(1);
-        ret1 =  mBt->readSocket(1 , 0);
-    }
-    BaseLogs::bulid()->start();
-    mBt->closeSocket(2);sleep(1);
-    ret2 =  mBt->readSocket(2 , 0);
-    if(!ret2){
-        mBt->closeSocket(2);sleep(1);
-        ret2 =  mBt->readSocket(2 , 0);
-    }
-    ret = ret1 & ret2;
+
 //    mSocket->closeOutput(3);
 //    sleep(1); mSocket->closeOutput(2);
 }
 
 bool Test_CoreThread::cylinderDown()
 {
-    bool ret = resDev();
-    QString str = tr("气缸初始化");
+    bool ret = true;
     YC_Ac92b::bulid()->setVol(220);
     //if(ret) ret = mSocket->enumDeviceType();
-    if(ret) str += tr("正常"); else str += tr("失败"); updatePro(str, ret);
+    QString str;
     if(ret) {
         bool ret1 = false,ret2 = false;
-        mBt->openSocket(1);sleep(1);
-        ret1 =  mBt->readSocket(1 , 1);
+        mBt->openSocket(4);sleep(1);
+        ret1 =  mBt->readSocket(4 , 1);
         if(!ret1){
-            mBt->openSocket(1);sleep(1);
-            ret1 =  mBt->readSocket(1 , 1);
+            mBt->openSocket(4);sleep(1);
+            ret1 =  mBt->readSocket(4 , 1);
         }
-        mBt->openSocket(2);sleep(1);
-        ret2 =  mBt->readSocket(2 , 1);
-        if(!ret2){
-            mBt->openSocket(2);sleep(1);
-            ret2 =  mBt->readSocket(2 , 1);
+        str = tr("压下气缸");
+        if(ret1) str += tr("正常"); else str += tr("失败");
+        updatePro(str, ret1);
+        if(ret1){
+
+            mBt->openSocket(3);sleep(1);
+            ret2 =  mBt->readSocket(3 , 1);
+            if(!ret2){
+                mBt->openSocket(3);sleep(1);
+                ret2 =  mBt->readSocket(3 , 1);
+            }
         }
+        str = tr("互感器气缸");
+        if(ret2) str += tr("正常"); else str += tr("失败");
+        updatePro(str, ret2);
         ret = ret1 & ret2;
     }
     return ret;
@@ -157,6 +174,9 @@ bool Test_CoreThread::initFun()
     updatePro(tr("即将开始"));
     mBt->init(2);
     bool ret = cylinderDown();
+    ret = resDev();
+    QString str = tr("气缸初始化");
+    if(ret) str += tr("正常"); else str += tr("失败"); updatePro(str, ret);
     if(ret) ret = enumDeviceType();
     if(mPro->step != Test_Bs && mPro->step != Test_Print)
         if(ret) ret = mYc->powerOn();
