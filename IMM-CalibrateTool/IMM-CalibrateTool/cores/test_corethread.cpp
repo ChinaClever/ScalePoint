@@ -27,7 +27,7 @@ void Test_CoreThread::initFunSlot()
 bool Test_CoreThread::resDev()
 {    
     mDev->resDev(); msleep(120);
-    mExe->startProcess(); sleep(1);mExe->startProcess();
+    mExe->startProcess(); msleep(220);
     return mExe->startProcess();
 }
 
@@ -117,8 +117,10 @@ bool Test_CoreThread::cylinderDown()
     YC_Ac92b::bulid()->setVol(220);
     if(ret) ret = mSocket->enumDeviceType();
     if(ret) str += tr("正常"); else str += tr("失败"); updatePro(str, ret);
-    if(ret) {mSocket->openOutput(2);sleep(1); mSocket->openOutput(2);
-        mSocket->openOutput(3);sleep(1); mSocket->openOutput(3);}
+    if(ret) {
+        for(int i = 0 ; i < 3 ; i++)mSocket->openOutput(2);sleep(1);
+        for(int i = 0 ; i < 3 ; i++)mSocket->openOutput(3);
+    }
     return ret;
 }
 
