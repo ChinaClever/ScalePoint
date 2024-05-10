@@ -106,8 +106,23 @@ void Test_CoreThread::workResult()
     }
 
     updatePro(str, res, 1); mPro->step = Test_Over;
-    mSocket->closeOutput(3); BaseLogs::bulid()->start();
-    sleep(1); mSocket->closeOutput(2);
+    bool ret = false,ret1 = false,ret2 = false;
+    mBt->closeSocket(1);sleep(1);
+    ret1 =  mBt->readSocket(1 , 0);
+    if(!ret1){
+        mBt->closeSocket(1);sleep(1);
+        ret1 =  mBt->readSocket(1 , 0);
+    }
+    BaseLogs::bulid()->start();
+    mBt->closeSocket(2);sleep(1);
+    ret2 =  mBt->readSocket(2 , 0);
+    if(!ret2){
+        mBt->closeSocket(2);sleep(1);
+        ret2 =  mBt->readSocket(2 , 0);
+    }
+    ret = ret1 & ret2;
+//    mSocket->closeOutput(3);
+//    sleep(1); mSocket->closeOutput(2);
 }
 
 bool Test_CoreThread::cylinderDown()
@@ -115,10 +130,24 @@ bool Test_CoreThread::cylinderDown()
     bool ret = resDev();
     QString str = tr("气缸初始化");
     YC_Ac92b::bulid()->setVol(220);
-    if(ret) ret = mSocket->enumDeviceType();
+    //if(ret) ret = mSocket->enumDeviceType();
     if(ret) str += tr("正常"); else str += tr("失败"); updatePro(str, ret);
-    if(ret) {mSocket->openOutput(2);sleep(1); mSocket->openOutput(2);
-        mSocket->openOutput(3);sleep(1); mSocket->openOutput(3);}
+    if(ret) {
+        bool ret1 = false,ret2 = false;
+        mBt->openSocket(1);sleep(1);
+        ret1 =  mBt->readSocket(1 , 1);
+        if(!ret1){
+            mBt->openSocket(1);sleep(1);
+            ret1 =  mBt->readSocket(1 , 1);
+        }
+        mBt->openSocket(2);sleep(1);
+        ret2 =  mBt->readSocket(2 , 1);
+        if(!ret2){
+            mBt->openSocket(2);sleep(1);
+            ret2 =  mBt->readSocket(2 , 1);
+        }
+        ret = ret1 & ret2;
+    }
     return ret;
 }
 
@@ -126,6 +155,7 @@ bool Test_CoreThread::initFun()
 {
     mPr = false;
     updatePro(tr("即将开始"));
+    mBt->init(2);
     bool ret = cylinderDown();
     if(ret) ret = enumDeviceType();
     if(mPro->step != Test_Bs && mPro->step != Test_Print)
@@ -187,6 +217,37 @@ void Test_CoreThread::collectData()
 void Test_CoreThread::run()
 {
     if(isRun) return; else isRun = true;
+//    bool ret = false , ret1 = false,ret2 = false;
+//    mBt->init(2);
+//    mBt->openSocket(1);sleep(1);
+//    ret1 = mBt->readSocket(1 , 1);
+//    if(!ret1){
+//        mBt->openSocket(1);sleep(1);
+//        ret1 =  mBt->readSocket(1 , 1);
+//    }
+//    mBt->openSocket(2);sleep(1);
+//    ret2 =  mBt->readSocket(2 , 1);
+//    if(!ret2){
+//        mBt->openSocket(2);sleep(1);
+//        ret2 =  mBt->readSocket(2 , 1);
+//    }
+//    ret = ret1 & ret2;
+//    qDebug()<<"open "<< ret << ret1 << ret2;
+
+//    mBt->closeSocket(1);sleep(1);
+//    ret1 = mBt->readSocket(1 , 0);
+//    if(!ret1){
+//        mBt->closeSocket(1);sleep(1);
+//        ret1 =  mBt->readSocket(1 , 0);
+//    }
+//    mBt->closeSocket(2);sleep(1);
+//    ret2 =  mBt->readSocket(2 , 0);
+//    if(!ret2){
+//        mBt->closeSocket(2);sleep(1);
+//        ret2 =  mBt->readSocket(2 , 0);
+//    }
+//    ret = ret1 & ret2;
+//    qDebug()<<"close "<< ret << ret1 << ret2;
     bool ret = initFun();
     if(ret){
         switch (mPro->step) {

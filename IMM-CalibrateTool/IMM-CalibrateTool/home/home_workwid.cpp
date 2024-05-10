@@ -258,6 +258,8 @@ bool Home_WorkWid::initWid()
 
 void Home_WorkWid::on_startBtn_clicked()
 {
+//    mPro->step = ui->modeBox->currentIndex()+Test_Start;
+//    mCoreThread->start();//////test
     if(mPro->step == Test_End) {
         if(initWid()) mCoreThread->start();
     } else {

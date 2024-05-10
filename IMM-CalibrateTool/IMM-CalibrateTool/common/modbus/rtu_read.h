@@ -2,6 +2,7 @@
 #define RTU_READ_H
 
 #include "rtu_serial.h"
+#include "common.h"
 
 #define MODBUS_RTU_SIZE 255
 
@@ -30,6 +31,8 @@ class Rtu_Read : public Rtu_Serial
 public:
     explicit Rtu_Read(QObject *parent = nullptr);
     int read(sRtuItem &pkt, uchar *recv);
+    int rtuWriteRPDU(uchar *sendBuf,int rtn , uchar *recvBuf);
+    bool rtuReadRPDU(uchar *sendBuf, int rtn , int index ,int onOrOff ,uchar *recvBuf);
 
 protected:
     ushort calccrc (ushort crc, uchar crcbuf);
@@ -38,7 +41,7 @@ protected:
 
     bool rtuRecvCrc(uchar *buf, int len);
     bool recvCrc(uchar *buf, int len, sRtuReplyItem *msg);
-    int rtuRead(sRtuItem *pkt, sRtuReplyItem *recv);
+    int rtuRead(sRtuItem *pkt, sRtuReplyItem *recv);  
 };
 
 #endif // RTU_READ_H

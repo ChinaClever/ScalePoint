@@ -181,8 +181,10 @@ bool SP_Object::enumDeviceType()
         if(array.size() > 6) {
             if((array.at(0) == FC_REQUEST_ADDR) && (array.at(1) == MASTER_ADDR)) {
                 mDt->devType = array.at(2) >> 1; mDt->outputs = array.at(3);
-                if(mDt->devType == DEVICE_TYPE_B) ret = enumSocketType();
-                else if(mDt->devType < 8) ret = enumImmType();
+//                if(mDt->devType == DEVICE_TYPE_B) ret = enumSocketType();
+//                else if(mDt->devType < 8) ret = enumImmType();
+                //if(mDt->devType == DEVICE_TYPE_B) ret = enumSocketType();
+                if(mDt->devType < 8) ret = enumImmType();
             } reflush();
         } else if(cnt++ > 5) break;
     }

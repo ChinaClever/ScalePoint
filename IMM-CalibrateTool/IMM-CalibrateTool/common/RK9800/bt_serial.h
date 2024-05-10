@@ -19,6 +19,9 @@ public:
 
     void init(int id=1);
     bool readPacket(sBtIt &bt);
+    bool openSocket(int index);
+    bool closeSocket(int index);
+    bool readSocket(int index, int onOrOff);
 
 protected:
     sRtuItem initRtuItem();

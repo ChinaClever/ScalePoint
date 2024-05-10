@@ -114,3 +114,40 @@ int Rtu_Read::read(sRtuItem &pkt, uchar *recv)
 
     return ret;
 }
+
+
+int Rtu_Read::rtuWriteRPDU(uchar *sendBuf,int rtn , uchar *recvBuf)
+{
+    uchar xorvalue = 0x00;
+    for(int i = 0 ; i < rtn - 1 ; i++)
+        xorvalue ^= sendBuf[i];
+    sendBuf[ rtn - 1] = xorvalue;
+//    qDebug()<<cm_ByteArrayToHexStr(sendBuf , rtn);
+    rtn = transmit(sendBuf, rtn, recvBuf, 3);
+
+    return rtn;
+}
+
+bool Rtu_Read::rtuReadRPDU(uchar *sendBuf,int rtn ,int index ,int onOrOff , uchar *recvBuf)
+{
+    bool ret = false;
+    uchar xorvalue = 0x00;
+    for(int i = 0 ; i < rtn - 1 ; i++)
+        xorvalue ^= sendBuf[i];
+    sendBuf[ rtn - 1] = xorvalue;
+//    qDebug()<<cm_ByteArrayToHexStr(sendBuf , rtn);
+    rtn = transmit(sendBuf, rtn, recvBuf, 3);
+    if(rtn == 18){
+        xorvalue = 0x00;
+        for(int i = 0 ; i < rtn - 1 ; i++)
+            xorvalue ^= recvBuf[i];
+        if(recvBuf[rtn - 1] == xorvalue){
+//            qDebug()<<recvBuf[12] << " rtn  " << (((recvBuf[12] >> (8 - index))&0x1));
+            if(((recvBuf[12] >> (8 - index))&0x1)== onOrOff){
+                ret = true;
+            }
+        }
+    }
+
+    return ret;
+}
