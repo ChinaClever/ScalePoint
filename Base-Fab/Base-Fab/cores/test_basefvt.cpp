@@ -220,7 +220,8 @@ bool Test_BaseFvt::getIeee(RtuRw * ser ,QString str)
     QString recvStr = transmit(ser ,str);
     if(recvStr!=""){
         //recvStr = recvStr.right(8)+recvStr.left(8);
-        recvStr = reverse(recvStr.left(8))+reverse(recvStr.right(8));
+        //
+        //recvStr = reverse(recvStr.left(8))+reverse(recvStr.right(8));
         ret = true;
         mDt->sn= recvStr;
     }
