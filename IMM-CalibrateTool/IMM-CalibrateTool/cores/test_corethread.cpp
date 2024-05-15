@@ -93,22 +93,24 @@ void Test_CoreThread::workResult()
 {
     bool res = mYc->powerDown();
     bool ret = false,ret1 = false,ret2 = false;
-    mBt->closeSocket(3);sleep(1);
-    ret1 =  mBt->readSocket(3 , 0);
+    sleep(1);//等待标准源下电
+    mBt->closeSocket(4);sleep(1);
+    ret1 =  mBt->readSocket(4 , 0);
     if(!ret1){
-        mBt->closeSocket(3);sleep(1);
-        ret1 =  mBt->readSocket(3 , 0);
+        mBt->closeSocket(4);sleep(1);
+        ret1 =  mBt->readSocket(4 , 0);
     }
     QString str = tr("互感器气缸退出");
     if(ret1) str += tr("正常"); else str += tr("失败");
     updatePro(str, ret1);
     BaseLogs::bulid()->start();
+    ret1 = true;
     if(ret1){
-        mBt->closeSocket(4);sleep(1);
-        ret2 =  mBt->readSocket(4 , 0);
+        mBt->closeSocket(3);msleep(800);
+        ret2 =  mBt->readSocket(3 , 0);
         if(!ret2){
-            mBt->closeSocket(4);sleep(1);
-            ret2 =  mBt->readSocket(4 , 0);
+            mBt->closeSocket(3);msleep(800);
+            ret2 =  mBt->readSocket(3 , 0);
         }
     }
     str = tr("压下气缸退出");
@@ -142,22 +144,21 @@ bool Test_CoreThread::cylinderDown()
     QString str;
     if(ret) {
         bool ret1 = false,ret2 = false;
-        mBt->openSocket(4);sleep(1);
-        ret1 =  mBt->readSocket(4 , 1);
+        mBt->openSocket(3);sleep(1);
+        ret1 =  mBt->readSocket(3 , 1);
         if(!ret1){
-            mBt->openSocket(4);sleep(1);
-            ret1 =  mBt->readSocket(4 , 1);
+            mBt->openSocket(3);sleep(1);
+            ret1 =  mBt->readSocket(3 , 1);
         }
         str = tr("压下气缸");
         if(ret1) str += tr("正常"); else str += tr("失败");
         updatePro(str, ret1);
         if(ret1){
-
-            mBt->openSocket(3);sleep(1);
-            ret2 =  mBt->readSocket(3 , 1);
+            mBt->openSocket(4);msleep(800);
+            ret2 =  mBt->readSocket(4 , 1);
             if(!ret2){
-                mBt->openSocket(3);sleep(1);
-                ret2 =  mBt->readSocket(3 , 1);
+                mBt->openSocket(4);msleep(800);
+                ret2 =  mBt->readSocket(4 , 1);
             }
         }
         str = tr("互感器气缸");
