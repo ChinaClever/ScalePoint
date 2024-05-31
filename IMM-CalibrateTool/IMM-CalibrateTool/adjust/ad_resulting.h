@@ -32,10 +32,12 @@ protected:
     bool noLoadCurFun();
     bool noLoadCurCheck(int k, int cnt);
     bool powerOn();
+    void writeLog();
 
 private:
     SP_ImmRtu *mCollect;
     YC_StandSource *mSource;
+    QStringList mLog;
 };
 
 #endif // AD_RESULTING_H

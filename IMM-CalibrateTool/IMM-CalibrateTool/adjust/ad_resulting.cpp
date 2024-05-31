@@ -43,16 +43,23 @@ bool Ad_Resulting::powErrRange(int exValue, int pow)
 bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 {
     exValue = mItem->errs.vol * exValue/AD_CUR_RATE; exValue *= 0.5;
-    QString str = tr("L%1功率 期望值%2W 功率").arg(i+1).arg(exValue);
+    QString str = tr("L%1功率 期望值%2W 实际功率").arg(i+1).arg(exValue);
     sLineData *line = &(mData->lines[i]);
     bool ret = powErrRange(exValue, line->pow.active);
+    int a = exValue*COM_RATE_POW;
+    int b = line->pow.active;
+    float c = -1;
+    if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
     if(ret) {
         line->status = Test_Pass;
         line->powed = line->pow.active;
-        str += tr("正常"); updatePro(str);
+        str += tr(" %1W 误差=%2 % 正常").arg(QString::number(line->pow.active/COM_RATE_POW,'f',3)).arg(QString::number(c,'f',3));
+        mLog<<str;
+        updatePro(str);
     } else {
         if(cnt > 3) {
-            str += tr(" %1W 错误").arg(line->pow.active/COM_RATE_POW);
+            str += tr(" %1W 误差=%2 % 错误").arg(QString::number(line->pow.active/COM_RATE_POW,'f',3)).arg(QString::number(c,'f',3));
+            mLog<<str;
             updatePro(str, ret); line->status = Test_Fail;
         }
     }
@@ -63,16 +70,21 @@ bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
 {
     sLineData *line = &(mData->lines[i]); int cur = line->cur_rms / 10;
-    QString str = tr("L%1电流 电流%3  期望值%2A ").arg(i+1)
-            .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR);
+    int a = exValue*COM_RATE_CUR/AD_CUR_RATE;
+    int b = line->cur_rms;
+    float c = -1;
+    if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
+    QString str = tr("L%1电流 期望值%2A，实际电流%3 误差=%4 %").arg(i+1)
+            .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
     bool ret = curErrRange(exValue, cur);
     if(ret) {
         line->cur_ed = line->cur_rms;
         ret = powRangeByID(i, exValue, cnt);
-        if(ret){str += tr("正常"); updatePro(str);}
+        if(ret){str += tr("正常"); mLog<<str;updatePro(str);}
     } else {
         if(cnt > 3) {
             str += tr("错误");
+            mLog<<str;
             updatePro(str, ret);
             line->status = Test_Fail;
         }
@@ -89,9 +101,15 @@ bool Ad_Resulting::volErrRangeByID(int i)
     int vol = line->vol_rms / COM_RATE_VOL;
     int min = errs->vol - errs->volErr;
     int max = errs->vol + errs->volErr;
-    QString str = tr("L%1电压 期望值200V，实际电压%2V ").arg(i+1).arg(vol);
+
+    int a = errs->vol*COM_RATE_VOL;
+    int b = line->cur_rms;
+    float c = -1;
+    if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
+    QString str = tr("L%1电压 期望值200V，实际电压%2V 误差=%3 %").arg(i+1).arg(vol).arg(a==0?"---":QString::number(c,'f',3));
     if((vol >= min) && (vol <= max)) {
         str += tr("正常"); updatePro(str);
+        mLog<<str;
         line->status = Test_Pass;
     } else {
         ret = false;
@@ -112,6 +130,16 @@ bool Ad_Resulting::volErrRange()
             } else {
                 ret = false;
                 mData->lines[i].status = Test_Fail;
+
+                sErrData *errs = &(mItem->errs);
+                sLineData *line = &(mData->lines[i]);
+                int a = errs->vol*COM_RATE_VOL;
+                int b = line->cur_rms;
+                float c = -1;
+                if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
+                QString str1 = tr("L%1电压 期望值200V，实际电压%2V 误差=%3 %").arg(i+1).arg(line->vol_rms / COM_RATE_VOL).arg(a==0?"---":QString::number(c,'f',3));
+                mLog<<str1;
+
                 QString str = tr("L%1电压 检测到错误").arg(i+1);
                 updatePro(str, ret, 1); break;
             }
@@ -152,12 +180,17 @@ bool Ad_Resulting::loopCurCheck(int exValue)
     bool res = true;
     for(int i=0; i<mDt->outputs; ++i) {
         sBranchIt *it = &(mData->branchs[i]); int cur = it->cur_rms / 10;
-        QString str = tr("C%1电流 电流%3A  期望值%2A ").arg(i+1)
-                .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR);
+        int a = exValue*COM_RATE_CUR/AD_CUR_RATE;
+        int b = it->cur_rms;
+        float c = -1;
+        if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
+        QString str = tr("C%1电流 期望值%2A, 实际电流%3A 误差=%4 %").arg(i+1)
+                .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
         int err = (mItem->errs.curErr) * 10; bool ret = false;
         int min = exValue - err; int max = exValue + err;
         if((cur >= min) && (cur <= max )) {str += tr("正常"); ret = true;}
         else {str += tr("错误").arg(cur/COM_RATE_CUR); res = false;}
+        mLog<<str;
         updatePro(str, ret);
     }
 
@@ -169,8 +202,12 @@ bool Ad_Resulting::neutralCheck(int exValue)
     bool ret = true;
     if(mDt->neutral) {
         sBranchIt *it = &(mData->neutral); int cur = it->cur_rms / 10;
-        QString str = tr("零线电流%1A  期望值%2A ")
-                .arg(it->cur_rms/COM_RATE_CUR).arg(exValue/AD_CUR_RATE);
+        int a = exValue*COM_RATE_CUR/AD_CUR_RATE;
+        int b = it->cur_rms;
+        float c = -1;
+        if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
+        QString str = tr("期望值%1A 实际零线电流%2A 误差=%3 %")
+                .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
         for(int i=0; i<3; ++i) {
             ret = curErrRange(exValue, cur);
             if(ret) break; else mCollect->readPduData();
@@ -262,12 +299,42 @@ bool Ad_Resulting::powerOn()
 
 bool Ad_Resulting::resEnter()
 {
+    mLog.clear();
+    QString str = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    mLog<<str;
+    mLog<<mDt->pn;
+    mLog<<mDt->sn;
+    mLog<<mDt->fw;
+
     bool ret = powerOn();
     if(ret) {
         ret = workDown(4*AD_CUR_RATE);
+        writeLog();
         if(ret) ret = noLoadEnter();
     }
 
     return ret;
 }
+
+void Ad_Resulting::writeLog()
+{
+    QString tfile = QCoreApplication::applicationDirPath();
+    tfile.remove(tfile.length()-7 , 7);
+    QString fileName = tfile+"Log_imm.csv";
+    QFile csvfile(fileName);
+    csvfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+
+    QTextStream out(&csvfile);
+    out.setCodec("GBK");
+    for(int i=0; i<mLog.size(); ++i)
+    {
+        out<<mLog.at(i)<<",";
+        msleep(30);
+    }
+    out<<"\n";
+    csvfile.flush();
+    csvfile.close();
+    mLog.clear();
+}
+
 
