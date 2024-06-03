@@ -43,7 +43,7 @@ bool Ad_Resulting::powErrRange(int exValue, int pow)
 bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 {
     exValue = mItem->errs.vol * exValue/AD_CUR_RATE; exValue *= 0.5;
-    QString str = tr("L%1功率 期望值%2W 实际功率").arg(i+1).arg(exValue);
+    QString str = tr("L%1功率 期望值 %2W 实际功率").arg(i+1).arg(exValue);
     sLineData *line = &(mData->lines[i]);
     bool ret = powErrRange(exValue, line->pow.active);
     int a = exValue*COM_RATE_POW;
@@ -54,12 +54,10 @@ bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
         line->status = Test_Pass;
         line->powed = line->pow.active;
         str += tr(" %1W 误差=%2 % 正常").arg(QString::number(line->pow.active/COM_RATE_POW,'f',3)).arg(QString::number(c,'f',3));
-        mLog<<str;
         updatePro(str);
     } else {
         if(cnt > 3) {
             str += tr(" %1W 误差=%2 % 错误").arg(QString::number(line->pow.active/COM_RATE_POW,'f',3)).arg(QString::number(c,'f',3));
-            mLog<<str;
             updatePro(str, ret); line->status = Test_Fail;
         }
     }
@@ -74,17 +72,26 @@ bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
     int b = line->cur_rms;
     float c = -1;
     if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
-    QString str = tr("L%1电流 期望值%2A，实际电流%3 误差=%4 %").arg(i+1)
+    QString str1;
+    QString str = tr("L%1电流 期望值%2A，实际电流%3A 误差=%4 %").arg(i+1)
             .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
     bool ret = curErrRange(exValue, cur);
     if(ret) {
         line->cur_ed = line->cur_rms;
         ret = powRangeByID(i, exValue, cnt);
-        if(ret){str += tr("正常"); mLog<<str;updatePro(str);}
+        if(ret){
+            str += tr("正常");
+            str1 = tr("L%1:Current Expect:%2A Current:%3A Error rate:%4 Pass").arg(i+1)
+                    .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+            mLog<<str1;
+            updatePro(str);
+        }
     } else {
         if(cnt > 3) {
             str += tr("错误");
-            mLog<<str;
+            str1 = tr("L%1:Current Expect:%2A Current:%3A Error rate:%4 Fail").arg(i+1)
+                    .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+            mLog<<str1;
             updatePro(str, ret);
             line->status = Test_Fail;
         }
@@ -138,10 +145,8 @@ bool Ad_Resulting::volErrRange()
                 float c = -1;
                 if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
                 QString str1 = tr("L%1电压 期望值200V，实际电压%2V 误差=%3 %").arg(i+1).arg(line->vol_rms / COM_RATE_VOL).arg(a==0?"---":QString::number(c,'f',3));
-                mLog<<str1;
 
-                QString str = tr("L%1电压 检测到错误").arg(i+1);
-                updatePro(str, ret, 1); break;
+                updatePro(str1, ret, 1); break;
             }
         }
     }
@@ -186,11 +191,22 @@ bool Ad_Resulting::loopCurCheck(int exValue)
         if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
         QString str = tr("C%1电流 期望值%2A, 实际电流%3A 误差=%4 %").arg(i+1)
                 .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+        QString str1;
         int err = (mItem->errs.curErr) * 10; bool ret = false;
         int min = exValue - err; int max = exValue + err;
-        if((cur >= min) && (cur <= max )) {str += tr("正常"); ret = true;}
-        else {str += tr("错误").arg(cur/COM_RATE_CUR); res = false;}
-        mLog<<str;
+        if((cur >= min) && (cur <= max )) {
+            str += tr("正常");
+            ret = true;
+            str1 = tr("C%1:Current Expect:%2A Current:%3A Error rate:%4 Pass").arg(i+1)
+                                        .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+        }
+        else {
+            str += tr("错误").arg(cur/COM_RATE_CUR);
+            res = false;
+            str1 = tr("C%1:Current Expect:%2A Current:%3A Error rate:%4 Fail").arg(i+1)
+                                        .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+        }
+        mLog<<str1;
         updatePro(str, ret);
     }
 
