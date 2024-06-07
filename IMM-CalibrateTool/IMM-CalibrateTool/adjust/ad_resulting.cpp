@@ -4,7 +4,7 @@
  *      Author: Lzy
  */
 #include "ad_resulting.h"
-#define AD_CUR_RATE 100
+#define AD_CUR_RATE 1000.0
 
 Ad_Resulting::Ad_Resulting(QObject *parent) : BaseThread(parent)
 {
@@ -22,8 +22,18 @@ Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
 bool Ad_Resulting::curErrRange(int exValue, int cur)
 {
     bool ret = false;
-    int min = exValue - mItem->errs.curErr * 10;//400-1
-    int max = exValue + mItem->errs.curErr * 10;//400+1
+//    int min = exValue - mItem->errs.curErr * 10;//400-1
+//    int max = exValue + mItem->errs.curErr * 10;//400+1
+
+    float err = exValue * mItem->errs.curErr/1000.0;
+    float min = exValue - err;//400-1
+    float max = exValue + err;//400+1
+    qDebug()<<" exValue "<< exValue
+           << " mItem->errs.curErr "<< mItem->errs.curErr
+           << " err "<< err
+           << " min "<<min
+           << " max "<<max
+           <<"  cur "<<cur;
     if((cur >= min) && (cur <= max )) ret =  true;
     return ret;
 }
@@ -42,7 +52,7 @@ bool Ad_Resulting::powErrRange(int exValue, int pow)
 
 bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 {
-    exValue = mItem->errs.vol * exValue/AD_CUR_RATE; exValue *= 0.5;
+    exValue = mItem->errs.vol * exValue/AD_CUR_RATE; //exValue *= 0.5;
     QString str = tr("L%1功率 期望值%2W 功率").arg(i+1).arg(exValue);
     sLineData *line = &(mData->lines[i]);
     bool ret = powErrRange(exValue, line->pow.active);
@@ -62,8 +72,9 @@ bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 
 bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
 {
-    sLineData *line = &(mData->lines[i]); int cur = line->cur_rms / 10;
-    QString str = tr("L%1电流 电流%3  期望值%2A ").arg(i+1)
+    sLineData *line = &(mData->lines[i]); //int cur = line->cur_rms / 10;
+    int cur = line->cur_rms;
+    QString str = tr("L%1电流 电流%3A 期望值%2A ").arg(i+1)
             .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR);
     bool ret = curErrRange(exValue, cur);
     if(ret) {
@@ -124,7 +135,7 @@ bool Ad_Resulting::volErrRange()
 bool Ad_Resulting::eachCurCheck(int k, int exValue)
 {
     bool ret = true;
-    double value = mItem->errs.vol*exValue/AD_CUR_RATE; value *= 0.5;
+    double value = mItem->errs.vol*exValue/AD_CUR_RATE; //value *= 0.5;
     QString str = tr("L%1校验数据: 期望电流%2A 功率%3W").arg(k+1).arg(exValue/AD_CUR_RATE).arg(value);
     updatePro(str); for(int i=0; i<5; ++i) {
         if(i) str += tr(" 第%1次").arg(i+1); else delay(4);
@@ -254,8 +265,10 @@ bool Ad_Resulting::powerOn()
     updatePro(tr("自动验证开始"));
 
     mPro->step = Test_vert;
-    mSource->setVol(200);
-    bool ret = mSource->setCur(40, 2);
+//    mSource->setVol(200);
+//    bool ret = mSource->setCur(40, 2);
+    mSource->setVol(220);
+    bool ret = mSource->setCur_a(2.0, 2);
     QString str = tr("验证电流：期望电流4A");
     return updatePro(str, ret);
 }
@@ -264,7 +277,8 @@ bool Ad_Resulting::resEnter()
 {
     bool ret = powerOn();
     if(ret) {
-        ret = workDown(4*AD_CUR_RATE);
+//        ret = workDown(4*AD_CUR_RATE);
+        ret = workDown(200);
         if(ret) ret = noLoadEnter();
     }
 

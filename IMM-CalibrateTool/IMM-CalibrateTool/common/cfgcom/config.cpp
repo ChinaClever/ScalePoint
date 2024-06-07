@@ -9,7 +9,7 @@
 Cfg::Cfg(QObject *parent) : CfgSerial(parent)
 {
     item = new sCfgItem();
-    item->errs.vol = 200;
+    item->errs.vol = 220;
 
     initCnt();
     initCfgDev();

@@ -79,6 +79,23 @@ bool YC_Ac92b::setCur(int v, int sec)
     return ret;
 }
 
+bool YC_Ac92b::setCur_a(double v,int sec)
+{
+    bool ret = setValue_a("A", v);
+    if(ret) {
+        if(v == 60) serialWrite("P3\r");
+        ret = delay(sec);
+    }
+    return ret;
+}
+
+bool YC_Ac92b::setValue_a(const QString &str, double v)
+{
+    QByteArray array;
+    array =  str.toLatin1() + QString::number(v,'f',2).toUtf8();
+    return write(array);
+}
+
 
 bool YC_Ac92b::handShake()
 {

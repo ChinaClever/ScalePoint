@@ -45,6 +45,14 @@ bool YC_StandSource::powerOn(int v)
     return ret;
 }
 
+bool YC_StandSource::powerOn(double v)
+{
+    bool ret = setVol(200);
+    if(ret) ret = setCur_a(v);
+
+    return ret;
+}
+
 bool YC_StandSource::powerDown()
 {
     setVol(0,0);
