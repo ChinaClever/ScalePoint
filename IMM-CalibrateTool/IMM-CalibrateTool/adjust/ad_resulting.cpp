@@ -116,7 +116,7 @@ bool Ad_Resulting::volErrRangeByID(int i)
     QString str = tr("L%1电压 期望值200V，实际电压%2V 误差=%3 %").arg(i+1).arg(vol).arg(a==0?"---":QString::number(c,'f',3));
     if((vol >= min) && (vol <= max)) {
         str += tr("正常"); updatePro(str);
-        mLog<<str;
+//        mLog<<str;
         line->status = Test_Pass;
     } else {
         ret = false;
