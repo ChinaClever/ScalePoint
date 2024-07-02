@@ -31,13 +31,15 @@ protected:
     bool noLoadEnter();
     bool noLoadCurFun();
     bool noLoadCurCheck(int k, int cnt);
-    bool powerOn();
+    bool powerOn(int v);
     void writeLog();
+    void initLog();
 
 private:
     SP_ImmRtu *mCollect;
     YC_StandSource *mSource;
     QStringList mLog;
+    int mFlag;
 };
 
 #endif // AD_RESULTING_H

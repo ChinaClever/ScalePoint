@@ -9,6 +9,7 @@
 Ad_Resulting::Ad_Resulting(QObject *parent) : BaseThread(parent)
 {
     mCollect = SP_ImmRtu::bulid(this);
+    mFlag = 0;
 }
 
 Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
@@ -52,12 +53,8 @@ bool Ad_Resulting::powErrRange(int exValue, int pow)
 
 bool Ad_Resulting::powRangeByID(int i, int exValue, int cnt)
 {
-    exValue = mItem->errs.vol * exValue/AD_CUR_RATE; //exValue *= 0.5;
+    exValue = mItem->errs.vol * exValue/AD_CUR_RATE; if(mFlag == 1) exValue *= 0.5;
     QString str = tr("L%1功率 期望值%2W 实际功率").arg(i+1).arg(exValue);
-//=======
-//    exValue = mItem->errs.vol * exValue/AD_CUR_RATE; exValue *= 0.5;
-//    QString str = tr("L%1功率 期望值 %2W 实际功率").arg(i+1).arg(exValue);
-//>>>>>>> IMM-CalibrateToolNew
     sLineData *line = &(mData->lines[i]);
     bool ret = powErrRange(exValue, line->pow.active);
     int a = exValue*COM_RATE_POW;
@@ -178,7 +175,7 @@ bool Ad_Resulting::volErrRange()
 bool Ad_Resulting::eachCurCheck(int k, int exValue)
 {
     bool ret = true;
-    double value = mItem->errs.vol*exValue/AD_CUR_RATE; //value *= 0.5;
+    double value = mItem->errs.vol*exValue/AD_CUR_RATE; if(mFlag == 1) value *= 0.5;
     QString str = tr("L%1校验数据: 期望电流%2A 功率%3W").arg(k+1).arg(exValue/AD_CUR_RATE).arg(value);
     updatePro(str); for(int i=0; i<5; ++i) {
         if(i) str += tr(" 第%1次").arg(i+1); else delay(4);
@@ -321,40 +318,63 @@ bool Ad_Resulting::noLoadEnter()
     return ret;
 }
 
-bool Ad_Resulting::powerOn()
+bool Ad_Resulting::powerOn(int v)
 {
     initRtuThread();
     mSource = Yc_Obj::bulid()->get();
     updatePro(tr("自动验证开始"));
+    QString str;
+    bool ret;
 
     mPro->step = Test_vert;
 //    mSource->setVol(200);
 //    bool ret = mSource->setCur(40, 2);
-    mSource->setVol(220);
-    bool ret = mSource->setCur_a(2.0, 2);
-    QString str = tr("验证电流：期望电流4A");
+    if(v == 200){
+        mSource->setVol(220);
+        ret = mSource->setCur_a(2.0, 2);
+
+    }else{
+        mSource->setVol(200);
+        ret = mSource->setCur(40, 2);
+    }
+    str = tr("验证电流：期望电流%1mA").arg(v);
     return updatePro(str, ret);
 }
 
 bool Ad_Resulting::resEnter()
 {
-    mLog.clear();
-    QString str = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
-    mLog<<str;
-    mLog<<mDt->pn;
-    mLog<<mDt->sn;
-    mLog<<mDt->fw;
 
-    bool ret = powerOn();
+
+    bool ret = powerOn(200);
     if(ret) {
 //        ret = workDown(4*AD_CUR_RATE);
+        mFlag = 0;
+        initLog();
         ret = workDown(200);
-//        ret = workDown(4*AD_CUR_RATE);
+        writeLog();
+
+        powerOn(4000);
+        mFlag = 1;
+        initLog();
+        ret = workDown(4*AD_CUR_RATE);
         writeLog();
         if(ret) ret = noLoadEnter();
     }
 
     return ret;
+}
+
+void Ad_Resulting::initLog()
+{
+    mLog.clear();
+    QString str = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+    if(mFlag == 0 )mLog<<tr("200mA");
+    else mLog<<tr("4000mA");
+    mLog<<str;
+    mLog<<mDt->pn;
+    mLog<<mDt->sn;
+    mLog<<mDt->fw;
+    return;
 }
 
 void Ad_Resulting::writeLog()
