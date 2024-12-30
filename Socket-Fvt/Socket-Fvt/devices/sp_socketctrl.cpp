@@ -87,8 +87,10 @@ bool SP_SocketCtrl::measRot(uchar addr, uint &t)
     bool ret = false; t = 0;
     for(int i=0; i<3; ++i) {
         QByteArray array = masterRequest(FC_MEAS_ROT, addr);
+        qDebug()<<"array.size()   "<< t<< array.size() <<(uchar)array.at(0);
         if(array.size() && (array.at(0) == FC_MEAS_ROT)) {
             t =  ((uchar)array.at(2)) * 256 + (uchar)array.at(3);
+            qDebug()<<"time   "<< t<< endl;
             t = t * 100.0 / 20.0 ; // 转换为ms
             if((t>200)&&(t<1500)) {ret = true; break;}
         } mdelay(10);

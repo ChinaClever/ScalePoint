@@ -220,15 +220,17 @@ bool Test_CoreThread::initFun()
     QThread::msleep(5000);
     mExe->startProcess();
     int ans = 0;
-    if(ret) ans = enumDeviceType();
+//    if(ret) ans = enumDeviceType();
 
-    mExe->startProcess();
-    QThread::msleep(5000);
-    mExe->startProcess();
-    QThread::msleep(5000);
-    mExe->startProcess();
-    if(ans!=0)ret = enumSocketType();
-    if(ans!=0 && ret) ret = readDev();
+//    mExe->startProcess();
+//    QThread::msleep(5000);
+//    mExe->startProcess();
+//    QThread::msleep(5000);
+//    mExe->startProcess();
+//    if(ans!=0)
+        ret = enumSocketType();
+//    if(ans!=0 && ret)
+        ret = readDev();
     return ret;
 }
 
