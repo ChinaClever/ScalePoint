@@ -60,6 +60,7 @@ void Cfg::initErrData()
     sErrData *errs = &(item->errs);
     errs->volErr = read("vol", 1,"Errs").toInt();
     errs->curErr = read("cur", 0.1,"Errs").toDouble();
+    errs->curErr2 = read("cur2", 0.1,"Errs").toDouble();
     errs->powErr = read("pow", 15,"Errs").toInt();
 }
 
@@ -68,5 +69,6 @@ void Cfg::writeErrData()
     sErrData *errs = &(item->errs);
     write("vol", errs->volErr, "Errs");
     write("cur", errs->curErr, "Errs");
+    write("cur2", errs->curErr2, "Errs");
     write("pow", errs->powErr, "Errs");
 }

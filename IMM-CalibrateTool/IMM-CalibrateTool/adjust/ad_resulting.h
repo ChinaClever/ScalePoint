@@ -34,6 +34,7 @@ protected:
     bool powerOn(int v);
     void writeLog();
     void initLog();
+    void initLogheader();
 
 private:
     SP_ImmRtu *mCollect;

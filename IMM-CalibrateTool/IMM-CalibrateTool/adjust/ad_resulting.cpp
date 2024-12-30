@@ -10,7 +10,43 @@ Ad_Resulting::Ad_Resulting(QObject *parent) : BaseThread(parent)
 {
     mCollect = SP_ImmRtu::bulid(this);
     mFlag = 0;
+    initLogheader();
+
 }
+
+void Ad_Resulting::initLogheader()
+{
+    QString tfile = Cfg::bulid()->pathOfData("Log_imm.csv");
+    //QString fileName = tfile+"Log_imm.csv";
+    QFile csvfile(tfile);
+    csvfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+
+    QTextStream out(&csvfile);
+    out.setCodec("GBK");
+    mLog<<tr("测试规格");
+    mLog<<tr("时间");
+    mLog<<tr("设备型号");
+    mLog<<tr("序列号");
+    mLog<<tr("软件版本");
+    for(int i = 1 ; i < 4 ; i++){
+        mLog<<tr("L%1").arg(i);
+        mLog<<tr("Error rate L%1").arg(i);
+    }
+    for(int i = 1 ; i < 7 ; i++){
+        mLog<<tr("C%1").arg(i);
+        mLog<<tr("Error rate C%1").arg(i);
+    }
+    for(int i=0; i<mLog.size(); ++i)
+    {
+        out<<mLog.at(i)<<",";
+        msleep(30);
+    }
+    out<<"\n";
+    csvfile.flush();
+    csvfile.close();
+    mLog.clear();
+}
+
 
 Ad_Resulting *Ad_Resulting::bulid(QObject *parent)
 {
@@ -27,6 +63,7 @@ bool Ad_Resulting::curErrRange(int exValue, int cur)
 //    int max = exValue + mItem->errs.curErr * 10;//400+1
 
     float err = exValue * mItem->errs.curErr/1000.0;
+    if(mFlag == 1) err = exValue * mItem->errs.curErr2/1000.0;
     float min = exValue - err;//400-1
     float max = exValue + err;//400+1
     qDebug()<<" exValue "<< exValue
@@ -101,6 +138,9 @@ bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
             str += tr("正常");
             str1 = tr("L%1:Current Expect:%2A Current:%3A Error rate:%4 Pass").arg(i+1)
                     .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+            str1 = tr("%1").arg(line->cur_rms/COM_RATE_CUR);
+            mLog<<str1;
+            str1 = tr("%1").arg(a==0?"NA":QString::number(c,'f',3));
             mLog<<str1;
             updatePro(str);
         }
@@ -109,6 +149,9 @@ bool Ad_Resulting::curRangeByID(int i, int exValue, int cnt)
             str += tr("错误");
             str1 = tr("L%1:Current Expect:%2A Current:%3A Error rate:%4 Fail").arg(i+1)
                     .arg(exValue/AD_CUR_RATE).arg(line->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
+            str1 = tr("%1").arg(line->cur_rms/COM_RATE_CUR);
+            mLog<<str1;
+            str1 = tr("%1").arg(a==0?"NA":QString::number(c,'f',3));
             mLog<<str1;
             updatePro(str, ret);
             line->status = Test_Fail;
@@ -128,10 +171,18 @@ bool Ad_Resulting::volErrRangeByID(int i)
     int max = errs->vol + errs->volErr;
 
     int a = errs->vol*COM_RATE_VOL;
-    int b = line->cur_rms;
+    int b = line->vol_rms;
     float c = -1;
     if(a != 0)c = ((abs(a-b)*1.0)/a)*100.0;
     QString str = tr("L%1电压 期望值200V，实际电压%2V 误差=%3 %").arg(i+1).arg(vol).arg(a==0?"---":QString::number(c,'f',3));
+    qDebug()<<" exValue "<< a
+           << " errs->vol "<< errs->vol
+           << " err "<< errs->volErr
+           << " min "<<min
+           << " max "<<max
+           <<"  vol "<<vol
+           <<"  a "<<a
+           <<"  b "<<b;
     if((vol >= min) && (vol <= max)) {
         str += tr("正常"); updatePro(str);
 //        mLog<<str;
@@ -179,6 +230,7 @@ bool Ad_Resulting::eachCurCheck(int k, int exValue)
     QString str = tr("L%1校验数据: 期望电流%2A 功率%3W").arg(k+1).arg(exValue/AD_CUR_RATE).arg(value);
     updatePro(str); for(int i=0; i<5; ++i) {
         if(i) str += tr(" 第%1次").arg(i+1); else delay(4);
+        qDebug()<<str;
         ret = curRangeByID(k, exValue, i);
         if(ret) break; else if(!delay(i+5)) break;
         mCollect->readPduData();
@@ -210,9 +262,12 @@ bool Ad_Resulting::loopCurCheck(int exValue)
         QString str = tr("C%1电流 期望值%2A, 实际电流%3A 误差=%4 %").arg(i+1)
                 .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
         QString str1;
-        int err = (mItem->errs.curErr) * 10; bool ret = false;
+        float err = exValue * mItem->errs.curErr/1000.0;
+        if(mFlag == 1) err = exValue * mItem->errs.curErr2/1000.0;
+        //int err = (mItem->errs.curErr) * 10;
+        bool ret = false;
         int min = exValue - err; int max = exValue + err;
-        if((cur >= min) && (cur <= max )) {
+        if((b >= min) && (b <= max )) {
             str += tr("正常");
             ret = true;
             str1 = tr("C%1:Current Expect:%2A Current:%3A Error rate:%4 Pass").arg(i+1)
@@ -224,6 +279,17 @@ bool Ad_Resulting::loopCurCheck(int exValue)
             str1 = tr("C%1:Current Expect:%2A Current:%3A Error rate:%4 Fail").arg(i+1)
                                         .arg(exValue/AD_CUR_RATE).arg(it->cur_rms/COM_RATE_CUR).arg(a==0?"---":QString::number(c,'f',3));
         }
+        qDebug()<<" exValue "<< exValue
+               << " mItem->errs.curErr "<< mItem->errs.curErr
+               << " err "<< err
+               << " min "<<min
+               << " max "<<max
+               <<"  cur "<<cur
+               <<"  a "<<a
+               <<"  b "<<b;
+        str1 = tr("%1").arg(QString::number(it->cur_rms/COM_RATE_CUR,'f',3));
+        mLog<<str1;
+        str1 = tr("%1").arg(a==0?"NA":QString::number(c,'f',3));
         mLog<<str1;
         updatePro(str, ret);
     }
@@ -345,17 +411,21 @@ bool Ad_Resulting::resEnter()
 {
 
 
-    bool ret = powerOn(200);
+    bool ret = true;
+    //powerOn(200);
     if(ret) {
 //        ret = workDown(4*AD_CUR_RATE);
-        mFlag = 0;
-        initLog();
-        ret = workDown(200);
-        writeLog();
+
+//        mFlag = 0;
+//        initLog();
+//        mItem->errs.vol = 220;
+//        ret = workDown(200);
+//        writeLog();
 
         powerOn(4000);
         mFlag = 1;
         initLog();
+        mItem->errs.vol = 200;
         ret = workDown(4*AD_CUR_RATE);
         writeLog();
         if(ret) ret = noLoadEnter();
@@ -379,10 +449,9 @@ void Ad_Resulting::initLog()
 
 void Ad_Resulting::writeLog()
 {
-    QString tfile = QCoreApplication::applicationDirPath();
-    tfile.remove(tfile.length()-7 , 7);
-    QString fileName = tfile+"Log_imm.csv";
-    QFile csvfile(fileName);
+    QString tfile = Cfg::bulid()->pathOfData("Log_imm.csv");
+    //QString fileName = tfile+"Log_imm.csv";
+    QFile csvfile(tfile);
     csvfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
 
     QTextStream out(&csvfile);

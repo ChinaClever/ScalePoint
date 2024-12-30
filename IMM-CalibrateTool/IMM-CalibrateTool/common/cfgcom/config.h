@@ -31,6 +31,7 @@ struct sErrData
     ushort vol;
     ushort volErr;
     double curErr;
+    double curErr2;
     ushort powErr; // 电流误差
 };
 

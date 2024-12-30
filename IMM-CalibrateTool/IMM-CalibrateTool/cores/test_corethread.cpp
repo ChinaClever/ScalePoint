@@ -93,7 +93,7 @@ void Test_CoreThread::workResult()
 {
     bool res = mYc->powerDown();
     bool ret = false,ret1 = false,ret2 = false;
-    sleep(1);//等待标准源下电
+    sleep(5);//等待标准源下电
     mBt->closeSocket(4);sleep(1);
     ret1 =  mBt->readSocket(4 , 0);
     if(!ret1){

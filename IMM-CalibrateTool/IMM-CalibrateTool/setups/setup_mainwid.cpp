@@ -117,6 +117,7 @@ void Setup_MainWid::updateErrData()
     sErrData *errs = &(mItem->errs);
     errs->volErr = ui->volErrBox->value();
     errs->curErr = ui->curErrBox->value() * 10;
+    errs->curErr2 = ui->curErr2Box->value() * 10;
     errs->powErr = ui->powErrBox->value() * 10;
     Cfg::bulid()->writeErrData();
 }
@@ -126,6 +127,7 @@ void Setup_MainWid::initErrData()
     sErrData *errs = &(mItem->errs);
     ui->volErrBox->setValue(errs->volErr);
     ui->curErrBox->setValue(errs->curErr / 10.0);
+    ui->curErr2Box->setValue(errs->curErr2 / 10.0);
     ui->powErrBox->setValue(errs->powErr / 10.0);
 }
 
@@ -151,5 +153,6 @@ void Setup_MainWid::on_saveBtn_clicked()
     ui->saveBtn->setText(str);
     ui->volErrBox->setEnabled(ret);
     ui->curErrBox->setEnabled(ret);
+    ui->curErr2Box->setEnabled(ret);
     ui->powErrBox->setEnabled(ret);
 }
