@@ -25,7 +25,7 @@ bool Test_BsThread::volErrRangeByID(int i)
     sLineData *line = &(mData->lines[i]);
     int vol = line->vol_rms / COM_RATE_VOL;
     QString str = tr("L%1电压 期望值220V，实际电压%2V ").arg(i+1).arg(vol);
-    if((vol >= 170) && (vol <= 280)) {
+    if((vol >= 170) && (vol <= 300)) {
         str += tr("正常"); updatePro(str);
         line->status = Test_Pass;
     } else {

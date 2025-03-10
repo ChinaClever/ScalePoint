@@ -43,9 +43,9 @@ void Home_WorkWid::initFunSlot()
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     QTimer::singleShot(450,this,SLOT(updateCntSlot()));
     mCoreThread = new Test_CoreThread(this);
-    ui->pnBox->setCurrentIndex(0);
-//    ui->pnBox->setCurrentIndex(3);
-//    ui->modeBox->setCurrentIndex(4);
+    //ui->pnBox->setCurrentIndex(0);
+    ui->pnBox->setCurrentIndex(3);
+    ui->modeBox->setCurrentIndex(4);
 }
 
 void Home_WorkWid::setTextColor()
