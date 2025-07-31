@@ -67,7 +67,7 @@ bool Test_CoreThread::readDev()
 
     if(ret) {
         ret = mDev->readSn(); str = tr("设备SN码读取 ");
-        if(ret && !mDt->sn.contains("FF FF FF FF")) str += tr("正常：SN %1").arg(mDt->sn); else str += tr("错误：SN %1").arg(mDt->sn);
+        if(ret && !mDt->sn.contains("FF FF")) str += tr("正常：SN %1").arg(mDt->sn); else str += tr("错误：SN %1").arg(mDt->sn);
         updatePro(str, ret);
     }
 
