@@ -325,7 +325,7 @@ bool Ad_Resulting::resEnter()
     bool ret = powerOn();
     if(ret) {
         ret = workDown(4*AD_CUR_RATE);
-        writeLog();
+        //writeLog();
         if(ret) ret = noLoadEnter();
     }
 
