@@ -220,6 +220,7 @@ bool Home_WorkWid::inputCheck()
         case 3: mDt->pn = "AG13095AA"; break;
         case 4: mDt->pn = "AG13096AA"; break;
         case 5: mDt->pn = "AG13097AA"; break;
+        case 6: mDt->pn = "AG13096BA"; break;
         default: MsgBox::critical(this, tr("请选择设备规格")); ret = false; break;
         }
     }

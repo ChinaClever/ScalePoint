@@ -485,12 +485,17 @@
         </item>
         <item>
          <property name="text">
-          <string>7xC13+C19</string>
+          <string>7xC13+C19AA</string>
          </property>
         </item>
         <item>
          <property name="text">
           <string>2xC19</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>7C13+1C19BA</string>
          </property>
         </item>
        </widget>
